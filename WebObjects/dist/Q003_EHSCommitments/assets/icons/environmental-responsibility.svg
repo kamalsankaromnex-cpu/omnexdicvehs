@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
+  <!-- Soft Eco Circle Background -->
+  <circle cx="40" cy="40" r="30" fill="#E8F7ED" stroke="#008248" stroke-width="2.5"/>
+  <!-- Vibrant Green Leaves Growing -->
+  <path d="M40 50 C40 32 58 24 58 24 C58 24 58 42 40 50 Z" fill="#28A745" stroke="#00677F" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M40 50 C40 36 24 30 24 30 C24 30 24 44 40 50 Z" fill="#5097AB" stroke="#004355" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Central Leaf Vein & Stem -->
+  <path d="M40 56 L40 38" stroke="#004355" stroke-width="3" stroke-linecap="round"/>
+  <!-- Caring Hands Foundation -->
+  <path d="M22 60 C26 56 34 56 40 58 C46 56 54 56 58 60" stroke="#00677F" stroke-width="3.5" stroke-linecap="round"/>
+</svg>

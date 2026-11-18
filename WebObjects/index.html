@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DICV Interactive — Central Quiz Guide &amp; Storyline Hub</title>
+  <link rel="stylesheet" href="shared/styles/fonts.css" />
+  <style>
+    :root {
+      --petrol-dark: #004355;
+      --petrol: #00677F;
+      --petrol-light: #E6F2F5;
+      --petrol-tint: #F4F9FA;
+      --yellow: #FFFF40;
+      --yellow-soft: #FFFCE0;
+      --ink: #16242B;
+      --muted: #52656E;
+      --border: #D5E3E8;
+      --bg: #F6F9FA;
+      --white: #FFFFFF;
+      --ok-bg: #E8F6EE;
+      --ok-text: #136F3A;
+      --warn-bg: #FFF7E0;
+      --warn-text: #8A5A00;
+      --radius: 14px;
+      --shadow: 0 6px 20px rgba(0, 67, 85, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Daimler CS', 'Segoe UI', Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+
+    /* Header */
+    .hero {
+      background: linear-gradient(135deg, var(--petrol-dark) 0%, var(--petrol) 100%);
+      color: var(--white);
+      padding: 36px 24px 32px;
+      border-bottom: 4px solid var(--yellow);
+    }
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero-kicker {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--petrol-dark);
+      background: var(--yellow);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      font-weight: 700;
+    }
+    .hero p {
+      margin: 0 0 20px;
+      max-width: 780px;
+      color: #DCECEF;
+      font-size: 16px;
+    }
+    .status-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .pill.ready { background: rgba(255, 255, 64, 0.18); border-color: var(--yellow); color: var(--yellow); }
+
+    /* Sticky Section Nav */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0, 67, 85, 0.04);
+    }
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--petrol-dark);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      transition: background 0.15s ease;
+    }
+    .nav-links a:hover {
+      background: var(--petrol-light);
+    }
+    .nav-cta {
+      text-decoration: none;
+      background: var(--petrol-dark);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 8px 15px;
+      border-radius: 999px;
+    }
+    .nav-cta:hover { background: var(--petrol); }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 24px 64px;
+    }
+
+    section {
+      margin-bottom: 42px;
+      scroll-margin-top: 70px;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 23px;
+      color: var(--petrol-dark);
+    }
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* Filter Buttons */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--petrol-dark);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      background: var(--petrol-dark);
+      color: var(--white);
+      border-color: var(--petrol-dark);
+    }
+
+    /* Quiz Grid */
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 18px;
+    }
+    .quiz-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .quiz-card.hidden { display: none; }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .quiz-badge {
+      background: var(--petrol-dark);
+      color: var(--yellow);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .type-tag {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--petrol);
+      background: var(--petrol-light);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .quiz-card h3 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--petrol-dark);
+    }
+    .quiz-desc {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .meta-box {
+      background: var(--petrol-tint);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 3px 0;
+    }
+    .meta-row strong { color: var(--petrol-dark); }
+    .answer-box {
+      background: var(--ok-bg);
+      color: var(--ok-text);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .vars-box {
+      background: #F9FBFC;
+      border: 1px dashed #B8CFD7;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+    }
+    .vars-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-weight: 700;
+      color: var(--petrol-dark);
+    }
+    .copy-btn {
+      border: 1px solid var(--petrol);
+      background: var(--white);
+      color: var(--petrol-dark);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .copy-btn:hover { background: var(--petrol-light); }
+    .var-list {
+      margin: 0;
+      padding-left: 16px;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      color: #21353E;
+    }
+    .card-actions {
+      margin-top: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 4px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 8px 13px;
+      border-radius: 8px;
+      flex: 1;
+      text-align: center;
+    }
+    .btn-primary {
+      background: var(--petrol-dark);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: var(--petrol); }
+    .btn-secondary {
+      background: var(--petrol-light);
+      color: var(--petrol-dark);
+    }
+    .btn-secondary:hover { background: #D4E8EE; }
+
+    /* Step-by-Step Storyline Guide */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .step-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--yellow);
+      color: var(--petrol-dark);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      border: 2px solid var(--petrol-dark);
+    }
+    .step-card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      color: var(--petrol-dark);
+    }
+    .step-card p, .step-card li {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .step-card ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .callout {
+      margin-top: 18px;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-size: 14px;
+      border-left: 5px solid;
+    }
+    .callout.warn {
+      background: var(--warn-bg);
+      border-color: #D98E00;
+      color: #5C3C00;
+    }
+    .callout.info {
+      background: var(--petrol-light);
+      border-color: var(--petrol);
+      color: var(--petrol-dark);
+    }
+    .callout strong { display: block; margin-bottom: 4px; font-size: 15px; }
+
+    /* Two-column tables / status */
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      color: var(--petrol-dark);
+      background: var(--petrol-tint);
+      font-weight: 700;
+    }
+    .status-chip {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .chip-pass { background: var(--ok-bg); color: var(--ok-text); }
+    .chip-pending { background: var(--warn-bg); color: var(--warn-text); }
+
+    code {
+      background: #EEF4F6;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-family: Consolas, monospace;
+      font-size: 12.5px;
+      color: var(--petrol-dark);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 24px;
+      border-top: 1px solid var(--border);
+      background: var(--white);
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="hero-kicker">DICV Interactive · EHS Learning</span>
+      <h1>Central Quiz Guide &amp; Storyline Integration Hub</h1>
+      <p>
+        One plain-English home page for instructional designers, Storyline 360 authors, and QA reviewers.
+        Preview every quiz, check answer keys, copy exact Storyline variables, and follow step-by-step import instructions.
+      </p>
+      <div class="status-strip">
+        <span class="pill ready">✓ 8 Standalone Web Objects Built (dist/)</span>
+        <span class="pill ready">✓ Bridge &amp; Technical Audit Verified</span>
+        <span class="pill">⏳ Storyline &amp; Oracle LMS Staging Test Pending</span>
+        <span class="pill">🎬 Motion Prototypes Ready for Review</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <div class="nav-links">
+        <a href="#quizzes">1. All Quizzes (Q001–Q006)</a>
+        <a href="#storyline-guide">2. How to Integrate in Storyline</a>
+        <a href="#lifecycle">3. How Scoring &amp; Reveal Work</a>
+        <a href="#status">4. Readiness &amp; Docs</a>
+      </div>
+      <a class="nav-cta" href="prototypes/motion/index.html" target="_blank">Open Motion Prototype Hub ↗</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- SECTION 1: QUIZZES -->
+    <section id="quizzes">
+      <div class="section-head">
+        <div>
+          <h2>1. All Quizzes at a Glance</h2>
+          <p>Always import the standalone folder from <code>WebObjects/dist/</code> into Articulate Storyline 360.</p>
+        </div>
+        <div class="filters" role="group" aria-label="Filter quizzes">
+          <button class="filter-btn active" data-filter="all">All (8)</button>
+          <button class="filter-btn" data-filter="choice">Multiple / Single Choice</button>
+          <button class="filter-btn" data-filter="dnd">Drag &amp; Drop</button>
+          <button class="filter-btn" data-filter="q006">Q006 Rounds (3)</button>
+        </div>
+      </div>
+
+      <div class="quiz-grid" id="quiz-grid">
+        <!-- Q001 -->
+        <article class="quiz-card" data-cat="choice">
+          <div class="card-top">
+            <span class="quiz-badge">Q001</span>
+            <span class="type-tag">Multi-Select (4 Cards)</span>
+          </div>
+          <h3>Accident Prediction Quiz</h3>
+          <p class="quiz-desc">Learner selects which employees on the shop floor could experience the next accident.</p>
+          <div class="meta-box">
+            <div class="meta-row"><span>Canvas Size</span><strong>806 × 962 px</strong></div>
+            <div class="meta-row"><span>Import Folder</span><strong><code>dist/Q001_AccidentPrediction/</code></strong></div>
+          </div>
+          <div class="answer-box">Correct Key: All 4 options (A, B, C, D)</div>
+          <div class="vars-box">
+            <div class="vars-head">
+              <span>Storyline Variables</span>
+              <button class="copy-btn" data-copy="Q001_Done (True/False), Q001_Correct (True/False), Q001_Answers (Text), Q001_Revealed (True/False)">Copy</button>
+            </div>
+            <ul class="var-list">
+              <li>Q001_Done (True/False)</li>
+              <li>Q001_Correct (True/False)</li>
+              <li>Q001_Answers (Text)</li>
+              <li>Q001_Revealed (True/False)</li>
+            </ul>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="dist/Q001_AccidentPrediction/index.html" target="_blank">Open Live Quiz ↗</a>
+            <a class="btn btn-secondary" href="prototypes/motion/q001_motion.html" target="_blank">Motion Preview ↗</a>
+          </div>
+        </article>
+
+        <!-- Q002 -->
+        <article class="quiz-card" data-cat="choice">
+          <div class="card-top">
+            <span class="quiz-badge">Q002</span>
+            <span class="type-tag">Multi-Select (5 Cards)</span>
+          </div>
+          <h3>DICV Safety Commitments</h3>
+          <p class="quiz-desc">Learner selects all commitments a company should make for a safer workplace.</p>
+          <div class="meta-box">
+            <div class="meta-row"><span>Canvas Size</span><strong>1110 × 900 px</strong></div>
+            <div class="meta-row"><span>Import Folder</span><strong><code>dist/Q002_SafetyCommitments/</code></strong></div>
+          </div>
+          <div class="answer-box">Correct Key: All 5 options (A, B, C, D, E)</div>
+          <div class="vars-box">
+            <div class="vars-head">
+              <span>Storyline Variables</span>
+              <button class="copy-btn" data-copy="Q002_Done (True/False), Q002_Correct (True/False), Q002_Answers (Text), Q002_Revealed (True/False)">Copy</button>
+            </div>
+            <ul class="var-list">
+              <li>Q002_Done (True/False)</li>
+              <li>Q002_Correct (True/False)</li>
+              <li>Q002_Answers (Text)</li>
+              <li>Q002_Revealed (True/False)</li>
+            </ul>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="dist/Q002_SafetyCommitments/index.html" target="_blank">Open Live Quiz ↗</a>
+            <a class="btn btn-secondary" href="prototypes/motion/q002_motion.html" target="_blank">Motion Preview ↗</a>
+          </div>
+        </article>
+
+        <!-- Q003 -->
+        <article class="quiz-card" data-cat="choice">
+          <div class="card-top">
+            <span class="quiz-badge">Q003</span>
+            <span class="type-tag">Multi-Select Max 4 (5 Cards)</span>
+          </div>
+          <h3>DICV EHS Commitments</h3>
+          <p class="quiz-desc">Learner chooses up to 4 core EHS commitments out of 5 cards (1 distractor).</p>
+          <div class="meta-box">
+            <div class="meta-row"><span>Canvas Size</span><strong>1110 × 900 px</strong></div>
+            <div class="meta-row"><span>Import Folder</span><strong><code>dist/Q003_EHSCommitments/</code></strong></div>
+          </div>
+          <div class="answer-box">Correct Key: A, B, C, D (E "Higher production output" is distractor)</div>
+          <div class="vars-box">
+            <div class="vars-head">
+              <span>Storyline Variables</span>
+              <button class="copy-btn" data-copy="Q003_Done (True/False), Q003_Correct (True/False), Q003_Answers (Text), Q003_Revealed (True/False)">Copy</button>
+            </div>
+            <ul class="var-list">
+              <li>Q003_Done (True/False)</li>
+              <li>Q003_Correct (True/False)</li>
+              <li>Q003_Answers (Text)</li>
+              <li>Q003_Revealed (True/False)</li>
+            </ul>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="dist/Q003_EHSCommitments/index.html" target="_blank">Open Live Quiz ↗</a>
+            <a class="btn btn-secondary" href="prototypes/motion/q003_motion.html" target="_blank">Motion Preview ↗</a>
+          </div>
+        </article>
+
+        <!-- Q004 -->
+        <article class="quiz-card" data-cat="dnd">
+          <div class="card-top">
+            <span class="quiz-badge">Q004</span>
+            <span class="type-tag">Drag &amp; Drop (3-Zone Pinwheel)</span>
+          </div>
+          <h3>DICV EHS Focus Areas</h3>
+          <p class="quiz-desc">Learner drags 3 correct focus areas onto the 3-color Safety Strategy pinwheel (any zone order).</p>
+          <div class="meta-box">
+            <div class="meta-row"><span>Canvas Size</span><strong>1536 × 1024 px (Auto-scales)</strong></div>
+            <div class="meta-row"><span>Import Folder</span><strong><code>dist/Q004_EHSFocusAreas/</code></strong></div>
+          </div>
+          <div class="answer-box">Correct Key: Capability Management, Governance, Risk Management (Employee Engagement is distractor)</div>
+          <div class="vars-box">
+            <div class="vars-head">
+              <span>Storyline Variables</span>
+              <button class="copy-btn" data-copy="Q004_Done (True/False), Q004_Correct (True/False), Q004_Answers (Text), Q004_Revealed (True/False)">Copy</button>
+            </div>
+            <ul class="var-list">
+              <li>Q004_Done (True/False)</li>
+              <li>Q004_Correct (True/False)</li>
+              <li>Q004_Answers (Text)</li>
+              <li>Q004_Revealed (True/False)</li>
+            </ul>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="dist/Q004_EHSFocusAreas/index.html" target="_blank">Open Live Quiz ↗</a>
+            <a class="btn btn-secondary" href="prototypes/motion/q004_motion.html" target="_blank">Motion Preview ↗</a>
+          </div>
+        </article>
+
+        <!-- Q005 -->
+        <article class="quiz-card" data-cat="dnd">
+          <div class="card-top">
+            <span class="quiz-badge">Q005</span>
+            <span class="type-tag">Drag &amp; Drop (Strict Order)</span>
+          </div>
+          <h3>DICV Safety Culture Maturity</h3>
+          <p class="quiz-desc">Learner places the 4 culture stages along the Bradley Injury Rate curve in exact progression order.</p>
+          <div class="meta-box">
+            <div class="meta-row"><span>Canvas Size</span><strong>1110 × 640 px</strong></div>
+            <div class="meta-row"><span>Import Folder</span><strong><code>dist/Q005_SafetyCultureMaturity/</code></strong></div>
+          </div>
+          <div class="answer-box">Correct Key: 1. Reactive → 2. Dependent → 3. Independent → 4. Interdependent</div>
+          <div class="vars-box">
+            <div class="vars-head">
+              <span>Storyline Variables</span>
+              <button class="copy-btn" data-copy="Q005_Done (True/False), Q005_Correct (True/False), Q005_Answers (Text), Q005_Revealed (True/False)">Copy</button>
+            </div>
+            <ul class="var-list">
+              <li>Q005_Done (True/False)</li>
+              <li>Q005_Correct (True/False)</li>
+              <li>Q005_Answers (Text)</li>
+              <li>Q005_Revealed (True/False)</li>
+            </ul>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="dist/Q005_SafetyCultureMaturity/index.html" target="_blank">Open Live Quiz ↗</a>
+            <a class="btn btn-secondary" href="prototypes/motion/q005_motion.html" target="_blank">Motion Preview ↗</a>
+          </div>
+        </article>
+
+        <!-- Q006_R1 -->
+        <article class="quiz-card" data-cat="choice q006">
+          <div class="card-top">
+            <span class="quiz-badge">Q006 · Round 1</span>
+            <span class="type-tag">Single-Choice Scenario</span>
+          </div>
+          <h3>Organisation-wide Policy Review</h3>
+          <p class="quiz-desc">Safety Issue 1 of 3: Learner chooses which committee reviews an organisation-wide safety policy update.</p>
+          <div class="meta-box">
+            <div class="meta-row"><span>Canvas Size</span><strong>1024 × 576 px (16:9)</strong></div>
+            <div class="meta-row"><span>Import Folder</span><strong><code>dist/Q006_R1/</code></strong></div>
+          </div>
+          <div class="answer-box">Correct Key: Apex Committee</div>
+          <div class="vars-box">
+            <div class="vars-head">
+              <span>Storyline Variables (Note singular Answer)</span>
+              <button class="copy-btn" data-copy="Q006_R1_Done (True/False), Q006_R1_Correct (True/False), Q006_R1_Answer (Text), Q006_R1_Revealed (True/False)">Copy</button>
+            </div>
+            <ul class="var-list">
+              <li>Q006_R1_Done (True/False)</li>
+              <li>Q006_R1_Correct (True/False)</li>
+              <li>Q006_R1_Answer (Text)</li>
+              <li>Q006_R1_Revealed (True/False)</li>
+            </ul>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="dist/Q006_R1/index.html" target="_blank">Open Live Quiz ↗</a>
+            <a class="btn btn-secondary" href="prototypes/motion/q006_motion.html" target="_blank">Motion Preview ↗</a>
+          </div>
+        </article>
+
+        <!-- Q006_R2 -->
+        <article class="quiz-card" data-cat="choice q006">
+          <div class="card-top">
+            <span class="quiz-badge">Q006 · Round 2</span>
+            <span class="type-tag">Single-Choice Scenario</span>
+          </div>
+          <h3>Critical Safety Performance Issue</h3>
+          <p class="quiz-desc">Safety Issue 2 of 3: Learner chooses which committee resolves a critical, long-pending production safety issue.</p>
+          <div class="meta-box">
+            <div class="meta-row"><span>Canvas Size</span><strong>1024 × 576 px (16:9)</strong></div>
+            <div class="meta-row"><span>Import Folder</span><strong><code>dist/Q006_R2/</code></strong></div>
+          </div>
+          <div class="answer-box">Correct Key: Sub Committee</div>
+          <div class="vars-box">
+            <div class="vars-head">
+              <span>Storyline Variables (Note singular Answer)</span>
+              <button class="copy-btn" data-copy="Q006_R2_Done (True/False), Q006_R2_Correct (True/False), Q006_R2_Answer (Text), Q006_R2_Revealed (True/False)">Copy</button>
+            </div>
+            <ul class="var-list">
+              <li>Q006_R2_Done (True/False)</li>
+              <li>Q006_R2_Correct (True/False)</li>
+              <li>Q006_R2_Answer (Text)</li>
+              <li>Q006_R2_Revealed (True/False)</li>
+            </ul>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="dist/Q006_R2/index.html" target="_blank">Open Live Quiz ↗</a>
+            <a class="btn btn-secondary" href="prototypes/motion/q006_motion.html" target="_blank">Motion Preview ↗</a>
+          </div>
+        </article>
+
+        <!-- Q006_R3 -->
+        <article class="quiz-card" data-cat="choice q006">
+          <div class="card-top">
+            <span class="quiz-badge">Q006 · Round 3</span>
+            <span class="type-tag">Single-Choice Scenario</span>
+          </div>
+          <h3>Machine-Guarding Improvement</h3>
+          <p class="quiz-desc">Safety Issue 3 of 3: Learner chooses which committee drives a focused machine-guarding safety initiative.</p>
+          <div class="meta-box">
+            <div class="meta-row"><span>Canvas Size</span><strong>1024 × 576 px (16:9)</strong></div>
+            <div class="meta-row"><span>Import Folder</span><strong><code>dist/Q006_R3/</code></strong></div>
+          </div>
+          <div class="answer-box">Correct Key: Ad-hoc Committee – Initiatives</div>
+          <div class="vars-box">
+            <div class="vars-head">
+              <span>Storyline Variables (Note singular Answer)</span>
+              <button class="copy-btn" data-copy="Q006_R3_Done (True/False), Q006_R3_Correct (True/False), Q006_R3_Answer (Text), Q006_R3_Revealed (True/False)">Copy</button>
+            </div>
+            <ul class="var-list">
+              <li>Q006_R3_Done (True/False)</li>
+              <li>Q006_R3_Correct (True/False)</li>
+              <li>Q006_R3_Answer (Text)</li>
+              <li>Q006_R3_Revealed (True/False)</li>
+            </ul>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="dist/Q006_R3/index.html" target="_blank">Open Live Quiz ↗</a>
+            <a class="btn btn-secondary" href="prototypes/motion/q006_motion.html" target="_blank">Motion Preview ↗</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SECTION 2: STORYLINE INTEGRATION -->
+    <section id="storyline-guide">
+      <div class="section-head">
+        <div>
+          <h2>2. How to Integrate into Articulate Storyline 360</h2>
+          <p>Follow these 4 steps for every quiz slide. No coding required inside Storyline.</p>
+        </div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <h3>Create the 4 Slide Variables</h3>
+          <p>In Storyline's <strong>Variables</strong> panel, create these exact names (case-sensitive):</p>
+          <ul>
+            <li><code>&lt;ID&gt;_Done</code> — <strong>True/False</strong> (Default: <code>False</code>)</li>
+            <li><code>&lt;ID&gt;_Correct</code> — <strong>True/False</strong> (Default: <code>False</code>)</li>
+            <li><code>&lt;ID&gt;_Answers</code> — <strong>Text</strong> (or <code>_Answer</code> for Q006)</li>
+            <li><code>&lt;ID&gt;_Revealed</code> — <strong>True/False</strong> (Default: <code>False</code>)</li>
+          </ul>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <h3>Insert the Web Object</h3>
+          <p>Go to <strong>Insert → Web Object</strong> and select the built folder inside <code>WebObjects/dist/</code>:</p>
+          <ul>
+            <li>Choose <strong>Display in slide</strong>.</li>
+            <li>Match the Web Object frame size to the quiz's canvas size (listed on each card above).</li>
+            <li>Never import from <code>quizzes/</code> — always use <code>dist/</code>.</li>
+          </ul>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <h3>Add Submission Triggers</h3>
+          <p>On the slide, listen for <strong>When variable changes: <code>&lt;ID&gt;_Done</code></strong>:</p>
+          <ul>
+            <li>If <code>&lt;ID&gt;_Correct == True</code> → Show <strong>Correct</strong> feedback layer (or jump to next slide).</li>
+            <li>If <code>&lt;ID&gt;_Correct == False</code> → Show <strong>Incorrect</strong> feedback layer.</li>
+          </ul>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <h3>Trigger Answer Reveal After Feedback</h3>
+          <p>To avoid spoiling answers while feedback is open:</p>
+          <ul>
+            <li>Keep <code>&lt;ID&gt;_Revealed</code> as <code>False</code> while the feedback popup is visible.</li>
+            <li>When the learner closes feedback, set <code>&lt;ID&gt;_Revealed = True</code>.</li>
+            <li>The Web Object immediately highlights the correct/incorrect cards.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <strong>Important: Do NOT use Storyline Desktop "Preview" (F12) to test quiz submission!</strong>
+        Articulate Storyline's desktop Preview blocks Web Objects from talking to Storyline variables.
+        Always test using <strong>Publish → Web</strong>, <strong>Publish → Review 360</strong>, or <strong>Publish → LMS (SCORM)</strong>.
+      </div>
+    </section>
+
+    <!-- SECTION 3: LIFECYCLE -->
+    <section id="lifecycle">
+      <div class="section-head">
+        <div>
+          <h2>3. How Scoring, Retry &amp; LMS Resume Work</h2>
+          <p>What happens behind the scenes so learner scores and Oracle LMS progress stay accurate.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Learner Action</th>
+              <th>What the HTML Quiz Does</th>
+              <th>What Storyline / Oracle LMS Does</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Clicks Submit</strong></td>
+              <td>Locks the cards, evaluates the answer key, and sends <code>_Answers</code>, <code>_Correct</code>, and <code>_Done</code>.</td>
+              <td>Updates Life Meter / Reward Stars and opens the Correct or Incorrect feedback layer.</td>
+            </tr>
+            <tr>
+              <td><strong>Closes Feedback Layer</strong></td>
+              <td>Waits quietly until Storyline sets <code>_Revealed = True</code> (no premature auto-reveal).</td>
+              <td>Sets <code>_Revealed = True</code> on both Correct and Incorrect layers so review badges appear.</td>
+            </tr>
+            <tr>
+              <td><strong>Retries Attempt (if enabled)</strong></td>
+              <td>Clears selection and unlocks cards when Storyline sends reset.</td>
+              <td>Resets <code>_Done = False</code> and <code>_Revealed = False</code> before re-enabling the slide.</td>
+            </tr>
+            <tr>
+              <td><strong>Revisits or Resumes in Oracle LMS</strong></td>
+              <td>Reads saved Storyline variables cleanly (even SCORM string <code>"false"</code> values) and restores locked/review state.</td>
+              <td>Provides saved SCORM suspend data back to the slide on reload.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout info">
+        <strong>Need to update text, timings, or styles later?</strong>
+        Developers edit the source in <code>WebObjects/quizzes/</code> or <code>WebObjects/shared/</code>, then run <code>python WebObjects/scripts/build_quiz.py</code> once to refresh all 8 standalone folders in <code>WebObjects/dist/</code>.
+      </div>
+    </section>
+
+    <!-- SECTION 4: STATUS & DOCS -->
+    <section id="status">
+      <div class="section-head">
+        <div>
+          <h2>4. Project Readiness &amp; Key Documents</h2>
+          <p>Current verification status before final LMS deployment and animation rollout.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Check / Milestone</th>
+              <th>Status</th>
+              <th>Details &amp; Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Standalone Web Object Builds (8/8)</strong></td>
+              <td><span class="status-chip chip-pass">READY</span></td>
+              <td>All 8 folders in <code>WebObjects/dist/</code> rebuilt with local Daimler fonts and bridge.</td>
+            </tr>
+            <tr>
+              <td><strong>Technical &amp; Design Regression Tests</strong></td>
+              <td><span class="status-chip chip-pass">PASS</span></td>
+              <td><code>test_technical_integrity.js</code> (6/6), <code>test_design_system_compliance.py</code> (8/8), <code>test_q001_logic.js</code> passing.</td>
+            </tr>
+            <tr>
+              <td><strong>Cinematic Motion Prototypes</strong></td>
+              <td><span class="status-chip chip-pending">REVIEW READY</span></td>
+              <td>Interactive prototypes in <a href="prototypes/motion/index.html" target="_blank">Motion Prototype Hub</a> awaiting approval before production rollout.</td>
+            </tr>
+            <tr>
+              <td><strong>Live Storyline 360 &amp; Oracle LMS Staging</strong></td>
+              <td><span class="status-chip chip-pending">PENDING STAGING</span></td>
+              <td>No <code>.story</code> or SCORM export in workspace; test in Storyline + Oracle LMS using <a href="docs/STORYLINE_TECHNICAL_REVIEW_AND_FIX_REPORT.md" target="_blank">Technical Review Report</a>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    DICV Interactive · EHS Training Web Objects · Central Hub (`WebObjects/index.html`)
+  </footer>
+
+  <script>
+    // Category Filter
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.quiz-card');
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.getAttribute('data-filter');
+        cards.forEach((card) => {
+          const cats = (card.getAttribute('data-cat') || '').split(' ');
+          card.classList.toggle('hidden', filter !== 'all' && !cats.includes(filter));
+        });
+      });
+    });
+
+    // Copy Storyline Variables
+    document.querySelectorAll('.copy-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const text = btn.getAttribute('data-copy');
+        try {
+          await navigator.clipboard.writeText(text);
+          const orig = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => { btn.textContent = orig; }, 1200);
+        } catch (e) {
+          btn.textContent = 'Copy manually';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

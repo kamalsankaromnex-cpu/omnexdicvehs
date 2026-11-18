@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q002 — DICV Safety Commitments | DICV Interactive</title>
+  <link rel="stylesheet" href="../../shared/styles/fonts.css">
+  <style>
+    /* ==========================================================================
+       Daimler Design System Tokens — Q002 Safety Commitments (Corporate Petrol)
+       Harmonized with Quiz 1 Brand Palette & Diagonal Beveled Background Panel
+       ========================================================================== */
+    :root {
+      --canvas-width: 1110px;
+      --canvas-height: 900px;
+
+      /* Official Daimler Corporate Petrol Palette (Harmonized with Quiz 1) */
+      --q-petrol-deep: #003644;
+      --q-petrol-dark: #004355;
+      --q-petrol: #00677F;
+      --q-petrol-bright: #028DA6;
+      --q-petrol-light: #5097AB;
+      --q-petrol-hover: #00566A;
+      --q-petrol-subtle: #F0F9FB;
+
+      /* Card Surfaces & Distinct Petrol Outlines matching Reference */
+      --q-card-border: #00677F;
+      --q-card-border-selected: #00677F;
+      --q-card-hover-border: #028DA6;
+      --q-panel-bg: #FFFFFF;
+      --q-panel-border: #D6E3E8;
+
+      /* Neutrals & Text */
+      --q-dark: #1F2428;
+      --q-text-dark: #000000;
+      --q-text-subtle: #444444;
+      --q-white: #FFFFFF;
+      --q-accent-yellow: #FFFF40;
+
+      /* Post-Feedback Review Mode Semantic States */
+      --q-correct-green: #008248;
+      --q-correct-border: #28A745;
+      --q-correct-bg: #E8F7ED;
+      --q-amber: #D97706;
+      --q-amber-border: #E67E22;
+      --q-amber-bg: #FFF8E7;
+
+      --font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      font-family: var(--font-family);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Outer Transparent Viewport matching Storyline Slide Canvas */
+    .quiz-viewport {
+      position: relative;
+      width: var(--canvas-width);
+      height: var(--canvas-height);
+      max-width: 100vw;
+      max-height: 100vh;
+      margin: 0 auto;
+      background-color: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Staggered One-by-One Entrance Animation Keyframes */
+    @keyframes itemEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(22px) scale(0.96);
+      }
+      65% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.008);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes panelFade {
+      0% {
+        opacity: 0;
+        transform: scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes checkPop {
+      0% {
+        transform: scale(0.4);
+        opacity: 0;
+      }
+      70% {
+        transform: scale(1.15);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* ==========================================================================
+       Daimler Rounded Console Background Panel (Replaces Cut-Corner Bevel)
+       ========================================================================== */
+    .main-panel-box {
+      position: absolute;
+      top: 52px;
+      left: 35px;
+      width: 1040px;
+      height: 712px;
+      background-color: var(--q-white);
+      border: 2px solid var(--q-petrol-dark);
+      border-radius: 24px;
+      box-shadow: 0 10px 32px rgba(0, 67, 85, 0.12);
+      z-index: 1;
+      pointer-events: none;
+      animation: panelFade 0.4s ease-out backwards;
+    }
+
+    /* ==========================================================================
+       1. Question Heading Tab: Mounted Corporate Petrol Banner (Height: 80px)
+       ========================================================================== */
+    .question-tab-container {
+      position: relative;
+      z-index: 10;
+      margin-top: 18px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      flex-shrink: 0;
+      animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.05s backwards;
+    }
+
+    .question-tab {
+      width: 940px;
+      height: 80px;
+      background: var(--q-petrol-dark);
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 40px;
+      box-shadow: 0 8px 24px rgba(0, 67, 85, 0.30);
+      border: 2.5px solid var(--q-yellow);
+    }
+
+    .question-title {
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-style: normal;
+      font-size: 30px;
+      line-height: 1.25;
+      color: var(--q-white);
+      margin: 0;
+      text-align: center;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    /* ==========================================================================
+       2. Instruction Row: Clean Corporate Instruction (Daimler CS Regular)
+       ========================================================================== */
+    .instruction-row {
+      position: relative;
+      z-index: 5;
+      height: 38px;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      animation: itemEntrance 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.14s backwards;
+    }
+
+    .instruction-text {
+      font-family: var(--font-family);
+      font-weight: 400;
+      font-style: normal;
+      font-size: 18px;
+      color: var(--q-text-subtle);
+      letter-spacing: 0.1px;
+    }
+
+    /* ==========================================================================
+       3. Answer Cards: Balanced 3 + 2 Grid Inside Diagonal White Panel
+       ========================================================================== */
+    .cards-grid {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      margin-top: 18px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .cards-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .cards-row-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      width: 100%;
+    }
+
+    /* Staggered Entrance Delays for Answer Cards */
+    .answer-card[data-option-id="A"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.22s backwards; }
+    .answer-card[data-option-id="B"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.30s backwards; }
+    .answer-card[data-option-id="C"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.38s backwards; }
+    .answer-card[data-option-id="D"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.46s backwards; }
+    .answer-card[data-option-id="E"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.54s backwards; }
+
+    /* Individual Card Box */
+    .answer-card {
+      position: relative;
+      background-color: var(--q-white);
+      border: 3px solid var(--q-card-border);
+      border-radius: 20px;
+      height: 255px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 4px 14px rgba(0, 103, 127, 0.08);
+      transition: all 0.20s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cards-row-top .answer-card {
+      width: 316px;
+    }
+
+    .cards-row-bottom .answer-card {
+      width: 388px;
+    }
+
+    /* Custom Checkbox Indicator at Upper-Left (Size: 34 × 34 px) */
+    .card-checkbox {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 34px;
+      height: 34px;
+      border: 2.8px solid var(--q-card-border);
+      border-radius: 9px;
+      background-color: var(--q-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.16s ease;
+      z-index: 2;
+    }
+
+    .card-checkbox svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--q-white);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      display: none;
+    }
+
+    /* Review Status Badge at Upper-Right */
+    .card-review-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-family: var(--font-family);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 6px;
+      display: none;
+      z-index: 2;
+    }
+
+    /* Consistent Icon Container across all 5 cards */
+    .card-icon-container {
+      width: 105px;
+      height: 84px;
+      margin-top: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-icon {
+      max-height: 72px;
+      max-width: 95px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.12));
+    }
+
+    /* Card Answer Label (Daimler CS Bold 26px, Option E 23.5px) */
+    .card-label {
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 26px;
+      line-height: 1.25;
+      color: #0E1418;
+      text-align: center;
+      padding: 0 16px;
+      margin-top: 14px;
+      margin-bottom: 14px;
+      min-height: 78px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .answer-card[data-option-id="E"] .card-label {
+      font-size: 23.5px;
+      line-height: 1.22;
+      padding: 0 12px;
+    }
+
+    /* Card Interactive States */
+    .answer-card:hover:not(.is-disabled):not(.is-locked) {
+      border-color: #0294AD;
+      background-color: #FAFCFD;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(0, 103, 127, 0.15);
+    }
+
+    .answer-card:hover:not(.is-disabled):not(.is-locked) .card-checkbox {
+      border-color: #0294AD;
+    }
+
+    .answer-card:active:not(.is-disabled):not(.is-locked) {
+      transform: translateY(0);
+      transition-duration: 0.08s;
+    }
+
+    .answer-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(0, 103, 127, 0.40);
+      border-color: var(--q-petrol);
+    }
+
+    /* Selected State (Corporate Petrol Outline & Daimler Yellow Checkbox) */
+    .answer-card.is-selected {
+      border: 3px solid var(--q-petrol) !important;
+      background-color: var(--q-petrol-subtle) !important;
+      box-shadow: 0 6px 18px rgba(0, 103, 127, 0.16) !important;
+      transform: translateY(-3px);
+    }
+
+    .answer-card.is-selected .card-checkbox {
+      background-color: var(--q-accent-yellow) !important;
+      border-color: #D6D600 !important;
+      transform: scale(1.08);
+      box-shadow: 0 2px 8px rgba(214, 214, 0, 0.40);
+    }
+
+    .answer-card.is-selected .card-checkbox svg {
+      display: block;
+      stroke: var(--q-text-dark, #000000) !important;
+      stroke-width: 3.8 !important;
+      animation: checkPop 0.20s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* ==========================================================================
+       4. Post-Feedback Review Mode States
+       ========================================================================== */
+    .answer-card.is-review-selected {
+      border: 3.5px solid var(--q-correct-border) !important;
+      background-color: var(--q-correct-bg) !important;
+    }
+
+    .answer-card.is-review-selected .card-checkbox {
+      background-color: var(--q-correct-green) !important;
+      border-color: var(--q-correct-green) !important;
+    }
+
+    .answer-card.is-review-selected .card-checkbox svg {
+      display: block !important;
+    }
+
+    .answer-card.is-review-selected .card-review-badge {
+      display: block;
+      background-color: var(--q-correct-green);
+      color: var(--q-white);
+    }
+
+    .answer-card.is-review-missed {
+      border: 3.5px solid var(--q-amber-border) !important;
+      background-color: var(--q-amber-bg) !important;
+    }
+
+    .answer-card.is-review-missed .card-checkbox {
+      background-color: var(--q-white) !important;
+      border: 2.5px solid var(--q-amber-border) !important;
+    }
+
+    .answer-card.is-review-missed .card-checkbox svg {
+      display: block !important;
+      stroke: var(--q-correct-green) !important;
+    }
+
+    .answer-card.is-review-missed .card-review-badge {
+      display: block;
+      background-color: var(--q-amber);
+      color: var(--q-white);
+    }
+
+    .quiz-viewport.is-locked .answer-card {
+      cursor: default;
+    }
+
+    /* ==========================================================================
+       5. Centered Submit Button: Reduced Gap & High Contrast (Height: 64px)
+       ========================================================================== */
+    .footer-action-row {
+      position: relative;
+      z-index: 10;
+      margin-top: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.62s backwards;
+    }
+
+    .btn-submit {
+      width: 250px;
+      height: 56px;
+      border-radius: 28px;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-style: italic;
+      font-size: 23px;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      outline: none;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 14px rgba(0, 67, 85, 0.25);
+    }
+
+    .btn-submit:not(:disabled) {
+      background: var(--q-petrol-dark);
+      color: var(--q-white);
+      border: 2.5px solid var(--q-accent-yellow);
+    }
+
+    .btn-submit:not(:disabled):hover {
+      background: var(--q-petrol-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 67, 85, 0.38);
+    }
+
+    .btn-submit:not(:disabled):hover .submit-arrow {
+      transform: translateX(4px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      border: 2.5px solid rgba(255, 255, 64, 0.40);
+      background: var(--q-petrol-dark);
+      color: rgba(255, 255, 255, 0.70);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-submit .submit-arrow {
+      color: var(--q-accent-yellow);
+      font-style: normal;
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 900;
+      display: inline-block;
+      transition: transform 0.16s ease;
+    }
+
+    .btn-submit:disabled .submit-arrow {
+      color: rgba(255, 255, 64, 0.50);
+    }
+
+    .footer-help-text {
+      font-family: var(--font-family);
+      font-size: 15px;
+      color: var(--q-text-subtle);
+      font-weight: 400;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Headless & Snapshot Instant-Render Mode */
+    html.no-animation *,
+    html.no-animation *::before,
+    html.no-animation *::after {
+      animation: none !important;
+      transition: none !important;
+      opacity: 1 !important;
+    }
+  </style>
+
+  <link rel="stylesheet" href="css/motion-design-system.css">
+  <style>
+  
+/* Floating Motion Toolbar for Review & Testing */
+.motion-dev-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 46px;
+  background: #004355;
+  color: #FFFFFF;
+  font-family: 'Daimler CS', Arial, sans-serif;
+  font-size: 13px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 2.5px solid #FFFF40;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+.motion-dev-toolbar .toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.motion-dev-toolbar .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.motion-btn {
+  background: #00677F;
+  color: #FFFFFF;
+  border: 1.5px solid #FFFF40;
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 180ms ease;
+  outline: none;
+}
+.motion-btn:hover {
+  background: #00566A;
+  transform: translateY(-1px);
+}
+.motion-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+}
+.motion-btn-reveal {
+  background: #008248;
+  border-color: #FFFF40;
+}
+.motion-toolbar-spacer {
+  height: 52px;
+}
+
+  :root {
+    --canvas-width: 1110px !important;
+    --canvas-height: 960px !important;
+  }
+  .quiz-viewport {
+    width: 1110px !important;
+    height: 960px !important;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="motion-dev-toolbar">
+    <div class="toolbar-left">
+      <strong style="color: #FFFF40;">Q002 Motion Prototype</strong>
+      <span style="background: rgba(255,255,64,0.2); color: #FFFF40; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700;">1110×960 px</span>
+      <span style="opacity: 0.7;">| 5 Safety Commitments (3+2 Reading Order Entrance)</span>
+    </div>
+    <div class="toolbar-right">
+      <button class="motion-btn" id="btn-replay">↺ Replay Entrance</button>
+      <button class="motion-btn motion-btn-secondary" id="btn-speed">Speed: 1.0x</button>
+      <button class="motion-btn motion-btn-reveal" id="btn-reveal">★ Reveal (Post-Feedback)</button>
+      <button class="motion-btn motion-btn-secondary" id="btn-reduced">Reduced Motion: OFF</button>
+      <a href="index.html" class="motion-btn motion-btn-secondary" style="text-decoration: none; padding: 4px 8px;">☰ Hub</a>
+    </div>
+  </div>
+  <div class="motion-toolbar-spacer"></div>
+
+
+  <div class="quiz-viewport" id="quiz-viewport" role="region" aria-label="DICV Safety Commitments Quiz">
+
+    <!-- Daimler Console Panel Background -->
+    <div class="main-panel-box" aria-hidden="true"></div>
+
+    <!-- 1. Corporate Petrol Question Heading Tab (Centered Title, Icon & Line Removed) -->
+    <header class="question-tab-container motion-animate-in motion-seq-header">
+      <div class="question-tab">
+        <h1 class="question-title">
+          What should a company commit to for a safer workplace?
+        </h1>
+      </div>
+    </header>
+
+    <!-- 2. Clean Corporate Subtitle Instruction (Daimler CS Regular) -->
+    <div class="instruction-row motion-animate-in motion-seq-instruction">
+      <span class="instruction-text">Select all that apply.</span>
+    </div>
+
+    <!-- 3. Answer Cards 3 + 2 Grid -->
+    <main class="cards-grid" id="cards-grid" role="group" aria-label="Safety commitment options">
+      
+      <!-- Top Row: 3 Cards (A, B, C) -->
+      <div class="cards-row-top">
+        <!-- Card A: Employees -->
+        <div class="answer-card" data-option-id="A" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="../../quizzes/Q002_SafetyCommitments/assets/icons/employees.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">The safety and well-being of employees</div>
+        </div>
+
+        <!-- Card B: Environment -->
+        <div class="answer-card" data-option-id="B" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="../../quizzes/Q002_SafetyCommitments/assets/icons/environment.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">Protecting the environment</div>
+        </div>
+
+        <!-- Card C: Energy -->
+        <div class="answer-card" data-option-id="C" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="../../quizzes/Q002_SafetyCommitments/assets/icons/energy.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">Using energy responsibly</div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: 2 Cards (D, E) Centered -->
+      <div class="cards-row-bottom">
+        <!-- Card D: Risk Reduction -->
+        <div class="answer-card" data-option-id="D" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="../../quizzes/Q002_SafetyCommitments/assets/icons/risk-reduction.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">Reducing risks and continuously improving</div>
+        </div>
+
+        <!-- Card E: Compliance -->
+        <div class="answer-card" data-option-id="E" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="../../quizzes/Q002_SafetyCommitments/assets/icons/compliance.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">Ensuring compliance and active participation in safety</div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 4. Centered Submit Button: Corporate Petrol Gradient (Mounted Overlapping Panel Bottom) -->
+    <footer class="footer-action-row">
+      <button type="button" class="btn-submit" id="btn-submit" disabled aria-label="Submit answer selections">
+        <span>Submit</span>
+        <span class="submit-arrow">&#10132;</span>
+      </button>
+      <span class="footer-help-text" id="footer-status-text">Choose one or more answers to continue.</span>
+    </footer>
+
+  </div>
+
+  <!-- Shared Storyline Integration Bridge -->
+  <script src="../../shared/storyline/storyline-bridge.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var QUIZ_ID = 'Q002';
+      var APPROVED_ANSWER_KEY = ['A', 'B', 'C', 'D', 'E']; // All five commitments apply
+
+      var selectedOptions = [];
+      var isSubmitted = false;
+      var isLocked = false;
+      var isRevealed = false;
+
+      var viewportEl = document.getElementById('quiz-viewport');
+      var answerCards = Array.from(document.querySelectorAll('.answer-card'));
+      var btnSubmit = document.getElementById('btn-submit');
+      var statusText = document.getElementById('footer-status-text');
+
+      // Initialize Storyline Communication Bridge
+      var bridge = new DICVStorylineBridge({
+        quizId: QUIZ_ID,
+        storylineVariables: {
+          submitted: 'Q002_Done',
+          answers: 'Q002_Answers',
+          correct: 'Q002_Correct',
+          revealed: 'Q002_Revealed'
+        },
+        onStateReceived: function (state) {
+          handleStorylineState(state);
+        },
+        onRevealAnswers: function (submittedAnswers) {
+          applyReviewMode(submittedAnswers);
+        },
+        onResetAttempt: function () {
+          resetAttempt();
+        }
+      });
+
+      // Card Selection Interaction
+      function toggleCard(card) {
+        if (isSubmitted || isLocked) return;
+
+        var optId = card.getAttribute('data-option-id');
+        var index = selectedOptions.indexOf(optId);
+
+        if (index > -1) {
+          selectedOptions.splice(index, 1);
+          card.classList.remove('is-selected');
+          card.setAttribute('aria-checked', 'false');
+        } else {
+          selectedOptions.push(optId);
+          card.classList.add('is-selected');
+          card.setAttribute('aria-checked', 'true');
+        }
+
+        updateControls();
+        bridge.notifyDraftChange(selectedOptions);
+      }
+
+      function updateControls() {
+        var hasSelection = selectedOptions.length > 0;
+        btnSubmit.disabled = !hasSelection || isSubmitted;
+
+        if (isRevealed) {
+          statusText.textContent = 'Review mode: All 5 commitments are essential.';
+        } else if (isSubmitted) {
+          statusText.textContent = 'Submitted. Reviewing feedback in Storyline...';
+        } else if (hasSelection) {
+          statusText.textContent = selectedOptions.length + ' commitment(s) selected.';
+        } else {
+          statusText.textContent = 'Choose one or more answers to continue.';
+        }
+      }
+
+      function submitQuiz() {
+        if (selectedOptions.length === 0 || isSubmitted) return;
+
+        isSubmitted = true;
+        isLocked = true;
+        viewportEl.classList.add('is-locked');
+        btnSubmit.disabled = true;
+
+        // Deterministic Sort of selected options
+        selectedOptions.sort();
+
+        // Exact Evaluation: All five options A+B+C+D+E must be selected
+        var isCorrect = false;
+        if (selectedOptions.length === APPROVED_ANSWER_KEY.length) {
+          isCorrect = APPROVED_ANSWER_KEY.every(function (k) {
+            return selectedOptions.indexOf(k) > -1;
+          });
+        }
+
+        // Single authoritative submit call through bridge (handles GetPlayer SetVar & postMessage)
+        var playerConnected = bridge.submit(selectedOptions, isCorrect);
+
+        if (playerConnected) {
+          statusText.textContent = 'Submitted to Storyline. Opening feedback...';
+        } else {
+          // Informative notice when testing inside Storyline Desktop Preview (where iframe GetPlayer is sandboxed)
+          statusText.textContent = 'Submitted! (Publish to Web or LMS to trigger Storyline layers)';
+        }
+
+        // Automatic Reveal Fallback:
+        // Transition cards into green (selected) and amber (missed) review mode 700ms after clicking Submit
+        // Guarantees cards always reveal visually while Storyline opens the feedback layer
+        setTimeout(function () {
+          if (!isRevealed) {
+            applyReviewMode(selectedOptions);
+          }
+        }, 700);
+      }
+
+      function handleStorylineState(state) {
+        if (state.submitted) {
+          isSubmitted = true;
+          isLocked = true;
+          viewportEl.classList.add('is-locked');
+
+          var prevAnswers = state.submittedSelection || [];
+          if (typeof prevAnswers === 'string') {
+            try { prevAnswers = JSON.parse(prevAnswers); } catch (e) { prevAnswers = prevAnswers.split(','); }
+          }
+          selectedOptions = Array.isArray(prevAnswers) ? prevAnswers : [prevAnswers];
+
+          answerCards.forEach(function (card) {
+            var optId = card.getAttribute('data-option-id');
+            var isSel = selectedOptions.indexOf(optId) > -1;
+            card.classList.toggle('is-selected', isSel);
+            card.setAttribute('aria-checked', isSel ? 'true' : 'false');
+          });
+
+          btnSubmit.disabled = true;
+
+          // If Storyline indicates reveal completed, restore review mode
+          if (state.revealed) {
+            applyReviewMode(selectedOptions);
+          } else {
+            statusText.textContent = 'Submitted (Locked).';
+          }
+        } else if (state.draftSelection && state.draftSelection.length > 0) {
+          selectedOptions = state.draftSelection.slice();
+          answerCards.forEach(function (card) {
+            var optId = card.getAttribute('data-option-id');
+            var isSel = selectedOptions.indexOf(optId) > -1;
+            card.classList.toggle('is-selected', isSel);
+            card.setAttribute('aria-checked', isSel ? 'true' : 'false');
+          });
+          updateControls();
+        }
+      }
+
+      // Visual Review Mode Implementation
+      function applyReviewMode(userAnswers) {
+        isRevealed = true;
+        isLocked = true;
+        viewportEl.classList.add('is-locked');
+        btnSubmit.disabled = true;
+
+        var submittedSet = userAnswers || selectedOptions;
+        if (typeof submittedSet === 'string') {
+          try { submittedSet = JSON.parse(submittedSet); } catch (e) { submittedSet = submittedSet.split(','); }
+        }
+
+        answerCards.forEach(function (card) {
+          var optId = card.getAttribute('data-option-id');
+          var wasSelected = submittedSet.indexOf(optId) > -1;
+          var badgeEl = card.querySelector('.card-review-badge');
+
+          if (wasSelected) {
+            // Selected by learner: Green border, green checkmark, "✓ Selected"
+            card.classList.remove('is-review-missed');
+            card.classList.add('is-review-selected');
+            if (badgeEl) {
+              badgeEl.textContent = '✓ Selected';
+            }
+          } else {
+            // Missed by learner: Amber border, green checkmark, "Missed" badge
+            card.classList.remove('is-review-selected');
+            card.classList.add('is-review-missed');
+            if (badgeEl) {
+              badgeEl.textContent = 'Missed';
+            }
+          }
+        });
+
+        statusText.textContent = 'Review: All 5 commitments are required for workplace safety.';
+
+        // Persist revealed state in Storyline
+        var player = bridge.getPlayer ? bridge.getPlayer() : null;
+        if (player) {
+          try { player.SetVar('Q002_Revealed', true); } catch (e) {}
+        }
+      }
+
+      function resetAttempt() {
+        isSubmitted = false;
+        isLocked = false;
+        isRevealed = false;
+        viewportEl.classList.remove('is-locked');
+        selectedOptions = [];
+
+        answerCards.forEach(function (card) {
+          card.classList.remove('is-selected', 'is-review-selected', 'is-review-missed');
+          card.setAttribute('aria-checked', 'false');
+          var badgeEl = card.querySelector('.card-review-badge');
+          if (badgeEl) {
+            badgeEl.textContent = '✓ Correct';
+          }
+        });
+
+        updateControls();
+        bridge.notifyDraftChange([]);
+      }
+
+      // Event Listeners
+      answerCards.forEach(function (card) {
+        card.addEventListener('click', function () {
+          toggleCard(card);
+        });
+
+        card.addEventListener('keydown', function (e) {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            toggleCard(card);
+          }
+        });
+      });
+
+      btnSubmit.addEventListener('click', submitQuiz);
+
+      // Automated QA & Headless Capture Hook: support ?state=selected and ?state=review
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('no_anim') || urlParams.has('state')) {
+          document.documentElement.classList.add('no-animation');
+        }
+        if (urlParams.get('state') === 'selected') {
+          toggleCard(answerCards[0]); // Select A
+          toggleCard(answerCards[1]); // Select B
+          toggleCard(answerCards[2]); // Select C
+          toggleCard(answerCards[3]); // Select D
+        } else if (urlParams.get('state') === 'review') {
+          selectedOptions = ['A', 'B', 'C', 'D']; // A, B, C, D selected; E missed
+          applyReviewMode(['A', 'B', 'C', 'D']);
+        }
+      } catch (e) {}
+
+    })();
+  </script>
+
+  <script src="js/motion-controller.js"></script>
+  <script>
+    (function() {
+      var mc = new DICVMotionController({
+        quizId: 'Q002',
+        container: document.getElementById('quiz-viewport')
+      });
+      mc.playEntrance();
+
+      var isSlow = false;
+      document.getElementById('btn-speed').addEventListener('click', function() {
+        isSlow = !isSlow;
+        this.textContent = isSlow ? 'Speed: 0.5x' : 'Speed: 1.0x';
+        document.documentElement.style.setProperty('--motion-dur-medium', isSlow ? '900ms' : '450ms');
+        document.documentElement.style.setProperty('--motion-dur-slow', isSlow ? '1100ms' : '550ms');
+        document.documentElement.style.setProperty('--motion-dur-normal', isSlow ? '700ms' : '350ms');
+      });
+
+      document.getElementById('btn-replay').addEventListener('click', function() {
+        var canvas = document.getElementById('quiz-viewport');
+        canvas.classList.remove('motion-instant-ready');
+        var anims = canvas.querySelectorAll('.motion-animate-in');
+        anims.forEach(function(el) {
+          el.style.animation = 'none';
+          void el.offsetWidth;
+          el.style.animation = '';
+        });
+        mc.playEntrance();
+      });
+
+      document.getElementById('btn-reduced').addEventListener('click', function() {
+        var isReduced = document.body.classList.toggle('prefers-reduced-motion-simulated');
+        this.textContent = isReduced ? 'Reduced Motion: ON' : 'Reduced Motion: OFF';
+        if (isReduced) {
+          document.getElementById('quiz-viewport').classList.add('motion-instant-ready');
+        } else {
+          document.getElementById('quiz-viewport').classList.remove('motion-instant-ready');
+        }
+      });
+
+      document.getElementById('btn-reveal').addEventListener('click', function() {
+        var cards = [
+          { status: 'CORRECT', element: document.querySelector('[data-card-id="1"]') },
+          { status: 'CORRECT', element: document.querySelector('[data-card-id="2"]') },
+          { status: 'CORRECT', element: document.querySelector('[data-card-id="3"]') },
+          { status: 'CORRECT', element: document.querySelector('[data-card-id="4"]') },
+          { status: 'CORRECT', element: document.querySelector('[data-card-id="5"]') }
+        ];
+        mc.sequenceAnswerReveal(cards);
+      });
+    })();
+  </script>
+</body>
+</html>

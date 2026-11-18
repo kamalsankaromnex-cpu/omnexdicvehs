@@ -1,0 +1,242 @@
+/**
+ * Daimler Corporate Design System — Shared UI Components
+ * Module: WebObjects / Articulate Storyline 360 Web Objects
+ * Project: DICV Interactive Safety eLearning
+ */
+
+@import url('./theme.css');
+@import url('./typography.css');
+
+/* ==========================================================================
+   1. Question Heading: Dark Petrol (#004355) + Daimler CS Bold Upright
+   ========================================================================== */
+.daimler-header {
+  background: linear-gradient(135deg, var(--daimler-petrol-dark) 0%, var(--daimler-petrol) 100%);
+  color: var(--daimler-white);
+  border-radius: var(--radius-header);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.daimler-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: var(--daimler-yellow);
+}
+
+/* ==========================================================================
+   2. Instruction Text: Neutral, Clean, No Gaming Pills
+   ========================================================================== */
+.daimler-instruction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--daimler-dark-grey);
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-style: normal;
+  font-size: 17px;
+  letter-spacing: 0.1px;
+}
+
+/* ==========================================================================
+   3. Answer Cards: Pure White, Petrol Outline, Shared Corner Radius
+   ========================================================================== */
+.daimler-card {
+  background-color: var(--daimler-white);
+  border: var(--border-width-card) solid var(--daimler-petrol-40);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-subtle);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.daimler-card:hover:not(.is-disabled):not(.is-locked) {
+  border-color: var(--daimler-petrol);
+  background-color: #FAFCFD;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.daimler-card:focus-visible {
+  box-shadow: var(--shadow-focus);
+  border-color: var(--daimler-petrol);
+}
+
+/* Selected Card: Petrol #00677F Border + Subtle Petrol Tint (NO Black Borders) */
+.daimler-card.is-selected {
+  border: var(--border-width-selected) solid var(--daimler-petrol) !important;
+  background-color: var(--daimler-petrol-subtle) !important;
+  box-shadow: 0 4px 14px rgba(0, 103, 127, 0.16) !important;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   4. Checkbox Indicator: Daimler Yellow #FFFF40 + Dark Checkmark
+   ========================================================================== */
+.daimler-checkbox {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-checkbox);
+  border: var(--border-width-checkbox) solid var(--daimler-petrol-40);
+  background-color: var(--daimler-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.daimler-card:hover:not(.is-disabled):not(.is-locked) .daimler-checkbox {
+  border-color: var(--daimler-petrol);
+}
+
+/* Selected State: Daimler Yellow #FFFF40 Background + Dark #000000 Checkmark */
+.daimler-card.is-selected .daimler-checkbox {
+  background-color: var(--daimler-yellow) !important;
+  border-color: #D6D600 !important;
+  transform: scale(1.05);
+}
+
+.daimler-checkbox svg {
+  width: 17px;
+  height: 17px;
+  stroke: var(--daimler-black);
+  stroke-width: 3.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  display: none;
+}
+
+.daimler-card.is-selected .daimler-checkbox svg {
+  display: block;
+}
+
+/* ==========================================================================
+   5. Submit Button: Petrol #00677F + White Daimler CS Bold Upright Text
+   ========================================================================== */
+.daimler-btn-submit {
+  height: 54px;
+  padding: 0 36px;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-style: normal;
+  font-size: 20px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  outline: none;
+  transition: all 0.18s ease;
+  border: 2px solid var(--daimler-white);
+  box-shadow: 0 4px 14px rgba(0, 103, 127, 0.25);
+}
+
+.daimler-btn-submit:not(:disabled) {
+  background: linear-gradient(135deg, var(--daimler-petrol) 0%, var(--daimler-petrol-dark) 100%);
+  color: var(--daimler-white);
+}
+
+.daimler-btn-submit:not(:disabled):hover {
+  background: linear-gradient(135deg, var(--daimler-petrol-plus-20k) 0%, var(--daimler-petrol) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 103, 127, 0.35);
+}
+
+.daimler-btn-submit:not(:disabled):hover svg {
+  transform: translateX(4px);
+}
+
+.daimler-btn-submit:disabled {
+  background: var(--daimler-light-grey);
+  color: var(--daimler-mid-grey);
+  border-color: #D0D0D0;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.daimler-btn-submit svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 3.2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.16s ease;
+}
+
+/* ==========================================================================
+   6. Post-Feedback Review Mode Standards
+   ========================================================================== */
+/* Correct & Selected Option: Green Border, Green Fill, White Checkmark */
+.daimler-card.is-review-selected {
+  border: var(--border-width-selected) solid var(--daimler-correct-border) !important;
+  background-color: var(--daimler-correct-bg) !important;
+  cursor: default;
+}
+
+.daimler-card.is-review-selected .daimler-checkbox {
+  background-color: var(--daimler-correct-green) !important;
+  border-color: var(--daimler-correct-green) !important;
+}
+
+.daimler-card.is-review-selected .daimler-checkbox svg {
+  display: block !important;
+  stroke: var(--daimler-white) !important;
+}
+
+/* Missed Correct Option: Amber Border, Amber Tint, Green Checkmark, "Missed" Badge */
+.daimler-card.is-review-missed {
+  border: var(--border-width-selected) solid var(--daimler-missed-border) !important;
+  background-color: var(--daimler-missed-bg) !important;
+  cursor: default;
+}
+
+.daimler-card.is-review-missed .daimler-checkbox {
+  background-color: var(--daimler-white) !important;
+  border-color: var(--daimler-missed-border) !important;
+}
+
+.daimler-card.is-review-missed .daimler-checkbox svg {
+  display: block !important;
+  stroke: var(--daimler-correct-green) !important;
+}
+
+.daimler-review-badge {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-style: normal;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+}
+
+.daimler-card.is-review-selected .daimler-review-badge {
+  background-color: var(--daimler-correct-green);
+  color: var(--daimler-white);
+}
+
+.daimler-card.is-review-missed .daimler-review-badge {
+  background-color: var(--daimler-missed-amber);
+  color: var(--daimler-white);
+}

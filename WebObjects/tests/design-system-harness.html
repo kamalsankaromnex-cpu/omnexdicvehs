@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DICV Interactive — Daimler Design System Showcase & Test Harness</title>
+  <link rel="stylesheet" href="../shared/styles/theme.css">
+  <link rel="stylesheet" href="../shared/styles/components.css">
+  <style>
+    body {
+      background-color: #F0F4F7;
+      padding: 30px;
+      overflow-y: auto !important;
+      font-family: var(--dicv-font-body);
+    }
+    .harness-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+    .harness-card {
+      background: #FFFFFF;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--dicv-grey-300);
+      box-shadow: var(--dicv-shadow-sm);
+    }
+    .harness-title {
+      font-family: var(--dicv-font-heading);
+      font-weight: var(--dicv-weight-bold);
+      color: var(--dicv-petrol-dark);
+      font-size: 22px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--dicv-petrol-subtle);
+      padding-bottom: 8px;
+    }
+    .swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .swatch {
+      width: 140px;
+      border-radius: 8px;
+      border: 1px solid #CCC;
+      overflow: hidden;
+      background: #FFF;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .swatch-color {
+      height: 60px;
+    }
+    .swatch-info {
+      padding: 8px;
+      font-size: 12px;
+    }
+    .swatch-name {
+      font-weight: bold;
+      color: #333;
+    }
+    .swatch-hex {
+      color: #666;
+      font-family: monospace;
+    }
+    .font-sample-row {
+      margin-bottom: 12px;
+      padding: 8px;
+      background: #F9FAFB;
+      border-radius: 6px;
+    }
+    .canvas-preview-container {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .preview-box {
+      border: 1px dashed var(--dicv-petrol);
+      padding: 12px;
+      background: #EBF3F6;
+      border-radius: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="harness-wrapper">
+  <header>
+    <h1 style="font-family: var(--dicv-font-heading); font-weight: var(--dicv-weight-bold); color: var(--dicv-petrol-dark); margin: 0 0 8px 0;">
+      Daimler Corporate Design System — Interactive Validation
+    </h1>
+    <p style="margin: 0; color: var(--dicv-grey-700);">
+      Verification suite for DICV Interactive Web Objects in Articulate Storyline 360
+    </p>
+  </header>
+
+  <!-- 1. Color Palette -->
+  <section class="harness-card">
+    <h2 class="harness-title">1. Corporate Color Palette</h2>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #00677F;"></div>
+        <div class="swatch-info"><div class="swatch-name">Petrol (Primary)</div><div class="swatch-hex">#00677F</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #004355;"></div>
+        <div class="swatch-info"><div class="swatch-name">Dark Petrol</div><div class="swatch-hex">#004355</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #5097AB;"></div>
+        <div class="swatch-info"><div class="swatch-name">Light Petrol</div><div class="swatch-hex">#5097AB</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #EBF3F6;"></div>
+        <div class="swatch-info"><div class="swatch-name">Subtle Petrol</div><div class="swatch-hex">#EBF3F6</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #FFFF40;"></div>
+        <div class="swatch-info"><div class="swatch-name">Corporate Yellow</div><div class="swatch-hex">#FFFF40</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #000000;"></div>
+        <div class="swatch-info"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #E6E6E6;"></div>
+        <div class="swatch-info"><div class="swatch-name">Grey 100</div><div class="swatch-hex">#E6E6E6</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #FFFFFF; border-bottom: 1px solid #EEE;"></div>
+        <div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#FFFFFF</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #008248;"></div>
+        <div class="swatch-info"><div class="swatch-name">Reveal Correct</div><div class="swatch-hex">#008248</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: #D92323;"></div>
+        <div class="swatch-info"><div class="swatch-name">Reveal Incorrect</div><div class="swatch-hex">#D92323</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Typography Verification -->
+  <section class="harness-card">
+    <h2 class="harness-title">2. Daimler CS Typography Scale & Hierarchy</h2>
+    <div class="font-sample-row">
+      <div style="font-size: 12px; color: #666;">Daimler CS Bold (700) — Question Header (20px / #004355)</div>
+      <div style="font-family: var(--dicv-font-heading); font-weight: 700; font-size: 20px; color: #004355;">
+        Which driver assistance feature detects vulnerable road users in blind spots?
+      </div>
+    </div>
+    <div class="font-sample-row">
+      <div style="font-size: 12px; color: #666;">Daimler CS Demi (600) — Subheading & Badges (14px)</div>
+      <div style="font-family: var(--dicv-font-heading); font-weight: 600; font-size: 14px; color: #00677F;">
+        MODULE 04: ACTIVE DRIVE ASSIST & SAFETY SYSTEMS
+      </div>
+    </div>
+    <div class="font-sample-row">
+      <div style="font-size: 12px; color: #666;">Daimler CS Regular (400) — Answer Card Body Text (16px / #1A1A1A)</div>
+      <div style="font-family: var(--dicv-font-body); font-weight: 400; font-size: 16px; color: #1A1A1A;">
+        Active Sideguard Assist (ASGA) monitors the co-driver's side and initiates automated braking up to 20 km/h.
+      </div>
+    </div>
+    <div class="font-sample-row">
+      <div style="font-size: 12px; color: #666;">Daimler CS Light (300) & Italic (400) — Supplementary Instruction (14px / #555555)</div>
+      <div style="font-family: var(--dicv-font-body); font-weight: 300; font-style: italic; font-size: 14px; color: #555555;">
+        Select the single most appropriate safety procedure before confirming submission.
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Live Web Object Canvas Component (Configurable Dimensions) -->
+  <section class="harness-card">
+    <h2 class="harness-title">3. Live Single Choice Web Object (Custom Canvas: 760 × 480 px, Radius: 20px)</h2>
+    <div class="preview-box" style="width: 760px; height: 480px; box-sizing: border-box;">
+      <div class="dicv-canvas" style="--canvas-width: 100%; --canvas-height: 100%; --canvas-radius: 20px;">
+        <header class="dicv-header">
+          <div class="dicv-meta-row">
+            <span class="dicv-badge">Q001</span>
+            <span class="dicv-badge dicv-badge-yellow">Accident Prediction</span>
+          </div>
+          <h2 class="dicv-question-text">
+            What is the primary sensor utilized by Active Brake Assist 5 for pedestrian detection?
+          </h2>
+          <p class="dicv-instruction-text">
+            Select one option and click Submit.
+          </p>
+        </header>
+
+        <div class="dicv-content-area" id="options-container">
+          <div class="dicv-answer-card" data-option-id="A" tabindex="0">
+            <div class="dicv-control-indicator is-radio"></div>
+            <span class="dicv-answer-text">Dual high-resolution ultrasonic parking sensors only</span>
+          </div>
+          <div class="dicv-answer-card is-selected" data-option-id="B" tabindex="0">
+            <div class="dicv-control-indicator is-radio"></div>
+            <span class="dicv-answer-text">Combined radar system and high-precision windshield camera</span>
+          </div>
+          <div class="dicv-answer-card" data-option-id="C" tabindex="0">
+            <div class="dicv-control-indicator is-radio"></div>
+            <span class="dicv-answer-text">GPS vehicle telemetry and fleet cloud telemetry</span>
+          </div>
+        </div>
+
+        <footer class="dicv-footer">
+          <button type="button" class="dicv-btn dicv-btn-secondary" id="demo-reset">Reset</button>
+          <button type="button" class="dicv-btn dicv-btn-primary" id="demo-submit">Submit</button>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. States & Controls Showcase -->
+  <section class="harness-card">
+    <h2 class="harness-title">4. Component States: Answer Reveal, Checkbox, Ordering, Hotspot</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <!-- Answer Reveal State -->
+      <div>
+        <h3 style="font-size: 16px; color: #004355; margin-top: 0;">Approved Answer Reveal (No HTML Popup)</h3>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="dicv-answer-card is-revealed-correct">
+            <div class="dicv-control-indicator is-radio"></div>
+            <span class="dicv-answer-text">Radar and windshield camera fusion (Approved Key)</span>
+          </div>
+          <div class="dicv-answer-card is-revealed-incorrect">
+            <div class="dicv-control-indicator is-radio"></div>
+            <span class="dicv-answer-text">Ultrasonic bumper sensors (User Selected Incorrect)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multiple Response (Checkboxes) -->
+      <div>
+        <h3 style="font-size: 16px; color: #004355; margin-top: 0;">Multiple Response Checkboxes</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="dicv-answer-card is-selected">
+            <div class="dicv-control-indicator is-checkbox">
+              <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+            </div>
+            <span class="dicv-answer-text">Visual warning on primary display</span>
+          </div>
+          <div class="dicv-answer-card">
+            <div class="dicv-control-indicator is-checkbox">
+              <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+            </div>
+            <span class="dicv-answer-text">Acoustic warning chime</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ordering Controls -->
+      <div>
+        <h3 style="font-size: 16px; color: #004355; margin-top: 0;">Sequence & Ordering Controls</h3>
+        <div class="dicv-order-list">
+          <div class="dicv-order-row">
+            <div class="dicv-order-badge">1</div>
+            <span class="dicv-answer-text">Perform visual 360 walk-around</span>
+            <div class="dicv-order-actions">
+              <button class="dicv-btn-icon">▲</button>
+              <button class="dicv-btn-icon">▼</button>
+            </div>
+          </div>
+          <div class="dicv-order-row">
+            <div class="dicv-order-badge">2</div>
+            <span class="dicv-answer-text">Verify mirror camera calibration</span>
+            <div class="dicv-order-actions">
+              <button class="dicv-btn-icon">▲</button>
+              <button class="dicv-btn-icon">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hotspot Marker -->
+      <div>
+        <h3 style="font-size: 16px; color: #004355; margin-top: 0;">Hotspot Markers</h3>
+        <div class="dicv-hotspot-container" style="width: 100%; height: 110px; background: #DDE7EB; border: 1px solid #CCC; position: relative;">
+          <div class="dicv-hotspot-marker" style="left: 30%; top: 50%;" title="Marker 1">+</div>
+          <div class="dicv-hotspot-marker is-selected" style="left: 70%; top: 50%;" title="Marker 2 Selected">✓</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="../shared/storyline/storyline-bridge.js"></script>
+<script src="../shared/components/ui-components.js"></script>
+<script src="../shared/core/quiz-engine.js"></script>
+<script>
+  // Simple interactive card selection for showcase demonstration
+  document.querySelectorAll('#options-container .dicv-answer-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      document.querySelectorAll('#options-container .dicv-answer-card').forEach(c => c.classList.remove('is-selected'));
+      card.classList.add('is-selected');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+@import url('./fonts.css');
+
+/**
+ * Daimler Truck Corporate Design System — Master Tokens
+ * Authoritative Guidelines: Daimler Truck Design Guidelines PDF
+ * Module: WebObjects / Articulate Storyline 360 Web Objects
+ * Project: DICV Interactive Safety eLearning
+ */
+
+:root {
+  /* ==========================================================================
+     1. Mandatory Corporate Color System (Daimler Truck Official)
+     ========================================================================== */
+  --daimler-petrol:          #00677F; /* Primary interactive elements, selected borders, submit */
+  --daimler-petrol-dark:     #004355; /* Question headers, primary dark emphasized surfaces */
+  --daimler-petrol-plus-20k: #00566A; /* Hover states and secondary dark surfaces */
+  --daimler-petrol-80:       #007A93; /* Supporting UI elements */
+  --daimler-petrol-60:       #5097AB; /* Secondary accents, subtle focus outlines */
+  --daimler-petrol-40:       #79AEBF; /* Subtle borders, card default outlines */
+  --daimler-petrol-20:       #A6CAD8; /* Soft backgrounds, muted tints */
+  --daimler-petrol-subtle:   #F0F7F9; /* Card surface selected tint */
+
+  /* Signal / Brand Accent Color */
+  --daimler-yellow:          #FFFF40; /* Daimler Yellow: Selection indicators, checkboxes, key highlights */
+  --daimler-yellow-hover:    #EBEB30; /* Yellow interactive hover */
+
+  /* Corporate Grayscale */
+  --daimler-black:           #000000; /* Primary text, corporate navigation, checkmark glyphs */
+  --daimler-dark-grey:       #444444; /* Supporting body text, secondary labels */
+  --daimler-mid-grey:        #888888; /* Inactive borders, placeholder text */
+  --daimler-light-grey:      #E6E6E6; /* Secondary card borders, neutral panel backgrounds */
+  --daimler-grey-bg:         #F7F9FA; /* Subtle canvas surfaces */
+  --daimler-white:           #FFFFFF; /* Pure white card backgrounds & header typography */
+
+  /* Semantic Feedback & State Colors (Used ONLY for meaningful status, never decorative) */
+  --daimler-correct-green:   #008248; /* High-contrast green correct status */
+  --daimler-correct-bg:      #E8F7ED; /* Soft green card background */
+  --daimler-correct-border:  #28A745; /* Green review outline */
+
+  --daimler-missed-amber:    #D97706; /* Missed answer badge */
+  --daimler-missed-border:   #E67E22; /* Amber review outline for missed commitments */
+  --daimler-missed-bg:       #FFF8E7; /* Soft amber card background */
+
+  --daimler-incorrect-red:   #D92323; /* High-contrast red incorrect status */
+  --daimler-incorrect-bg:    #FDF0F0; /* Soft red card background */
+  --daimler-incorrect-border:#E03131; /* Red review outline */
+
+  /* Legacy & Namespace Aliases */
+  --dicv-petrol:             var(--daimler-petrol);
+  --dicv-petrol-dark:        var(--daimler-petrol-dark);
+  --dicv-yellow:             var(--daimler-yellow);
+  --dicv-black:              var(--daimler-black);
+  --dicv-white:              var(--daimler-white);
+  --dicv-dark-grey:          var(--daimler-dark-grey);
+  --dicv-light-grey:         var(--daimler-light-grey);
+
+  /* ==========================================================================
+     2. Global Typography Tokens (Daimler CS Only — NO Italics)
+     ========================================================================== */
+  --font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-weight-regular: 400; /* Body, instructions, labels */
+  --font-weight-bold:    700; /* Headings, buttons, option letters */
+  --font-style-base:     normal; /* STRICT: No italics across core UI */
+
+  /* ==========================================================================
+     3. Shared UI Geometric Tokens
+     ========================================================================== */
+  --radius-header:           18px; /* Standard rounded header */
+  --radius-card:             16px; /* Standard answer card */
+  --radius-checkbox:          6px; /* Standard square checkbox */
+  --radius-btn:              28px; /* Standard stadium Submit button */
+  --radius-pill:             999px; /* Badges & indicators */
+
+  --border-width-card:        2px; /* Standard card outline */
+  --border-width-selected:    3px; /* Standard selected card outline */
+  --border-width-checkbox:  2.5px; /* Standard checkbox outline */
+
+  /* Elevation */
+  --shadow-subtle:  0 2px 8px rgba(0, 67, 85, 0.08);
+  --shadow-card:    0 4px 16px rgba(0, 67, 85, 0.08);
+  --shadow-hover:   0 8px 24px rgba(0, 67, 85, 0.14);
+  --shadow-focus:   0 0 0 3.5px rgba(0, 103, 127, 0.35);
+}

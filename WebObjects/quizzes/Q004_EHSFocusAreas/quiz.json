@@ -1,0 +1,49 @@
+{
+  "quizId": "Q004",
+  "quizTitle": "DICV EHS Focus Areas",
+  "canvas": {
+    "width": 1536,
+    "height": 1024,
+    "responsive": true,
+    "viewport": "transparent"
+  },
+  "type": "venn_drag_and_drop",
+  "dropZones": [
+    { "id": "zone-1", "label": "Zone 1 (Top)" },
+    { "id": "zone-2", "label": "Zone 2 (Bottom-Left)" },
+    { "id": "zone-3", "label": "Zone 3 (Bottom-Right)" }
+  ],
+  "options": [
+    {
+      "id": "A",
+      "label": "Capability Management",
+      "icon": "assets/icons/capability-management.svg",
+      "isCorrect": true
+    },
+    {
+      "id": "B",
+      "label": "Governance",
+      "icon": "assets/icons/governance.svg",
+      "isCorrect": true
+    },
+    {
+      "id": "C",
+      "label": "Risk Management",
+      "icon": "assets/icons/risk-management.svg",
+      "isCorrect": true
+    },
+    {
+      "id": "D",
+      "label": "Employee Engagement",
+      "icon": "assets/icons/employee-engagement.svg",
+      "isCorrect": false
+    }
+  ],
+  "correctSet": ["A", "B", "C"],
+  "storylineVariables": {
+    "submitted": "Q004_Done",
+    "answers": "Q004_Answers",
+    "correct": "Q004_Correct",
+    "revealed": "Q004_Revealed"
+  }
+}

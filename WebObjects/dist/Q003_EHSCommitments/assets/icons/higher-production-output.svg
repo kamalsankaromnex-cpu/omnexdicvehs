@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
+  <!-- Ascending Production Output Bar Chart with Gear -->
+  <!-- Industrial Output Bars -->
+  <rect x="16" y="46" width="10" height="18" rx="2" fill="#79AEBF" stroke="#004355" stroke-width="2"/>
+  <rect x="30" y="36" width="10" height="28" rx="2" fill="#5097AB" stroke="#004355" stroke-width="2"/>
+  <rect x="44" y="24" width="10" height="40" rx="2" fill="#00677F" stroke="#004355" stroke-width="2"/>
+  <rect x="58" y="14" width="10" height="50" rx="2" fill="#004355" stroke="#003644" stroke-width="2"/>
+  <!-- Production Acceleration Arrow -->
+  <path d="M18 40 L34 28 L46 32 L64 12" stroke="#007A93" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M54 12 L64 12 L64 22" stroke="#007A93" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Industrial Base Line -->
+  <path d="M12 66 L72 66" stroke="#004355" stroke-width="3" stroke-linecap="round"/>
+</svg>

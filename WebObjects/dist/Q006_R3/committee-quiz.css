@@ -1,0 +1,884 @@
+/* ==========================================================================
+   Daimler Corporate Design System Tokens — Q006 Safety Review Structure
+   Exact Reference Layout Match: 764 × 536 px Centered Panel in 1024 × 576 Viewport
+   ========================================================================== */
+:root {
+  --canvas-width: 1024px;
+  --canvas-height: 576px;
+
+  /* Daimler Corporate Petrol Palette */
+  --q-petrol-dark: #004355;
+  --q-petrol-80: #007A93;
+  --q-petrol: #00677F;
+  --q-petrol-hover: #00566A;
+  --q-petrol-60: #5097AB;
+  --q-petrol-40: #79AEBF;
+  --q-petrol-20: #A6CAD8;
+  --q-petrol-subtle: #C2EAF9;
+
+  /* Brand Accent Yellow */
+  --q-yellow: #FFFF40;
+
+  --q-white: #FFFFFF;
+  --q-black: #000000;
+  --q-text-dark: #000000;
+  --q-dark-grey: #444444;
+  --q-mid-grey: #888888;
+  --q-light-grey: #E6E6E6;
+  --q-border-subtle: #DCE6EA;
+
+  /* Review Semantic States */
+  --q-correct-green: #008248;
+  --q-correct-border: #28A745;
+  --q-correct-bg: #E8F7ED;
+
+  --q-missed-amber: #D97706;
+  --q-missed-border: #E67E22;
+  --q-missed-bg: #FFF8E7;
+
+  --q-incorrect-red: #D92323;
+  --q-incorrect-border: #E03131;
+  --q-incorrect-bg: #FDF0F0;
+
+  --font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Outer Viewport (1024 × 576 px Configurable Viewport) */
+.quiz-viewport {
+  position: relative;
+  width: var(--canvas-width);
+  height: var(--canvas-height);
+  max-width: 100vw;
+  max-height: 100vh;
+  margin: 0 auto;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Main Quiz Container (764 × 536 px Rounded White Panel with Petrol Outer Border) */
+.quiz-board {
+  width: 764px;
+  height: 544px;
+  background-color: var(--q-white);
+  border: 2px solid var(--q-petrol-dark);
+  border-radius: 22px;
+  box-shadow: 0 8px 30px rgba(0, 67, 85, 0.14);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 0 12px 0;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-board::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #004355 0%, #004355 20%, #FFFF40 20%, #FFFF40 24%, #00677F 24%, #004355 100%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   TOP HEADER ROW: Full-Width Petrol Banner + Yellow Slash + 3-Step Tracker
+   ========================================================================== */
+.header-row {
+  width: 100%;
+  height: 62px;
+  padding: 0 22px;
+  background: linear-gradient(110deg, #002F3D 0%, #004355 36%, #007A93 68%, #004355 100%);
+  border-bottom: 2px solid #003644;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  padding-right: 34px;
+}
+
+.header-left::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: -12px;
+  width: 10px;
+  height: 76px;
+  background-color: var(--q-yellow);
+  transform: skewX(-26deg);
+}
+
+/* Issue Counter Title */
+.issue-badge {
+  background: transparent;
+  color: var(--q-white);
+  font-family: var(--font-family);
+  font-size: 20px;
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  line-height: 1.1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.issue-sub {
+  color: #E2F1F5;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+/* 3-Step Progress Indicator */
+.progress-tracker {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+
+.step-node {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.step-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2.5px solid #000000;
+  background-color: var(--q-white);
+  color: #000000;
+  font-family: var(--font-family);
+  font-size: 19px;
+  font-weight: 700;
+  font-style: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+/* Active Step: Daimler Yellow Fill */
+.step-node.is-active .step-circle {
+  background-color: var(--q-yellow);
+  color: #000000;
+  border-color: #000000;
+}
+
+/* Completed Step: Dark Petrol Fill with White Number */
+.step-node.is-completed .step-circle {
+  background-color: var(--q-petrol-dark);
+  color: var(--q-white);
+  border-color: #000000;
+}
+
+/* Connecting Line Between Step Circles */
+.step-line {
+  width: 44px;
+  height: 2.5px;
+  background-color: #FFFFFF;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   SCENARIO ROW: Issue Illustration (Left) + Scenario Text (Right)
+   ========================================================================== */
+.scenario-row {
+  width: 100%;
+  height: 136px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.scenario-image-box {
+  width: 266px;
+  height: 134px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+  background-color: #F8FAFB;
+  border: 1px solid var(--q-border-subtle);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scenario-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.scenario-divider {
+  width: 2px;
+  height: 108px;
+  background-color: #000000;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.scenario-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding-left: 4px;
+  padding-right: 6px;
+}
+
+.scenario-text {
+  font-family: var(--font-family);
+  font-size: 22.5px;
+  font-weight: 700;
+  font-style: normal;
+  color: var(--q-text-dark);
+  line-height: 1.28;
+}
+
+.scenario-helper {
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 600;
+  color: #445863;
+  line-height: 1.25;
+}
+
+/* ==========================================================================
+   QUESTION STRIP: Soft Petrol/Cyan Gradient + Question Text
+   ========================================================================== */
+.question-strip {
+  width: calc(100% - 40px);
+  margin: 0 20px;
+  height: 46px;
+  background: linear-gradient(90deg, #BAE5F8 0%, #C8ECFA 50%, #BFE5F8 100%);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  gap: 12px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.question-target-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.question-text {
+  font-family: var(--font-family);
+  font-size: 22px;
+  font-weight: 700;
+  font-style: normal;
+  color: var(--q-text-dark);
+  letter-spacing: 0.1px;
+}
+
+/* ==========================================================================
+   COMMITTEE OPTIONS GRID: 3 Horizontally Arranged Option Cards
+   ========================================================================== */
+.options-grid {
+  width: 100%;
+  height: 162px;
+  padding: 0 20px;
+  display: flex;
+  gap: 16px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.committee-card {
+  flex: 1;
+  height: 100%;
+  background-color: var(--q-white);
+  border: 1.5px solid #B8CBD4;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(0, 67, 85, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.committee-card:hover:not(.is-disabled):not(.is-locked) {
+  border-color: var(--q-petrol);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 103, 127, 0.18);
+}
+
+.committee-card:active:not(.is-disabled):not(.is-locked) {
+  transform: scale(0.985);
+  transition-duration: 0.08s;
+}
+
+.committee-card:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 103, 127, 0.40);
+  border-color: var(--q-petrol);
+}
+
+/* Selected State: Solid Petrol Border + Subtle Tint + Elevation */
+.committee-card.is-selected {
+  border: 2.5px solid var(--q-petrol-dark);
+  box-shadow: 0 8px 24px rgba(0, 67, 85, 0.22);
+  background-color: #F4FAFC;
+  transform: translateY(-2px);
+}
+
+/* Radio Indicator at Top-Left of Card */
+.radio-control {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #829AA7;
+  background-color: var(--q-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.committee-card:hover .radio-control {
+  border-color: var(--q-petrol);
+}
+
+/* Selected Radio Indicator: Daimler Yellow Fill with Dark Petrol Center */
+.committee-card.is-selected .radio-control {
+  background-color: var(--q-yellow);
+  border-color: var(--q-petrol-dark);
+  transform: scale(1.10);
+  box-shadow: 0 2px 6px rgba(0, 67, 85, 0.25);
+}
+
+.radio-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--q-petrol-dark);
+  display: none;
+}
+
+.committee-card.is-selected .radio-dot {
+  display: block;
+}
+
+/* Card Icon (Aligned across all 3 cards + breathing room above Petrol footer) */
+.committee-icon {
+  height: 70px;
+  width: auto;
+  max-width: 112px;
+  object-fit: contain;
+  margin: 12px auto 10px auto;
+  flex-shrink: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgba(0, 67, 85, 0.28)) drop-shadow(0 2px 5px rgba(0, 67, 85, 0.10));
+}
+
+/* Card Committee Label (Dark Petrol Footer Band with White Bold Text) */
+.committee-label {
+  width: 100%;
+  min-height: 52px;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #004D61 0%, #003948 100%);
+  font-family: var(--font-family);
+  font-size: 17.5px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1.15;
+  color: var(--q-white);
+  text-align: center;
+  white-space: pre-line;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.committee-card.is-review-correct .committee-label {
+  background: var(--q-correct-green);
+}
+
+.committee-card.is-review-incorrect .committee-label {
+  background: var(--q-incorrect-red);
+}
+
+/* Review Status Badge (Placed cleanly inside top-right of card) */
+.card-status-badge {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+/* Post-Feedback Review States */
+.committee-card.is-review-correct {
+  border: 2.5px solid var(--q-correct-border) !important;
+  background-color: var(--q-correct-bg) !important;
+  cursor: default !important;
+}
+
+.committee-card.is-review-correct .card-status-badge {
+  display: block;
+  background-color: var(--q-correct-green);
+  color: var(--q-white);
+}
+
+.committee-card.is-review-incorrect {
+  border: 2.5px solid var(--q-incorrect-border) !important;
+  background-color: var(--q-incorrect-bg) !important;
+  cursor: default !important;
+}
+
+.committee-card.is-review-incorrect .card-status-badge {
+  display: block;
+  background-color: var(--q-incorrect-red);
+  color: var(--q-white);
+}
+
+/* ==========================================================================
+   FOOTER ROW: Submit Button (Bottom-Right Daimler Stadium Pill)
+   ========================================================================== */
+.footer-row {
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.btn-submit {
+  width: 230px;
+  height: 48px;
+  border-radius: 24px;
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-style: normal;
+  font-size: 19px;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  outline: none;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(0, 67, 85, 0.25);
+  flex-shrink: 0;
+}
+
+.btn-submit:not(:disabled) {
+  background: var(--q-petrol-dark);
+  color: var(--q-white);
+  border: 2.5px solid var(--q-yellow);
+  opacity: 1;
+}
+
+.btn-submit:not(:disabled):hover {
+  background: var(--q-petrol-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 67, 85, 0.38);
+}
+
+.btn-submit:not(:disabled):hover .submit-arrow {
+  transform: translateX(4px);
+}
+
+.btn-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border: 2.5px solid rgba(255, 255, 64, 0.40);
+  background: var(--q-petrol-dark);
+  color: rgba(255, 255, 255, 0.70);
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-submit .submit-arrow {
+  color: var(--q-yellow);
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 900;
+  display: inline-block;
+  transition: transform 0.16s ease;
+}
+
+.btn-submit:disabled .submit-arrow {
+  color: rgba(255, 255, 64, 0.50);
+}
+
+/* Headless Render Hook */
+html.no-animation *,
+html.no-animation *::before,
+html.no-animation *::after {
+  animation: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+}
+
+/* Post-Submit Split Feedback Layout (1024 x 576 Viewport) */
+.quiz-board {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.is-feedback-split .quiz-board {
+  transform: translateX(-184px) scale(0.79);
+}
+
+body.is-feedback-split .btn-submit {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.feedback-side-panel {
+  display: none;
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 352px;
+  background: #FFFFFF;
+  border: 2px solid var(--q-correct-border);
+  border-top: 7px solid var(--q-correct-green);
+  border-radius: 18px;
+  box-shadow: 0 14px 36px rgba(0, 67, 85, 0.16);
+  padding: 22px 24px 20px;
+  box-sizing: border-box;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0;
+  transform: translateY(-50%) translateX(20px);
+  pointer-events: none;
+  transition: opacity 0.45s ease 0.12s, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+  z-index: 30;
+}
+
+.feedback-side-panel.is-missed {
+  border-color: var(--q-incorrect-border);
+  border-top-color: #D92323;
+}
+
+body.is-feedback-split .feedback-side-panel {
+  display: flex;
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+  pointer-events: auto;
+}
+
+.feedback-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feedback-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--q-correct-bg);
+  border: 2px solid var(--q-correct-border);
+  color: var(--q-correct-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.feedback-side-panel.is-missed .feedback-icon-circle {
+  background: var(--q-incorrect-bg);
+  border-color: var(--q-incorrect-border);
+  color: #D92323;
+}
+
+.feedback-icon-circle svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.feedback-icon-cross {
+  display: none;
+}
+
+.feedback-side-panel.is-missed .feedback-icon-tick {
+  display: none;
+}
+
+.feedback-side-panel.is-missed .feedback-icon-cross {
+  display: block;
+}
+
+.feedback-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.feedback-badge {
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #FFFFFF;
+  background: var(--q-correct-green);
+}
+
+.feedback-side-panel.is-missed .feedback-badge {
+  background: #D92323;
+}
+
+.feedback-heading {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--q-petrol-dark);
+  line-height: 1.15;
+}
+
+.feedback-divider {
+  height: 1px;
+  background: #E2ECEF;
+  width: 100%;
+}
+
+.feedback-body {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.48;
+  color: #1F2428;
+}
+
+.feedback-actions {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.feedback-side-panel .btn-continue {
+  width: auto;
+  min-width: 175px;
+  height: 46px;
+  padding: 0 24px;
+  font-size: 17px;
+  display: inline-flex;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* ==========================================================================
+   HUD TECH-FRAME PILOT VARIANT (.quiz-board.is-hud-pilot)
+   ========================================================================== */
+.quiz-board.is-hud-pilot {
+  width: 780px;
+  height: 552px;
+  background: var(--hud-shell-bg, rgba(12, 36, 49, 0.92));
+  border: none;
+  border-radius: 12px;
+  padding: 22px 28px 22px;
+  gap: 9px;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.45);
+}
+
+.quiz-board.is-hud-pilot::after {
+  display: none;
+}
+
+.quiz-board.is-hud-pilot .scenario-card-white {
+  position: relative;
+  z-index: 3;
+  background: #FFFFFF;
+  border: 2px solid #79AEBF;
+  border-radius: 14px;
+  padding: 10px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(0, 15, 24, 0.22);
+  flex-shrink: 0;
+}
+
+.quiz-board.is-hud-pilot .scenario-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1.5px solid #E2ECEF;
+}
+
+.quiz-board.is-hud-pilot .scenario-pill {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--hud-petrol-dark, #004355);
+  background: #E6F2F6;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.quiz-board.is-hud-pilot .step-circle {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  border-width: 2px;
+  border-color: var(--hud-petrol-dark, #004355);
+}
+
+.quiz-board.is-hud-pilot .step-line {
+  width: 30px;
+  height: 2.5px;
+  background-color: #79AEBF;
+}
+
+.quiz-board.is-hud-pilot .scenario-content-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.quiz-board.is-hud-pilot .scenario-image-box {
+  width: 204px;
+  height: 112px;
+  border-radius: 10px;
+  border: 1.5px solid #C5DCE4;
+}
+
+.quiz-board.is-hud-pilot .scenario-text {
+  font-size: 19px;
+  line-height: 1.28;
+  color: var(--hud-text-dark, #17282F);
+  margin-bottom: 4px;
+}
+
+.quiz-board.is-hud-pilot .scenario-helper {
+  font-size: 15px;
+  color: #4D626C;
+}
+
+.quiz-board.is-hud-pilot .rhombus-banner {
+  width: 620px;
+  margin: 0 auto;
+  min-height: 44px;
+  padding: 7px 38px;
+}
+
+.quiz-board.is-hud-pilot .rhombus-banner-text {
+  font-size: 20px;
+}
+
+.quiz-board.is-hud-pilot .options-grid {
+  position: relative;
+  z-index: 3;
+  padding: 0;
+  gap: 14px;
+}
+
+.quiz-board.is-hud-pilot .committee-card {
+  height: 152px;
+  border-radius: 14px;
+  border: 2px solid #79AEBF;
+}
+
+.quiz-board.is-hud-pilot .committee-card.is-selected {
+  border: 3px solid var(--hud-yellow, #FFFF40) !important;
+  box-shadow: 0 0 18px rgba(255, 255, 64, 0.35);
+}
+
+.quiz-board.is-hud-pilot .footer-row {
+  position: relative;
+  z-index: 3;
+  padding: 0;
+}
+
+.quiz-board.is-hud-pilot .btn-submit:not(:disabled) {
+  background: linear-gradient(135deg, #FFE63B 0%, #FFFF40 100%);
+  color: var(--hud-petrol-dark, #004355);
+  border: 2.5px solid var(--hud-petrol-dark, #004355);
+  font-style: normal;
+}
+
+.quiz-board.is-hud-pilot .btn-submit:not(:disabled) .submit-arrow {
+  color: var(--hud-petrol-dark, #004355);
+}
+
+.quiz-board.is-hud-pilot .btn-submit:disabled {
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.60);
+  border: 2px solid rgba(255, 255, 64, 0.35);
+  opacity: 0.7;
+}

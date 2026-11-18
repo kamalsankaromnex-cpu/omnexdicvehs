@@ -1,0 +1,43 @@
+{
+  "quizId": "Q006_R2",
+  "quizTitle": "DICV Safety Review Structure — Issue 2 of 3",
+  "roundIndex": 2,
+  "totalRounds": 3,
+  "scenarioName": "Critical Safety Performance Issue",
+  "canvas": {
+    "width": 1024,
+    "height": 576,
+    "viewport": "transparent"
+  },
+  "type": "scenario_single_choice",
+  "question": "Which committee should review this issue?",
+  "scenarioText": "A production area has a critical, long-pending safety performance issue that needs a conclusive decision.",
+  "options": [
+    {
+      "id": "apex",
+      "label": "Apex Committee",
+      "icon": "assets/icons/apex-committee.png",
+      "isCorrect": false
+    },
+    {
+      "id": "sub",
+      "label": "Sub Committee",
+      "icon": "assets/icons/sub-committee.png",
+      "isCorrect": true
+    },
+    {
+      "id": "adhoc",
+      "label": "Ad-hoc Committee – Initiatives",
+      "icon": "assets/icons/adhoc-committee.png",
+      "isCorrect": false
+    }
+  ],
+  "approvedAnswerKey": "sub",
+  "answerKeyStatus": "provisional-pending-signoff",
+  "storylineVariables": {
+    "submitted": "Q006_R2_Done",
+    "answer": "Q006_R2_Answer",
+    "correct": "Q006_R2_Correct",
+    "revealed": "Q006_R2_Revealed"
+  }
+}

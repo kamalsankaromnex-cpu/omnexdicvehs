@@ -1,0 +1,52 @@
+{
+  "quizId": "Q001",
+  "title": "Accident Prediction Quiz",
+  "status": "pilot-implemented",
+  "type": "multiple_response",
+  "canvas": {
+    "width": 806,
+    "height": 962,
+    "radius": 18
+  },
+  "theme": "daimler-v1",
+  "question": "Which of these people will experience the next accident?",
+  "instruction": "Select the option(s) you think apply.",
+  "helperText": "Choose an answer to continue.",
+  "options": [
+    {
+      "id": "A",
+      "letter": "A.",
+      "text": "Employee walking",
+      "image": "assets/thumb_employee_walking.png"
+    },
+    {
+      "id": "B",
+      "letter": "B.",
+      "text": "MHE operator",
+      "image": "assets/thumb_mhe_operator.png"
+    },
+    {
+      "id": "C",
+      "letter": "C.",
+      "text": "Maintenance technician",
+      "image": "assets/thumb_maintenance_tech.png"
+    },
+    {
+      "id": "D",
+      "letter": "D.",
+      "text": "Employee using a ladder",
+      "image": "assets/thumb_employee_ladder.png"
+    }
+  ],
+  "approvedAnswerKey": ["A", "B", "C", "D"],
+  "answerKeyStatus": "provisional-safety-curriculum-all-apply-pending-signoff",
+  "feedbackOwner": "storyline",
+  "revealPolicy": "after-feedback-dismissed",
+  "allowResubmitWithinAttempt": false,
+  "storylineVariables": {
+    "submitted": "Q001_Done",
+    "answers": "Q001_Answers",
+    "correct": "Q001_Correct",
+    "revealed": "Q001_Revealed"
+  }
+}

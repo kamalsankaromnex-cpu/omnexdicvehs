@@ -1,0 +1,79 @@
+/**
+ * Daimler Corporate Design System — Global Typography Standard
+ * Module: WebObjects / Articulate Storyline 360 Web Objects
+ * Project: DICV Interactive Safety eLearning
+ */
+
+@import url('./fonts.css');
+
+/* ==========================================================================
+   Typography Rules: Daimler CS Regular & Bold Only
+   Strict Restriction: Avoid Daimler CS Bold Italic across all standard UI
+   ========================================================================== */
+
+body, html {
+  font-family: var(--font-family, 'Daimler CS', Arial, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--daimler-black, #000000);
+}
+
+/* Question Titles: Dark Petrol, Daimler CS Bold, Upright */
+.question-title,
+.daimler-question-title {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-style: normal !important;
+  color: var(--daimler-white, #FFFFFF);
+  line-height: 1.25;
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+
+/* Instruction Text: Daimler CS Regular, Upright, Neutral Gray */
+.instruction-text,
+.daimler-instruction-text {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-style: normal !important;
+  color: var(--daimler-dark-grey, #444444);
+  line-height: 1.4;
+  letter-spacing: 0.1px;
+}
+
+/* Card Option Titles: Daimler CS Bold or Regular */
+.card-label,
+.card-title,
+.daimler-card-label {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-style: normal !important;
+  color: var(--daimler-black, #000000);
+  line-height: 1.3;
+}
+
+/* Option Letter Prefix (A., B., C., etc.) */
+.card-letter,
+.daimler-card-letter {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-style: normal !important;
+  color: var(--daimler-petrol, #00677F);
+}
+
+/* Submit and Action Buttons: Daimler CS Bold, Upright */
+.btn-submit,
+.btn-action,
+.daimler-btn-submit {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-style: normal !important;
+  letter-spacing: 0.3px;
+}
+
+/* Review Badges & Subtitles */
+.card-review-badge,
+.footer-help-text {
+  font-family: var(--font-family);
+  font-style: normal !important;
+}

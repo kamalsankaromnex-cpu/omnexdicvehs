@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q006_R1 — Safety Review Structure | DICV Interactive</title>
+  <link rel="stylesheet" href="../../../shared/styles/fonts.css">
+  <link rel="stylesheet" href="../../../shared/styles/theme.css">
+  <link rel="stylesheet" href="../../../shared/styles/quiz-hud.css">
+  <link rel="stylesheet" href="../shared/committee-quiz.css">
+</head>
+<body>
+
+  <div class="quiz-viewport" id="quiz-viewport" role="region" aria-label="DICV Safety Review Structure Quiz — Issue 3 of 3">
+
+    <div class="quiz-board is-hud-pilot">
+
+      <!-- Decorative HUD Tech-Frame SVG (strictly non-interactive) -->
+      <svg class="hud-frame-svg" viewBox="0 0 780 552" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="hudGold" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFE63B"/>
+            <stop offset="50%" stop-color="#FFC400"/>
+            <stop offset="100%" stop-color="#FFFF40"/>
+          </linearGradient>
+        </defs>
+        <rect x="2.5" y="2.5" width="775" height="547" fill="none" stroke="#18223D" stroke-width="5"/>
+        <rect x="11" y="11" width="758" height="530" fill="none" stroke="#364B6E" stroke-width="1.5"/>
+        <polygon points="0,0 220,0 206,12 88,12 74,22 12,22 12,92 0,104" fill="url(#hudGold)"/>
+        <polygon points="780,0 560,0 574,12 692,12 706,22 768,22 768,92 780,104" fill="url(#hudGold)"/>
+        <polygon points="0,552 220,552 206,540 88,540 74,530 12,530 12,460 0,448" fill="url(#hudGold)"/>
+        <polygon points="780,552 560,552 574,540 692,540 706,530 768,530 768,460 780,448" fill="url(#hudGold)"/>
+        <polygon points="255,552 525,552 508,532 272,532" fill="url(#hudGold)"/>
+        <g fill="#FFFFFF">
+          <rect x="102" y="4" width="5" height="5" rx="1"/><rect x="111" y="4" width="5" height="5" rx="1"/><rect x="120" y="4" width="5" height="5" rx="1"/><rect x="129" y="4" width="5" height="5" rx="1"/>
+          <rect x="646" y="4" width="5" height="5" rx="1"/><rect x="655" y="4" width="5" height="5" rx="1"/><rect x="664" y="4" width="5" height="5" rx="1"/><rect x="673" y="4" width="5" height="5" rx="1"/>
+          <rect x="102" y="543" width="5" height="5" rx="1"/><rect x="111" y="543" width="5" height="5" rx="1"/><rect x="120" y="543" width="5" height="5" rx="1"/><rect x="129" y="543" width="5" height="5" rx="1"/>
+          <rect x="646" y="543" width="5" height="5" rx="1"/><rect x="655" y="543" width="5" height="5" rx="1"/><rect x="664" y="543" width="5" height="5" rx="1"/><rect x="673" y="543" width="5" height="5" rx="1"/>
+        </g>
+        <g fill="#FFFF40">
+          <polygon points="7,128 13,134 13,143 7,137"/><polygon points="7,145 13,151 13,160 7,154"/><polygon points="7,162 13,168 13,177 7,171"/>
+          <polygon points="773,128 767,134 767,143 773,137"/><polygon points="773,145 767,151 767,160 773,154"/><polygon points="773,162 767,168 767,177 773,171"/>
+        </g>
+      </svg>
+
+      <!-- WHITE SCENARIO CARD WITH INTEGRATED 1-2-3 TRACKER -->
+      <section class="scenario-card-white" aria-label="Scenario Description">
+        <div class="scenario-top-bar">
+          <span class="scenario-pill" id="scenario-pill">Scenario 3 of 3</span>
+          <div class="progress-tracker" id="progress-tracker" aria-label="Progress tracker: Issue 3 of 3"></div>
+        </div>
+        <div class="scenario-content-row">
+          <div class="scenario-image-box">
+            <img class="scenario-image" id="scenario-image" src="assets/issue-image/r1-policy-review.png" alt="Policy Review Scenario Illustration">
+          </div>
+          <div class="scenario-body">
+            <div class="scenario-text" id="scenario-text">
+              An organisation-wide safety policy requires review and update based on recent analysis.
+            </div>
+            <div class="scenario-helper">Review the scenario and choose the appropriate committee.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RHOMBUS PETROL QUESTION BANNER -->
+      <div class="rhombus-banner" role="heading" aria-level="2">
+        <svg class="rhombus-banner-svg" viewBox="0 0 620 44" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="petrolRhombus" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#003545"/>
+              <stop offset="100%" stop-color="#006D87"/>
+            </linearGradient>
+          </defs>
+          <polygon points="22,2 616,2 598,42 4,42" fill="url(#petrolRhombus)" stroke="#FFFF40" stroke-width="2.5" stroke-linejoin="round"/>
+        </svg>
+        <span class="rhombus-banner-text" id="question-text">Which committee should review this issue?</span>
+      </div>
+
+      <!-- COMMITTEE OPTIONS GRID: 3 Horizontally Arranged Cards -->
+      <div class="options-grid" id="options-grid" role="radiogroup" aria-label="Safety Committee Options"></div>
+
+      <!-- FOOTER ROW: Yellow Submit Button -->
+      <footer class="footer-row">
+        <button class="btn-submit" id="btn-submit" disabled aria-label="Submit Answer">
+          <span>Submit Answer</span>
+          <span class="submit-arrow">&#10132;</span>
+        </button>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- Shared Storyline Integration Bridge & Committee Quiz Runtime -->
+  <script src="../../../shared/storyline/storyline-bridge.js"></script>
+  <script src="../../../shared/audio/sfx.js"></script>
+  <script src="../shared/committee-data.js"></script>
+  <script src="../shared/committee-quiz.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      window.initCommitteeQuiz('R1');
+    })();
+  </script>
+</body>
+</html>

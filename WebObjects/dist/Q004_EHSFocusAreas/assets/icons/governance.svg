@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Pediment / Roof -->
+  <path d="M12 21 L32 9 L52 21 Z" fill="#E8F5F8" stroke="#004355" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Architrave beam -->
+  <rect x="10" y="21" width="44" height="4" fill="#004355" rx="1"/>
+  <!-- 4 Pillars -->
+  <rect x="15" y="27" width="5" height="19" rx="1" fill="#004355"/>
+  <rect x="24" y="27" width="5" height="19" rx="1" fill="#004355"/>
+  <rect x="35" y="27" width="5" height="19" rx="1" fill="#004355"/>
+  <rect x="44" y="27" width="5" height="19" rx="1" fill="#004355"/>
+  <!-- Base steps -->
+  <rect x="11" y="48" width="42" height="4" rx="1" fill="#004355"/>
+  <rect x="7" y="52" width="50" height="4" rx="1" fill="#004355"/>
+</svg>

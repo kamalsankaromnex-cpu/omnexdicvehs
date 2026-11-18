@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q005 — DICV Safety Culture Maturity | DICV Interactive</title>
+  <link rel="stylesheet" href="../../shared/styles/fonts.css">
+  <link rel="stylesheet" href="../../shared/styles/theme.css">
+  <style>
+    /* ==========================================================================
+       Daimler Design System Tokens — Q005 Safety Culture Maturity
+       Canvas: 1110 × 640 px (100% Transparent Outer Viewport, Frameless Board)
+       ========================================================================== */
+    :root {
+      --canvas-width: 1110px;
+      --canvas-height: 640px;
+
+      /* Daimler Corporate Petrol Palette */
+      --q-petrol-dark: #004355;
+      --q-petrol-80: #007A93;
+      --q-petrol: #00677F;
+      --q-petrol-hover: #00566A;
+      --q-petrol-60: #5097AB;
+      --q-petrol-40: #79AEBF;
+      --q-petrol-20: #A6CAD8;
+      --q-petrol-subtle: #F0F7F9;
+
+      /* Brand Accent Yellow */
+      --q-yellow: #FFFF40;
+
+      --q-white: #FFFFFF;
+      --q-black: #000000;
+      --q-dark-grey: #444444;
+      --q-mid-grey: #888888;
+      --q-light-grey: #E6E6E6;
+      --q-border-subtle: #DCE6EA;
+
+      /* Review Semantic States */
+      --q-correct-green: #008248;
+      --q-correct-border: #28A745;
+      --q-correct-bg: #E8F7ED;
+
+      --q-missed-amber: #D97706;
+      --q-missed-border: #E67E22;
+      --q-missed-bg: #FFF8E7;
+
+      --q-incorrect-red: #D92323;
+      --q-incorrect-border: #E03131;
+      --q-incorrect-bg: #FDF0F0;
+
+      --font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      font-family: var(--font-family);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Outer Viewport (1110 × 640 px) */
+    .quiz-viewport {
+      position: relative;
+      width: var(--canvas-width);
+      height: var(--canvas-height);
+      max-width: 100vw;
+      max-height: 100vh;
+      margin: 0 auto;
+      background-color: transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px 12px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Main Board Surface (Clean Corporate Container) */
+    .quiz-board {
+      width: 100%;
+      height: 100%;
+      background-color: var(--q-white);
+      border: 1.5px solid var(--q-petrol-40);
+      border-radius: 20px;
+      box-shadow: 0 10px 32px rgba(0, 67, 85, 0.12);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 20px 12px 20px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* ==========================================================================
+       MIDDLE AREA: Injury Rate Curve & Drop Targets Graph Area
+       Width: 1046px, Height: 416px
+       ========================================================================== */
+    .graph-container {
+      position: relative;
+      width: 100%;
+      height: 416px;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    .graph-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Checkpoint Numbered Badges (1, 2, 3, 4) */
+    .checkpoint-marker {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background-color: var(--q-yellow);
+      border: 3px solid var(--q-petrol-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-family);
+      font-size: 22px;
+      font-weight: 700;
+      font-style: normal;
+      color: var(--q-black);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* Axis Badges */
+    .axis-badge {
+      position: absolute;
+      background-color: var(--q-petrol-dark);
+      color: var(--q-white);
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 700;
+      font-style: normal;
+      padding: 6px 16px;
+      border-radius: 999px;
+      letter-spacing: 0.2px;
+      box-shadow: 0 3px 8px rgba(0, 67, 85, 0.18);
+      pointer-events: none;
+      z-index: 4;
+      white-space: nowrap;
+    }
+
+    /* Y-Axis Badge ("Injury Rate"): Rotated -90deg, perfectly centered in margin to left of Y-axis */
+    .axis-badge-y {
+      top: 185px;
+      left: -15px;
+      transform: rotate(-90deg);
+      transform-origin: center center;
+    }
+
+    /* X-Axis Badge ("Increasing Safety Culture Maturity →"): Centered on the horizontal X-axis line */
+    .axis-badge-x {
+      top: 375px;
+      left: 535px;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 4 Drop Targets Positioned Beneath the Curve Checkpoints */
+    .drop-target {
+      position: absolute;
+      width: 196px;
+      height: 82px;
+      border-radius: 12px;
+      border: 2px dashed var(--q-petrol-40);
+      background-color: rgba(240, 247, 249, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      transition: transform 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+      z-index: 6;
+      cursor: default;
+    }
+
+    /* Empty Drop Target Label */
+    .drop-target-hint {
+      font-family: var(--font-family);
+      font-size: 16px;
+      font-weight: 700;
+      font-style: normal;
+      color: var(--q-petrol-80);
+      pointer-events: none;
+      letter-spacing: 0.2px;
+    }
+
+    /* Drop Target Hover / Drag-Over State */
+    .drop-target.is-drag-over {
+      border-color: var(--q-petrol-dark) !important;
+      border-style: solid !important;
+      background-color: rgba(255, 255, 64, 0.22) !important;
+      transform: scale(1.03);
+      box-shadow: 0 8px 22px rgba(0, 67, 85, 0.25) !important;
+    }
+
+    /* Occupied Drop Target */
+    .drop-target.is-occupied {
+      border: none !important;
+      background-color: transparent !important;
+      padding: 0;
+    }
+
+    .drop-target.is-occupied .drop-target-hint {
+      display: none;
+    }
+
+    /* Target Positioning Coordinates (Uniform 235px delta, 39px gaps, 17px elevation above X-axis) */
+    .drop-target[data-target-id="stage-1"] {
+      left: 97px;
+      top: 115px;
+    }
+    .drop-target[data-target-id="stage-2"] {
+      left: 332px;
+      top: 163px;
+    }
+    .drop-target[data-target-id="stage-3"] {
+      left: 567px;
+      top: 217px;
+    }
+    .drop-target[data-target-id="stage-4"] {
+      left: 802px;
+      top: 261px;
+    }
+
+    /* ==========================================================================
+       LOWER AREA: Draggable Stage Cards Dock & Submit Button
+       Contained Action Dock with 4 Fixed Slots and Uniform Baseline
+       ========================================================================== */
+    .lower-bar {
+      width: 100%;
+      height: 104px;
+      background-color: #FAFCFD;
+      border: 1.5px solid var(--q-border-subtle);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
+    .cards-dock {
+      flex: 1;
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      box-sizing: border-box;
+    }
+
+    /* Fixed Dock Slot (Maintains Layout Stability when cards are placed) */
+    .dock-slot {
+      width: 196px;
+      height: 82px;
+      border-radius: 12px;
+      border: 1.5px dashed var(--q-petrol-20);
+      background-color: rgba(240, 247, 249, 0.35);
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: border-color 0.16s ease, background-color 0.16s ease;
+    }
+
+    .dock-slot.is-drag-over {
+      border-color: var(--q-petrol);
+      background-color: rgba(240, 247, 249, 0.85);
+    }
+
+    /* Draggable Stage Card (Vertical Stack: Icon Top, Bold Label Bottom) */
+    .stage-card {
+      width: 196px;
+      height: 82px;
+      background-color: var(--q-white);
+      border: 1.5px solid var(--q-petrol-40);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px 8px 12px;
+      gap: 5px;
+      box-sizing: border-box;
+      cursor: grab;
+      position: relative;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+      box-shadow: 0 4px 12px rgba(0, 67, 85, 0.08);
+      outline: none;
+    }
+
+    .stage-card:active {
+      cursor: grabbing;
+    }
+
+    .stage-card:hover:not(.is-disabled):not(.is-locked) {
+      border-color: var(--q-petrol);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 103, 127, 0.20);
+    }
+
+    .stage-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(0, 103, 127, 0.40);
+      border-color: var(--q-petrol);
+    }
+
+    .stage-card.is-dragging {
+      opacity: 0.35;
+      transform: scale(0.97);
+    }
+
+    /* Card Placed in Drop Target */
+    .drop-target .stage-card {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      border-radius: 12px;
+      border: 2px solid var(--q-petrol-dark);
+      background-color: var(--q-white);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+    }
+
+    /* Card Icon Container (Top Center) */
+    .card-icon-img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+    }
+
+    /* Card Label (Bottom Center - High Readability Upright Daimler CS Bold) */
+    .card-label {
+      width: 100%;
+      text-align: center;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-style: normal;
+      font-size: 15.5px;
+      line-height: 1.15;
+      color: var(--q-black);
+      white-space: nowrap;
+      letter-spacing: -0.2px;
+    }
+
+    /* 6-Dot Drag Handle Grid (Positioned at right edge) */
+    .card-grip {
+      position: absolute;
+      right: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 13px;
+      height: 22px;
+      fill: var(--q-petrol-40);
+      transition: fill 0.16s ease;
+    }
+
+    .stage-card:hover .card-grip {
+      fill: var(--q-petrol-dark);
+    }
+
+    /* Click-to-Select State (Accessibility) */
+    .stage-card.is-selected-for-move {
+      border-color: var(--q-petrol-dark) !important;
+      box-shadow: 0 0 0 3px rgba(0, 67, 85, 0.45), 0 8px 22px rgba(0, 67, 85, 0.25) !important;
+      transform: translateY(-2px);
+    }
+
+    /* Review Status Badge */
+    .card-status-badge {
+      display: none;
+      position: absolute;
+      top: -9px;
+      right: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      letter-spacing: 0.3px;
+      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    /* ==========================================================================
+       SUBMIT BUTTON (Matching Card Height & Corner Radius for Uniform Row)
+       ========================================================================== */
+    .btn-submit {
+      width: 182px;
+      height: 82px;
+      border-radius: 16px;
+      border: 2.5px solid var(--q-yellow);
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-style: italic;
+      font-size: 22px;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      outline: none;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 14px rgba(0, 67, 85, 0.25);
+      flex-shrink: 0;
+    }
+
+    .btn-submit:not(:disabled) {
+      background: var(--q-petrol-dark);
+      color: var(--q-white);
+      border-color: var(--q-yellow);
+    }
+
+    .btn-submit:not(:disabled):hover {
+      background: var(--q-petrol-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 67, 85, 0.38);
+    }
+
+    .btn-submit:not(:disabled):hover .submit-arrow {
+      transform: translateX(4px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      border: 2.5px solid rgba(255, 255, 64, 0.40);
+      background: var(--q-petrol-dark);
+      color: rgba(255, 255, 255, 0.70);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-submit .submit-arrow {
+      color: var(--q-yellow);
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 900;
+      display: inline-block;
+      transition: transform 0.16s ease;
+    }
+
+    .btn-submit:disabled .submit-arrow {
+      color: rgba(255, 255, 64, 0.50);
+    }
+
+    /* ==========================================================================
+       POST-FEEDBACK REVIEW STATES
+       ========================================================================== */
+    .stage-card.is-review-correct {
+      border: 2.5px solid var(--q-correct-border) !important;
+      background-color: var(--q-correct-bg) !important;
+      cursor: default !important;
+    }
+
+    .stage-card.is-review-correct .card-status-badge {
+      display: block;
+      background-color: var(--q-correct-green);
+      color: var(--q-white);
+    }
+
+    .stage-card.is-review-incorrect {
+      border: 2.5px solid var(--q-incorrect-border) !important;
+      background-color: var(--q-incorrect-bg) !important;
+      cursor: default !important;
+    }
+
+    .stage-card.is-review-incorrect .card-status-badge {
+      display: block;
+      background-color: var(--q-incorrect-red);
+      color: var(--q-white);
+    }
+
+    .stage-card.is-review-missed {
+      border: 2.5px solid var(--q-missed-border) !important;
+      background-color: var(--q-missed-bg) !important;
+      cursor: default !important;
+    }
+
+    .stage-card.is-review-missed .card-status-badge {
+      display: block;
+      background-color: var(--q-missed-amber);
+      color: var(--q-white);
+    }
+
+    /* Review Order Banner */
+    .review-order-banner {
+      display: none;
+      width: 100%;
+      height: 38px;
+      background-color: var(--q-petrol-subtle);
+      border: 1.5px solid var(--q-petrol-40);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--q-petrol-dark);
+      text-align: center;
+      box-sizing: border-box;
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    .review-order-banner.is-active {
+      display: block;
+    }
+
+    /* Headless Render Hook */
+    html.no-animation *,
+    html.no-animation *::before,
+    html.no-animation *::after {
+      animation: none !important;
+      transition: none !important;
+      opacity: 1 !important;
+    }
+  </style>
+
+  <link rel="stylesheet" href="css/motion-design-system.css">
+  <style>
+  
+/* Floating Motion Toolbar for Review & Testing */
+.motion-dev-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 46px;
+  background: #004355;
+  color: #FFFFFF;
+  font-family: 'Daimler CS', Arial, sans-serif;
+  font-size: 13px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 2.5px solid #FFFF40;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+.motion-dev-toolbar .toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.motion-dev-toolbar .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.motion-btn {
+  background: #00677F;
+  color: #FFFFFF;
+  border: 1.5px solid #FFFF40;
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 180ms ease;
+  outline: none;
+}
+.motion-btn:hover {
+  background: #00566A;
+  transform: translateY(-1px);
+}
+.motion-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+}
+.motion-btn-reveal {
+  background: #008248;
+  border-color: #FFFF40;
+}
+.motion-toolbar-spacer {
+  height: 52px;
+}
+
+  :root {
+    --canvas-width: 1110px !important;
+    --canvas-height: 960px !important;
+  }
+  .quiz-viewport {
+    width: 1110px !important;
+    height: 960px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+  .quiz-board {
+    height: calc(960px - 58px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 18px 24px 16px 24px !important;
+  }
+  .graph-container {
+    position: relative !important;
+    width: 100% !important;
+    height: 480px !important;
+    margin: auto 0 !important;
+  }
+  .graph-svg {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="motion-dev-toolbar">
+    <div class="toolbar-left">
+      <strong style="color: #FFFF40;">Q005 Motion Prototype</strong>
+      <span style="background: rgba(255,255,64,0.2); color: #FFFF40; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700;">1110×960 px</span>
+      <span style="opacity: 0.7;">| Bradley Curve (Expanded Vertical Canvas, Path Draw, Stage Snaps, FLIP Swap)</span>
+    </div>
+    <div class="toolbar-right">
+      <button class="motion-btn" id="btn-replay">↺ Replay Entrance</button>
+      <button class="motion-btn motion-btn-secondary" id="btn-speed">Speed: 1.0x</button>
+      <button class="motion-btn motion-btn-reveal" id="btn-reveal">★ Reveal (Post-Feedback)</button>
+      <button class="motion-btn motion-btn-secondary" id="btn-reduced">Reduced Motion: OFF</button>
+      <a href="index.html" class="motion-btn motion-btn-secondary" style="text-decoration: none; padding: 4px 8px;">☰ Hub</a>
+    </div>
+  </div>
+  <div class="motion-toolbar-spacer"></div>
+
+
+  <div class="quiz-viewport" id="quiz-viewport" role="region" aria-label="DICV Safety Culture Maturity Quiz">
+
+    <div class="quiz-board">
+
+      <!-- MIDDLE AREA: Graph with Axes, Injury Rate Curve, Checkpoints & Drop Targets -->
+      <section class="graph-container motion-animate-in motion-seq-diagram" id="graph-container" aria-label="Safety Culture Maturity Injury Rate Curve">
+        
+        <!-- Axis Badges -->
+        <div class="axis-badge axis-badge-y">Injury Rate</div>
+        <div class="axis-badge axis-badge-x">
+          <span>Increasing Safety Culture Maturity</span>
+          <span>&rarr;</span>
+        </div>
+
+        <!-- SVG Graph: Axes, Bradley Curve & Dashed Drops -->
+        <svg class="graph-svg" viewBox="0 0 1046 416" preserveAspectRatio="none" aria-hidden="true">
+          <!-- Y-Axis (Vertical Line & Straight Arrow Up at x=75) -->
+          <line x1="75" y1="360" x2="75" y2="35" stroke="#004355" stroke-width="2.5" />
+          <polygon points="75,20 68,37 82,37" fill="#004355" />
+
+          <!-- X-Axis (Horizontal Line & Straight Arrow Right at y=360) -->
+          <line x1="75" y1="360" x2="995" y2="360" stroke="#004355" stroke-width="2.5" />
+          <polygon points="1013,360 995,353 995,367" fill="#004355" />
+
+          <!-- Dashed Projection Drop Lines from Checkpoint to Targets -->
+          <line x1="195" y1="91" x2="195" y2="115" stroke="#004355" stroke-width="2" stroke-dasharray="4,4" />
+          <line x1="430" y1="139" x2="430" y2="163" stroke="#004355" stroke-width="2" stroke-dasharray="4,4" />
+          <line x1="665" y1="193" x2="665" y2="217" stroke="#004355" stroke-width="2" stroke-dasharray="4,4" />
+          <line x1="900" y1="237" x2="900" y2="261" stroke="#004355" stroke-width="2" stroke-dasharray="4,4" />
+
+          <!-- Descending Injury Rate Curve (Bradley Curve) -->
+          <!-- Passes through (195, 68), (430, 116), (665, 170), (900, 214) -->
+          <path d="M 75 62 C 135 60 170 63 195 68 C 275 85 350 103 430 116 C 515 133 585 155 665 170 C 750 186 825 204 900 214 C 935 217 965 218 995 218" 
+                fill="none" stroke="#007A93" stroke-width="4.5" stroke-linecap="round" />
+          <!-- Curve Straight Arrow Right -->
+          <polygon points="1013,218 995,210 995,226" fill="#007A93" />
+        </svg>
+
+        <!-- Numbered Checkpoints (1, 2, 3, 4) -->
+        <div class="checkpoint-marker" style="left: 195px; top: 68px;">1</div>
+        <div class="checkpoint-marker" style="left: 430px; top: 116px;">2</div>
+        <div class="checkpoint-marker" style="left: 665px; top: 170px;">3</div>
+        <div class="checkpoint-marker" style="left: 900px; top: 214px;">4</div>
+
+        <!-- 4 HTML Drop Targets -->
+        <div class="drop-target" id="target-stage-1" data-target-id="stage-1" role="region" aria-label="Drop target Stage 1">
+          <span class="drop-target-hint">Drop here</span>
+        </div>
+
+        <div class="drop-target" id="target-stage-2" data-target-id="stage-2" role="region" aria-label="Drop target Stage 2">
+          <span class="drop-target-hint">Drop here</span>
+        </div>
+
+        <div class="drop-target" id="target-stage-3" data-target-id="stage-3" role="region" aria-label="Drop target Stage 3">
+          <span class="drop-target-hint">Drop here</span>
+        </div>
+
+        <div class="drop-target" id="target-stage-4" data-target-id="stage-4" role="region" aria-label="Drop target Stage 4">
+          <span class="drop-target-hint">Drop here</span>
+        </div>
+
+      </section>
+
+      <!-- LOWER AREA: Draggable Cards Dock & Submit Button -->
+      <footer class="lower-bar">
+        
+        <div class="cards-dock" id="cards-dock" role="group" aria-label="Available Stage Cards">
+          
+          <!-- Dock Slot 1: Interdependent -->
+          <div class="dock-slot" id="slot-interdependent" data-slot-stage="interdependent">
+            <div class="stage-card" id="card-interdependent" draggable="true" data-stage-id="interdependent" tabindex="0" role="button" aria-label="Stage Interdependent. Draggable card.">
+              <span class="card-status-badge"></span>
+              <img class="card-icon-img" src="../../quizzes/Q005_SafetyCultureMaturity/assets/icons/interdependent.svg" alt="" aria-hidden="true">
+              <span class="card-label">Interdependent</span>
+              <svg class="card-grip" viewBox="0 0 14 24" aria-hidden="true">
+                <circle cx="4" cy="4" r="2" />
+                <circle cx="10" cy="4" r="2" />
+                <circle cx="4" cy="12" r="2" />
+                <circle cx="10" cy="12" r="2" />
+                <circle cx="4" cy="20" r="2" />
+                <circle cx="10" cy="20" r="2" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Dock Slot 2: Independent -->
+          <div class="dock-slot" id="slot-independent" data-slot-stage="independent">
+            <div class="stage-card" id="card-independent" draggable="true" data-stage-id="independent" tabindex="0" role="button" aria-label="Stage Independent. Draggable card.">
+              <span class="card-status-badge"></span>
+              <img class="card-icon-img" src="../../quizzes/Q005_SafetyCultureMaturity/assets/icons/independent.svg" alt="" aria-hidden="true">
+              <span class="card-label">Independent</span>
+              <svg class="card-grip" viewBox="0 0 14 24" aria-hidden="true">
+                <circle cx="4" cy="4" r="2" />
+                <circle cx="10" cy="4" r="2" />
+                <circle cx="4" cy="12" r="2" />
+                <circle cx="10" cy="12" r="2" />
+                <circle cx="4" cy="20" r="2" />
+                <circle cx="10" cy="20" r="2" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Dock Slot 3: Dependent -->
+          <div class="dock-slot" id="slot-dependent" data-slot-stage="dependent">
+            <div class="stage-card" id="card-dependent" draggable="true" data-stage-id="dependent" tabindex="0" role="button" aria-label="Stage Dependent. Draggable card.">
+              <span class="card-status-badge"></span>
+              <img class="card-icon-img" src="../../quizzes/Q005_SafetyCultureMaturity/assets/icons/dependent.svg" alt="" aria-hidden="true">
+              <span class="card-label">Dependent</span>
+              <svg class="card-grip" viewBox="0 0 14 24" aria-hidden="true">
+                <circle cx="4" cy="4" r="2" />
+                <circle cx="10" cy="4" r="2" />
+                <circle cx="4" cy="12" r="2" />
+                <circle cx="10" cy="12" r="2" />
+                <circle cx="4" cy="20" r="2" />
+                <circle cx="10" cy="20" r="2" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Dock Slot 4: Reactive -->
+          <div class="dock-slot" id="slot-reactive" data-slot-stage="reactive">
+            <div class="stage-card" id="card-reactive" draggable="true" data-stage-id="reactive" tabindex="0" role="button" aria-label="Stage Reactive. Draggable card.">
+              <span class="card-status-badge"></span>
+              <img class="card-icon-img" src="../../quizzes/Q005_SafetyCultureMaturity/assets/icons/reactive.svg" alt="" aria-hidden="true">
+              <span class="card-label">Reactive</span>
+              <svg class="card-grip" viewBox="0 0 14 24" aria-hidden="true">
+                <circle cx="4" cy="4" r="2" />
+                <circle cx="10" cy="4" r="2" />
+                <circle cx="4" cy="12" r="2" />
+                <circle cx="10" cy="12" r="2" />
+                <circle cx="4" cy="20" r="2" />
+                <circle cx="10" cy="20" r="2" />
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Submit Button (Direct Row Alignment) -->
+        <button class="btn-submit motion-animate-in motion-seq-submit" id="btn-submit" disabled aria-label="Submit Answer">
+          <span>Submit</span>
+          <span class="submit-arrow">&#10132;</span>
+        </button>
+
+      </footer>
+
+      <!-- Review Sequence Order Banner -->
+      <div class="review-order-banner" id="review-order-banner" aria-live="polite">
+        Correct Sequence: 1. Reactive &rarr; 2. Dependent &rarr; 3. Independent &rarr; 4. Interdependent
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Shared Storyline Communication Bridge -->
+  <script src="../../shared/storyline/storyline-bridge.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // ==========================================================================
+      // Authoritative Answer Key — Bradley Curve Ascending Sequence
+      // Stage 1: Reactive
+      // Stage 2: Dependent
+      // Stage 3: Independent
+      // Stage 4: Interdependent
+      // ==========================================================================
+      var CORRECT_SEQUENCE = {
+        'stage-1': 'reactive',
+        'stage-2': 'dependent',
+        'stage-3': 'independent',
+        'stage-4': 'interdependent'
+      };
+
+      var ALL_STAGES = ['interdependent', 'independent', 'dependent', 'reactive'];
+      var ALL_TARGETS = ['stage-1', 'stage-2', 'stage-3', 'stage-4'];
+
+      // Quiz State Model
+      var state = {
+        placements: {
+          'interdependent': null,
+          'independent': null,
+          'dependent': null,
+          'reactive': null
+        },
+        status: 'READY',       // 'READY', 'SUBMITTED', 'REVEALED'
+        isCorrect: false
+      };
+
+      var draggedStageId = null;
+      var selectedItemIdForMove = null;
+
+      // DOM Elements
+      var dropTargets = Array.from(document.querySelectorAll('.drop-target'));
+      var stageCards = Array.from(document.querySelectorAll('.stage-card'));
+      var dockSlots = Array.from(document.querySelectorAll('.dock-slot'));
+      var cardsDock = document.getElementById('cards-dock');
+      var btnSubmit = document.getElementById('btn-submit');
+      var reviewBanner = document.getElementById('review-order-banner');
+
+      // Initialize Storyline Communication Bridge
+      var bridge = new DICVStorylineBridge({
+        quizId: 'Q005',
+        autoPoll: true,
+        pollIntervalMs: 150,
+        onRevealAnswers: function () {
+          revealReviewMode();
+        },
+        onResetState: function () {
+          resetQuiz();
+        }
+      });
+
+      // Restore Saved State (Revisit slide recovery)
+      if (bridge.state && bridge.state.submitted) {
+        if (bridge.state.submittedSelection) {
+          try {
+            var restored = typeof bridge.state.submittedSelection === 'string' ? JSON.parse(bridge.state.submittedSelection) : bridge.state.submittedSelection;
+            ALL_TARGETS.forEach(function (tgtId) {
+              var stageName = restored[tgtId];
+              if (stageName) {
+                var stageId = stageName.toLowerCase();
+                if (ALL_STAGES.indexOf(stageId) !== -1) {
+                  state.placements[stageId] = tgtId;
+                }
+              }
+            });
+          } catch (e) {
+            console.warn('Could not parse restored answers:', e);
+          }
+        }
+        state.status = 'SUBMITTED';
+        state.isCorrect = !!bridge.state.isCorrect;
+        updateUI();
+        if (bridge.state.revealed) {
+          revealReviewMode();
+        }
+      }
+
+      // ==========================================================================
+      // UI RENDER & SYNCHRONIZATION
+      // ==========================================================================
+      function updateUI() {
+        // Clear all drop target occupied classes
+        dropTargets.forEach(function (targetEl) {
+          targetEl.classList.remove('is-occupied');
+        });
+
+        // Position stage cards inside their target or original dock slot
+        ALL_STAGES.forEach(function (id) {
+          var targetId = state.placements[id];
+          var cardEl = document.getElementById('card-' + id);
+          if (!cardEl) return;
+
+          if (targetId) {
+            var targetEl = document.getElementById('target-' + targetId);
+            if (targetEl && cardEl.parentElement !== targetEl) {
+              targetEl.appendChild(cardEl);
+            }
+            if (targetEl) {
+              targetEl.classList.add('is-occupied');
+            }
+          } else {
+            // Return to its dedicated dock slot
+            var slotEl = document.getElementById('slot-' + id);
+            if (slotEl && cardEl.parentElement !== slotEl) {
+              slotEl.appendChild(cardEl);
+            }
+          }
+        });
+
+        // Update Click-to-Move Selection Highlights
+        stageCards.forEach(function (card) {
+          var cid = card.getAttribute('data-stage-id');
+          if (cid === selectedItemIdForMove) {
+            card.classList.add('is-selected-for-move');
+          } else {
+            card.classList.remove('is-selected-for-move');
+          }
+        });
+
+        // Check if all 4 targets are occupied
+        var placedCount = 0;
+        ALL_TARGETS.forEach(function (tid) {
+          var occ = Object.keys(state.placements).some(function (k) {
+            return state.placements[k] === tid;
+          });
+          if (occ) placedCount++;
+        });
+
+        if (state.status === 'READY') {
+          btnSubmit.disabled = (placedCount < 4);
+        } else {
+          btnSubmit.disabled = true;
+        }
+      }
+
+      // Atomic Placement Function
+      function placeItem(stageId, targetId) {
+        if (state.status !== 'READY') return;
+
+        // If targetId is null, unplace back to dock slot
+        if (!targetId) {
+          state.placements[stageId] = null;
+          selectedItemIdForMove = null;
+          updateUI();
+          return;
+        }
+
+        // Check who currently occupies targetId
+        var currentOccupant = null;
+        Object.keys(state.placements).forEach(function (sid) {
+          if (state.placements[sid] === targetId) {
+            currentOccupant = sid;
+          }
+        });
+
+        var sourceTarget = state.placements[stageId];
+
+        if (currentOccupant && currentOccupant !== stageId) {
+          if (sourceTarget) {
+            // Target-to-Target Swap
+            state.placements[currentOccupant] = sourceTarget;
+          } else {
+            // Displace occupant back to dock
+            state.placements[currentOccupant] = null;
+          }
+        }
+
+        state.placements[stageId] = targetId;
+        selectedItemIdForMove = null;
+        updateUI();
+      }
+
+      // ==========================================================================
+      // DRAG AND DROP HANDLERS (HTML5 Standard)
+      // ==========================================================================
+      stageCards.forEach(function (card) {
+        card.addEventListener('dragstart', function (e) {
+          if (state.status !== 'READY') {
+            e.preventDefault();
+            return;
+          }
+          draggedStageId = card.getAttribute('data-stage-id');
+          card.classList.add('is-dragging');
+          e.dataTransfer.setData('text/plain', draggedStageId);
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        card.addEventListener('dragend', function () {
+          card.classList.remove('is-dragging');
+          draggedStageId = null;
+        });
+
+        // Click-to-Move Selection (Accessibility)
+        card.addEventListener('click', function (e) {
+          if (state.status !== 'READY') return;
+          e.stopPropagation();
+          var cid = card.getAttribute('data-stage-id');
+          if (selectedItemIdForMove === cid) {
+            selectedItemIdForMove = null;
+          } else {
+            selectedItemIdForMove = cid;
+          }
+          updateUI();
+        });
+
+        card.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+          }
+        });
+      });
+
+      // Target Handlers
+      dropTargets.forEach(function (targetEl) {
+        var tid = targetEl.getAttribute('data-target-id');
+
+        targetEl.addEventListener('dragover', function (e) {
+          if (state.status !== 'READY') return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          targetEl.classList.add('is-drag-over');
+        });
+
+        targetEl.addEventListener('dragleave', function () {
+          targetEl.classList.remove('is-drag-over');
+        });
+
+        targetEl.addEventListener('drop', function (e) {
+          if (state.status !== 'READY') return;
+          e.preventDefault();
+          targetEl.classList.remove('is-drag-over');
+          var stageId = e.dataTransfer.getData('text/plain') || draggedStageId;
+          if (stageId) {
+            placeItem(stageId, tid);
+          }
+        });
+
+        targetEl.addEventListener('click', function () {
+          if (state.status !== 'READY') return;
+          if (selectedItemIdForMove) {
+            placeItem(selectedItemIdForMove, tid);
+          }
+        });
+      });
+
+      // Dock Slots Handlers (Dropping onto Dock returns card to unplaced tray)
+      dockSlots.forEach(function (slotEl) {
+        slotEl.addEventListener('dragover', function (e) {
+          if (state.status !== 'READY') return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          slotEl.classList.add('is-drag-over');
+        });
+
+        slotEl.addEventListener('dragleave', function () {
+          slotEl.classList.remove('is-drag-over');
+        });
+
+        slotEl.addEventListener('drop', function (e) {
+          if (state.status !== 'READY') return;
+          e.preventDefault();
+          slotEl.classList.remove('is-drag-over');
+          var stageId = e.dataTransfer.getData('text/plain') || draggedStageId;
+          if (stageId) {
+            placeItem(stageId, null);
+          }
+        });
+
+        slotEl.addEventListener('click', function () {
+          if (state.status !== 'READY') return;
+          if (selectedItemIdForMove) {
+            placeItem(selectedItemIdForMove, null);
+          }
+        });
+      });
+
+      // Dropping onto cardsDock returns card to unplaced tray
+      cardsDock.addEventListener('dragover', function (e) {
+        if (state.status !== 'READY') return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+
+      cardsDock.addEventListener('drop', function (e) {
+        if (state.status !== 'READY') return;
+        e.preventDefault();
+        var stageId = e.dataTransfer.getData('text/plain') || draggedStageId;
+        if (stageId) {
+          placeItem(stageId, null);
+        }
+      });
+
+      cardsDock.addEventListener('click', function (e) {
+        if (state.status !== 'READY') return;
+        if (selectedItemIdForMove && (e.target === cardsDock)) {
+          placeItem(selectedItemIdForMove, null);
+        }
+      });
+
+      // ==========================================================================
+      // SUBMIT QUIZ ACTION
+      // ==========================================================================
+      btnSubmit.addEventListener('click', function () {
+        if (btnSubmit.disabled || state.status !== 'READY') return;
+
+        // Verify Strict Sequence
+        var isAllCorrect = true;
+        var answerMapping = {};
+
+        ALL_TARGETS.forEach(function (tid) {
+          var expectedStage = CORRECT_SEQUENCE[tid];
+          var placedStage = null;
+          Object.keys(state.placements).forEach(function (sid) {
+            if (state.placements[sid] === tid) {
+              placedStage = sid;
+            }
+          });
+
+          // Capitalize for Storyline variable format
+          answerMapping[tid] = placedStage ? (placedStage.charAt(0).toUpperCase() + placedStage.slice(1)) : 'None';
+
+          if (placedStage !== expectedStage) {
+            isAllCorrect = false;
+          }
+        });
+
+        state.status = 'SUBMITTED';
+        state.isCorrect = isAllCorrect;
+
+        // Lock drag interaction
+        stageCards.forEach(function (c) {
+          c.setAttribute('draggable', 'false');
+          c.classList.add('is-locked');
+        });
+
+        // Notify Storyline
+        bridge.submit(answerMapping, isAllCorrect);
+
+        updateUI();
+      });
+
+      // ==========================================================================
+      // REVIEW MODE (Triggered when Storyline Q005_Revealed == true)
+      // ==========================================================================
+      function revealReviewMode() {
+        state.status = 'REVEALED';
+
+        // Lock all cards
+        stageCards.forEach(function (card) {
+          card.setAttribute('draggable', 'false');
+          card.classList.add('is-locked');
+          card.classList.remove('is-selected-for-move');
+        });
+
+        btnSubmit.disabled = true;
+
+        // Apply visual review borders & badges
+        ALL_TARGETS.forEach(function (tid) {
+          var expectedStage = CORRECT_SEQUENCE[tid];
+          var actualStage = null;
+          Object.keys(state.placements).forEach(function (sid) {
+            if (state.placements[sid] === tid) {
+              actualStage = sid;
+            }
+          });
+
+          if (actualStage) {
+            var cardEl = document.getElementById('card-' + actualStage);
+            var badgeEl = cardEl ? cardEl.querySelector('.card-status-badge') : null;
+
+            if (actualStage === expectedStage) {
+              cardEl.classList.add('is-review-correct');
+              if (badgeEl) badgeEl.textContent = '✓ Correct';
+            } else {
+              cardEl.classList.add('is-review-incorrect');
+              if (badgeEl) badgeEl.textContent = '✕ Incorrect';
+            }
+          }
+        });
+
+        // Show Authoritative Correct Sequence Banner
+        if (reviewBanner) {
+          reviewBanner.classList.add('is-active');
+        }
+
+        updateUI();
+      }
+
+      // Reset Quiz
+      function resetQuiz() {
+        state.placements = {
+          'interdependent': null,
+          'independent': null,
+          'dependent': null,
+          'reactive': null
+        };
+        state.status = 'READY';
+        state.isCorrect = false;
+        selectedItemIdForMove = null;
+
+        stageCards.forEach(function (card) {
+          card.setAttribute('draggable', 'true');
+          card.classList.remove('is-locked', 'is-review-correct', 'is-review-incorrect', 'is-review-missed', 'is-selected-for-move');
+          var badgeEl = card.querySelector('.card-status-badge');
+          if (badgeEl) {
+            badgeEl.textContent = '';
+            badgeEl.style.display = 'none';
+          }
+        });
+
+        if (reviewBanner) {
+          reviewBanner.classList.remove('is-active');
+        }
+
+        updateUI();
+      }
+
+      // Initial layout update
+      updateUI();
+
+      // Automated QA & Headless Capture URL Hooks: ?state=placed, ?state=swapped, ?state=review
+      try {
+        var href = window.location.href;
+        var searchMatch = href.match(/[?&]state=([^&]+)/);
+        var hashMatch = href.match(/#([^?&]+)/);
+        var testState = searchMatch ? searchMatch[1] : (hashMatch ? hashMatch[1] : null);
+
+        if (href.indexOf('no_anim=1') !== -1 || testState) {
+          document.documentElement.classList.add('no-animation');
+        }
+        if (testState === 'placed') {
+          state.placements = {
+            'reactive': 'stage-1',
+            'dependent': 'stage-2',
+            'independent': 'stage-3',
+            'interdependent': 'stage-4'
+          };
+          updateUI();
+        } else if (testState === 'swapped') {
+          state.placements = {
+            'interdependent': 'stage-1',
+            'dependent': 'stage-2',
+            'independent': 'stage-3',
+            'reactive': 'stage-4'
+          };
+          updateUI();
+        } else if (testState === 'review') {
+          state.placements = {
+            'interdependent': 'stage-1',
+            'dependent': 'stage-2',
+            'independent': 'stage-3',
+            'reactive': 'stage-4'
+          };
+          updateUI();
+          revealReviewMode();
+        }
+      } catch (err) {
+        console.warn('Test harness hook not initialized:', err);
+      }
+
+    })();
+  </script>
+
+  <script src="js/motion-controller.js"></script>
+  <script>
+    (function() {
+      var mc = new DICVMotionController({
+        quizId: 'Q005',
+        container: document.getElementById('quiz-viewport')
+      });
+      mc.playEntrance();
+
+      var isSlow = false;
+      document.getElementById('btn-speed').addEventListener('click', function() {
+        isSlow = !isSlow;
+        this.textContent = isSlow ? 'Speed: 0.5x' : 'Speed: 1.0x';
+        document.documentElement.style.setProperty('--motion-dur-medium', isSlow ? '900ms' : '450ms');
+        document.documentElement.style.setProperty('--motion-dur-slow', isSlow ? '1100ms' : '550ms');
+        document.documentElement.style.setProperty('--motion-dur-normal', isSlow ? '700ms' : '350ms');
+      });
+
+      document.getElementById('btn-replay').addEventListener('click', function() {
+        var canvas = document.getElementById('quiz-viewport');
+        canvas.classList.remove('motion-instant-ready');
+        var anims = canvas.querySelectorAll('.motion-animate-in');
+        anims.forEach(function(el) {
+          el.style.animation = 'none';
+          void el.offsetWidth;
+          el.style.animation = '';
+        });
+        mc.playEntrance();
+      });
+
+      document.getElementById('btn-reduced').addEventListener('click', function() {
+        var isReduced = document.body.classList.toggle('prefers-reduced-motion-simulated');
+        this.textContent = isReduced ? 'Reduced Motion: ON' : 'Reduced Motion: OFF';
+        if (isReduced) {
+          document.getElementById('quiz-viewport').classList.add('motion-instant-ready');
+        } else {
+          document.getElementById('quiz-viewport').classList.remove('motion-instant-ready');
+        }
+      });
+
+      document.getElementById('btn-reveal').addEventListener('click', function() {
+        var cards = [
+          { status: 'CORRECT', element: document.querySelector('.stage-card[data-stage-id="reactive"]') },
+          { status: 'CORRECT', element: document.querySelector('.stage-card[data-stage-id="dependent"]') },
+          { status: 'CORRECT', element: document.querySelector('.stage-card[data-stage-id="independent"]') },
+          { status: 'CORRECT', element: document.querySelector('.stage-card[data-stage-id="interdependent"]') }
+        ];
+        mc.sequenceAnswerReveal(cards);
+      });
+    })();
+  </script>
+</body>
+</html>

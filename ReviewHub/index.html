@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DICV DevHub — Storyline 360 Course Builder</title>
+  <link rel="stylesheet" href="css/hub.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="brand-box">
+        <span class="brand-kicker">DICV Interactive</span>
+        <h1>DICV DevHub</h1>
+        <p class="brand-sub">Storyline 360 Builder · 6 Quizzes · 8 Web Objects</p>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Explore</div>
+        <ul class="nav-list">
+          <li><button class="nav-btn active" data-route="storyview">Story View (Course Builder)</button></li>
+          <li><button class="nav-btn" data-route="overview">Project Overview</button></li>
+          <li><button class="nav-btn" data-route="library">Quiz Library (Q001–Q006)</button></li>
+          <li><button class="nav-btn" data-route="animations">Animation Library</button></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Storyline &amp; QA</div>
+        <ul class="nav-list">
+          <li><button class="nav-btn" data-route="wizard">Storyline Integration Wizard</button></li>
+          <li><button class="nav-btn" data-route="variables">Variables &amp; Flow</button></li>
+          <li><button class="nav-btn" data-route="testing">Testing &amp; Status</button></li>
+          <li><button class="nav-btn" data-route="troubleshooting">Troubleshooting Center</button></li>
+          <li><button class="nav-btn" data-route="files">Files &amp; Docs Center</button></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-note">
+        <strong>Isolated Review Tool</strong>
+        Previews run in a local sandbox and never modify production Storyline or Oracle LMS data.
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation">☰ Menu</button>
+          <div class="topbar-title" id="topbar-title">Project Overview</div>
+        </div>
+        <div class="topbar-actions">
+          <a class="btn btn-secondary" href="../WebObjects/prototypes/motion/index.html" target="_blank">Motion Prototype Hub ↗</a>
+          <a class="btn btn-outline" href="README.md" target="_blank">User Guide</a>
+        </div>
+      </header>
+
+      <main class="content" id="hub-view" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <script src="../WebObjects/coursemap/coursemap-data.js"></script>
+  <script src="data/hub-data.js"></script>
+  <script src="data/story-manifest.js"></script>
+  <script src="data/global-controls-data.js"></script>
+  <script src="js/story-view.js"></script>
+  <script src="js/hub-app.js"></script>
+</body>
+</html>

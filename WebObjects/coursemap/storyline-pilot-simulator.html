@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phase B1 Pilot Simulator — Course Map + Mock Storyline Host</title>
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #EEF4F6; color: #16242B; }
+    .bar {
+      background: #004355; color: #FFF; padding: 12px 20px;
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+    }
+    .badge { background: #FFFF40; color: #004355; font-weight: 700; padding: 4px 10px; border-radius: 999px; font-size: 12px; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 20px; background: #FFF; border-bottom: 1px solid #CBE0E7; }
+    button { padding: 7px 12px; border-radius: 8px; border: 1px solid #00677F; background: #E6F2F5; color: #004355; font-weight: 700; cursor: pointer; }
+    button:hover { background: #D2E8EE; }
+    .main { display: grid; grid-template-columns: 1fr 340px; gap: 16px; padding: 16px 20px; }
+    iframe { width: 100%; height: 540px; border: 1px solid #B8CFD7; border-radius: 12px; background: #FFF; }
+    .log-box { background: #FFF; border: 1px solid #B8CFD7; border-radius: 12px; padding: 14px; font-size: 12.5px; }
+    pre { background: #F5F9FA; padding: 10px; border-radius: 8px; overflow: auto; font-size: 11.5px; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <strong>Phase B1 Pilot — Local Storyline Host Simulator (2 Topics: 101 &amp; 102)</strong>
+    <span class="badge">LOCAL SIMULATOR ONLY — NOT PUBLISHED STORYLINE / LMS</span>
+  </div>
+  <div class="controls">
+    <button id="btn-toggle-mode">Toggle Mode (L)</button>
+    <button id="btn-complete-101">Mark 101 (Why Safety Matters) = 2 (Completed)</button>
+    <button id="btn-complete-102">Mark 102 (EHS Vision) = 2 (Completed)</button>
+    <button id="btn-corrupt">Inject Malformed JSON</button>
+    <button id="btn-reset">Reset Fresh Learner</button>
+    <button id="btn-reopen">Reopen CourseMapOverlay</button>
+  </div>
+  <div class="main">
+    <iframe id="map-frame" src="index.html" title="Course Map Pilot"></iframe>
+    <aside class="log-box">
+      <h3 style="margin-top:0;">Mock Storyline Variables</h3>
+      <pre id="vars-view"></pre>
+      <h4>Native Jump &amp; Bridge Log</h4>
+      <pre id="jump-log" style="max-height:220px;">Ready.</pre>
+    </aside>
+  </div>
+
+  <script src="coursemap-data.js"></script>
+  <script>
+    // Mock Storyline GetPlayer() before loading coursemap-storyline-host.js
+    const vars = {
+      NavigationMode: false,
+      CourseProgressData: '',
+      RequestedMission: 0,
+      CourseMapCloseRequested: false
+    };
+    const varsView = document.getElementById('vars-view');
+    const jumpLog = document.getElementById('jump-log');
+    const frame = document.getElementById('map-frame');
+
+    function log(msg) {
+      jumpLog.textContent = `[${new Date().toLocaleTimeString()}] ${msg}\n` + jumpLog.textContent;
+    }
+    function renderVars() {
+      varsView.textContent = JSON.stringify(vars, null, 2);
+    }
+
+    window.GetPlayer = function () {
+      return {
+        GetVar: (k) => vars[k],
+        SetVar: (k, v) => {
+          vars[k] = v;
+          if (k === 'CourseMapCloseRequested') {
+            frame.hidden = true;
+            log('Native Storyline Hide Layer Trigger Fired');
+          }
+          if (k === 'RequestedMission' && Number(v) > 0) {
+            log(`Native Storyline Jump Trigger Fired -> Mission ${v}`);
+            // Simulate Storyline resetting RequestedMission = 0 after jump
+            setTimeout(() => { vars.RequestedMission = 0; renderVars(); }, 40);
+          }
+          renderVars();
+        }
+      };
+    };
+    renderVars();
+  </script>
+  <script src="coursemap-storyline-host.js"></script>
+  <script>
+    document.getElementById('btn-toggle-mode').onclick = () => {
+      const m = window.DICV_CourseMapHost.toggleNavigationMode();
+      log(`NavigationMode -> ${m ? 'Free (true)' : 'Restricted (false)'}`);
+      renderVars();
+    };
+    document.getElementById('btn-complete-101').onclick = () => {
+      window.DICV_CourseMapHost.markTopicStatus(101, 2);
+      log('Marked Topic 101 (Why Safety Matters) = 2 (Completed)');
+      renderVars();
+    };
+    document.getElementById('btn-complete-102').onclick = () => {
+      window.DICV_CourseMapHost.markTopicStatus(102, 2);
+      log('Marked Topic 102 (EHS Vision) = 2 (Completed)');
+      renderVars();
+    };
+    document.getElementById('btn-corrupt').onclick = () => {
+      vars.CourseProgressData = '{broken-json';
+      window.DICV_CourseMapHost.broadcastState('STATE');
+      log('Injected malformed JSON -> fell back safely');
+      renderVars();
+    };
+    document.getElementById('btn-reset').onclick = () => {
+      vars.NavigationMode = false;
+      vars.CourseProgressData = '';
+      vars.RequestedMission = 0;
+      window.DICV_CourseMapHost.broadcastState('STATE');
+      log('Reset to fresh learner');
+      renderVars();
+    };
+    document.getElementById('btn-reopen').onclick = () => {
+      frame.src = 'index.html';
+      frame.hidden = false;
+      log('Reopened CourseMapOverlay iframe');
+    };
+    window.addEventListener('keydown', (e) => {
+      if ((e.key === 'l' || e.key === 'L') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const m = window.DICV_CourseMapHost.toggleNavigationMode();
+        log(`Shortcut L -> ${m ? 'Free' : 'Restricted'}`);
+        renderVars();
+      }
+    });
+  </script>
+</body>
+</html>

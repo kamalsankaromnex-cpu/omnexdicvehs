@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q004 — DICV EHS Focus Areas | DICV Interactive</title>
+  <link rel="stylesheet" href="../../shared/styles/fonts.css">
+  <link rel="stylesheet" href="../../shared/styles/theme.css">
+  <style>
+    :root {
+      --petrol: #00677F;
+      --dark: #004355;
+      --mid: #007A93;
+      --yellow: #FFFF40;
+      --black: #000000;
+      --white: #FFFFFF;
+      --grey: #888888;
+      --light-grey: #E6E6E6;
+      --border-tint: #98cbd7;
+
+      /* Semantic Status */
+      --correct-green: #008248;
+      --correct-bg: #E8F7ED;
+      --incorrect-red: #D92323;
+      --incorrect-bg: #FDF0F0;
+      --missed-amber: #D97706;
+      --missed-bg: #FFF8E7;
+
+      font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+      font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    #stage {
+      width: 1536px;
+      height: 1024px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: center center;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    .shell {
+      position: absolute;
+      left: 15px;
+      top: 40px;
+      width: 1507px;
+      height: 923px;
+      border: 1.5px solid var(--border-tint);
+      border-radius: 42px;
+      box-shadow: 0 9px 19px rgba(0, 58, 77, 0.15);
+      background: #FFFFFF;
+    }
+
+    /* LEFT: Symmetrical 3-color Cyclic Pinwheel Venn */
+    .venn {
+      position: absolute;
+      left: 25px;
+      top: 53px;
+      width: 855px;
+      height: 891px;
+    }
+
+    .venn-art {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 850px;
+      height: 850px;
+      overflow: visible;
+      filter: drop-shadow(0 8px 13px rgba(0, 0, 0, 0.10));
+      pointer-events: none;
+    }
+
+    .venn-art .white-gap {
+      stroke: #FFFFFF;
+      stroke-width: 10;
+      stroke-linejoin: round;
+    }
+
+    .white-hub {
+      position: absolute;
+      left: 350px;
+      top: 423px;
+      width: 255px;
+      text-align: center;
+      pointer-events: none;
+      color: var(--dark);
+      line-height: 1.02;
+    }
+
+    .white-hub strong {
+      font-size: 49px;
+      letter-spacing: -1.3px;
+      font-weight: 800;
+      display: block;
+    }
+
+    .white-hub span {
+      display: block;
+      font-size: 40px;
+      margin-top: 6px;
+      font-weight: 700;
+    }
+
+    /* Drop Zones */
+    .zone {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: 4px dashed #FFFFFF;
+      border-radius: 38px;
+      line-height: 1.14;
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: box-shadow .15s, background .15s;
+      z-index: 4;
+      user-select: none;
+      padding: 12px;
+    }
+
+    .zone:not(.occupied):hover,
+    .zone.dragover {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35);
+    }
+
+    .zone .plus {
+      font-size: 52px;
+      font-weight: 400;
+      line-height: 0.9;
+      margin-bottom: 12px;
+    }
+
+    .zone .name {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.12;
+    }
+
+    .zone .hint {
+      font-size: 26px;
+      line-height: 1.14;
+      margin-top: 9px;
+      font-weight: 400;
+    }
+
+    #zone-1 {
+      left: 308px;
+      top: 91px;
+      width: 320px;
+      height: 176px;
+    }
+
+    #zone-2 {
+      left: 60px;
+      top: 548px;
+      width: 262px;
+      height: 186px;
+    }
+
+    #zone-3 {
+      left: 490px;
+      top: 579px;
+      width: 299px;
+      height: 184px;
+      color: var(--dark);
+      border-color: var(--dark);
+    }
+
+    #zone-3:not(.occupied):hover,
+    #zone-3.dragover {
+      background: rgba(0, 67, 85, 0.10);
+      box-shadow: 0 0 0 4px rgba(0, 67, 85, 0.25);
+    }
+
+    .zone.occupied {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .zone.occupied .placeholder {
+      display: none;
+    }
+
+    .zone:focus-visible,
+    .card:focus-visible,
+    #submit:focus-visible {
+      outline: 4px solid var(--dark);
+      outline-offset: 2px;
+    }
+
+    /* RIGHT PANEL: Focus Area Options */
+    .panel {
+      position: absolute;
+      left: 872px;
+      top: 62px;
+      width: 629px;
+      height: 867px;
+      border: 1.5px solid #a1cbd4;
+      border-radius: 25px;
+      box-shadow: 0 8px 16px rgba(0, 40, 50, 0.14);
+      background: #FFFFFF;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      height: 78px;
+      background: var(--dark);
+      color: #FFFFFF;
+      padding: 16px 30px;
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      line-height: 1.1;
+    }
+
+    .accent {
+      height: 8px;
+      background: var(--yellow);
+    }
+
+    .panel-body {
+      padding: 17px 30px 25px;
+      height: calc(100% - 86px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .instruction {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0 0 18px;
+      white-space: nowrap;
+      letter-spacing: -0.5px;
+    }
+
+    .cardlist {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    /* Draggable Stage Card */
+    .card {
+      height: 105px;
+      flex-shrink: 0;
+      width: 100%;
+      border: 1.8px solid #9dcad5;
+      border-radius: 26px;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      background: #FFFFFF;
+      padding: 12px 23px;
+      box-shadow: 0 3px 4px rgba(0, 52, 68, 0.1);
+      cursor: grab;
+      color: var(--dark);
+      user-select: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .card:hover {
+      border-color: var(--petrol);
+      box-shadow: 0 5px 12px rgba(0, 52, 68, 0.18);
+    }
+
+    .card.dragging {
+      opacity: 0.5;
+    }
+
+    .card .ic {
+      width: 106px;
+      height: 84px;
+      flex: 0 0 106px;
+      background: #E8F5F8;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ic img {
+      width: 62px;
+      height: 62px;
+      object-fit: contain;
+    }
+
+    .card-label {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.5px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .grip {
+      flex: 0 0 32px;
+      color: var(--petrol);
+      display: grid;
+      grid-template-columns: repeat(2, 10px);
+      grid-template-rows: repeat(3, 10px);
+      gap: 5px 6px;
+    }
+
+    .grip i {
+      width: 10px;
+      height: 10px;
+      border-radius: 100%;
+      background: currentColor;
+    }
+
+    /* Compact Card Style inside Venn Zone */
+    .zone .card {
+      width: 100%;
+      height: 100%;
+      padding: 6px 11px;
+      border-radius: 23px;
+      gap: 9px;
+      box-shadow: 0 9px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .zone .card .ic {
+      width: 60px;
+      height: 59px;
+      flex-basis: 60px;
+      border-radius: 12px;
+    }
+
+    .zone .card .ic img {
+      width: 44px;
+      height: 44px;
+    }
+
+    .zone .card .card-label {
+      font-size: 21px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .zone .card .grip {
+      transform: scale(0.65);
+      transform-origin: right center;
+      flex-basis: 20px;
+    }
+
+    .card.selected-move {
+      outline: 4px solid var(--yellow);
+    }
+
+    /* Review Mode States */
+    .card.correct {
+      border: 3.5px solid var(--correct-green);
+      background: var(--correct-bg);
+    }
+
+    .card.incorrect {
+      border: 3.5px solid var(--incorrect-red);
+      background: var(--incorrect-bg);
+    }
+
+    .card.missed {
+      border: 3.5px solid var(--missed-amber);
+      background: var(--missed-bg);
+    }
+
+    .card.neutral {
+      opacity: 0.58;
+    }
+
+    /* Footer & Submit */
+    .footer {
+      margin-top: auto;
+      border-top: 2px solid #DEDEDE;
+      padding-top: 34px;
+      text-align: center;
+    }
+
+    #submit {
+      width: 100%;
+      height: 78px;
+      border-radius: 39px;
+      border: 3px solid var(--yellow);
+      font-weight: 700;
+      font-style: italic;
+      font-size: 32px;
+      letter-spacing: 0.3px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 14px rgba(0, 67, 85, 0.25);
+    }
+
+    #submit:not(:disabled) {
+      color: #FFFFFF;
+      background: var(--dark);
+      border-color: var(--yellow);
+      cursor: pointer;
+    }
+
+    #submit:not(:disabled):hover {
+      background: #00566A;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 67, 85, 0.38);
+    }
+
+    #submit:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      border: 3px solid rgba(255, 255, 64, 0.40);
+      background: var(--dark);
+      color: rgba(255, 255, 255, 0.70);
+      box-shadow: none;
+      transform: none;
+    }
+
+    #submit .arrow {
+      color: var(--yellow);
+      font-style: normal;
+      font-size: 36px;
+      line-height: 1;
+      font-weight: 900;
+      vertical-align: middle;
+      margin-left: 14px;
+      display: inline-block;
+      transition: transform 0.16s ease;
+    }
+
+    #submit:not(:disabled):hover .arrow {
+      transform: translateX(5px);
+    }
+
+    #submit:disabled .arrow {
+      color: rgba(255, 255, 64, 0.50);
+    }
+
+    .progress {
+      font-size: 26px;
+      font-weight: 700;
+      margin-top: 16px;
+      color: var(--dark);
+    }
+
+    body.locked .card {
+      cursor: default;
+    }
+
+    body.locked .zone {
+      cursor: default;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+
+  <link rel="stylesheet" href="css/motion-design-system.css">
+  <style>
+  
+/* Floating Motion Toolbar for Review & Testing */
+.motion-dev-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 46px;
+  background: #004355;
+  color: #FFFFFF;
+  font-family: 'Daimler CS', Arial, sans-serif;
+  font-size: 13px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 2.5px solid #FFFF40;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+.motion-dev-toolbar .toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.motion-dev-toolbar .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.motion-btn {
+  background: #00677F;
+  color: #FFFFFF;
+  border: 1.5px solid #FFFF40;
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 180ms ease;
+  outline: none;
+}
+.motion-btn:hover {
+  background: #00566A;
+  transform: translateY(-1px);
+}
+.motion-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+}
+.motion-btn-reveal {
+  background: #008248;
+  border-color: #FFFF40;
+}
+.motion-toolbar-spacer {
+  height: 52px;
+}
+
+  body {
+    width: 1110px !important;
+    height: 960px !important;
+    max-width: 1110px !important;
+    max-height: 960px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+  #stage {
+    position: absolute !important;
+    top: 52% !important;
+    left: 50% !important;
+    transform-origin: center center !important;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="motion-dev-toolbar">
+    <div class="toolbar-left">
+      <strong style="color: #FFFF40;">Q004 Motion Prototype</strong>
+      <span style="background: rgba(255,255,64,0.2); color: #FFFF40; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700;">1110×960 px</span>
+      <span style="opacity: 0.7;">| Pinwheel DND (Auto-Scaled Stage, Invalid Return, Snap & FLIP Swap)</span>
+    </div>
+    <div class="toolbar-right">
+      <button class="motion-btn" id="btn-replay">↺ Replay Entrance</button>
+      <button class="motion-btn motion-btn-secondary" id="btn-speed">Speed: 1.0x</button>
+      <button class="motion-btn motion-btn-reveal" id="btn-reveal">★ Reveal (Post-Feedback)</button>
+      <button class="motion-btn motion-btn-secondary" id="btn-reduced">Reduced Motion: OFF</button>
+      <a href="index.html" class="motion-btn motion-btn-secondary" style="text-decoration: none; padding: 4px 8px;">☰ Hub</a>
+    </div>
+  </div>
+  <div class="motion-toolbar-spacer"></div>
+
+  <main id="stage" aria-label="DICV EHS Focus Areas interactive quiz">
+    <div class="shell" aria-hidden="true"></div>
+
+    <!-- LEFT: Three-Color Symmetrical Pinwheel Venn Diagram -->
+    <section class="venn" aria-label="Safety Strategy three-part pinwheel">
+      <svg class="venn-art" viewBox="0 0 585 585" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <linearGradient id="darkLobe" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#004355"/>
+            <stop offset="1" stop-color="#003540"/>
+          </linearGradient>
+          <linearGradient id="petrolLobe" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#007A93"/>
+            <stop offset="1" stop-color="#00677F"/>
+          </linearGradient>
+          <linearGradient id="yellowLobe" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#FFFF40"/>
+            <stop offset="1" stop-color="#FFFF40"/>
+          </linearGradient>
+        </defs>
+        <!-- Top: Dark Petrol Lobe -->
+        <path d="M 272 21 L 242 36 L 216 54 L 189 80 L 174 99 L 150 145 L 141 178 L 139 202 L 182 189 L 235 187 L 267 193 L 314 213 L 348 238 L 373 267 L 393 305 L 403 348 L 435 332 L 467 307 L 490 280 L 509 246 L 518 216 L 521 182 L 517 152 L 507 121 L 488 87 L 460 56 L 436 38 L 405 22 L 376 13 L 350 9 L 312 10 Z" fill="url(#darkLobe)" stroke="#FFFFFF" stroke-width="8" stroke-linejoin="round"/>
+        <!-- Bottom-Left: Petrol 80% Lobe -->
+        <path d="M 235 197 L 194 197 L 167 202 L 138 212 L 97 237 L 69 265 L 48 296 L 33 331 L 26 366 L 27 402 L 37 442 L 54 477 L 73 503 L 96 526 L 122 544 L 159 560 L 193 567 L 223 567 L 255 561 L 285 550 L 313 534 L 287 507 L 268 479 L 247 431 L 238 385 L 240 340 L 256 290 L 280 253 L 312 225 L 277 207 Z" fill="url(#petrolLobe)" stroke="#FFFFFF" stroke-width="8" stroke-linejoin="round"/>
+        <!-- Bottom-Right: Daimler Yellow Lobe -->
+        <path d="M 525 227 L 507 270 L 486 300 L 449 334 L 409 357 L 379 367 L 326 374 L 284 371 L 247 358 L 247 382 L 252 415 L 270 464 L 303 512 L 323 531 L 345 546 L 378 560 L 409 565 L 443 562 L 479 550 L 519 525 L 544 501 L 563 475 L 578 441 L 584 440 L 584 310 L 578 309 L 559 268 Z" fill="url(#yellowLobe)" stroke="#FFFFFF" stroke-width="8" stroke-linejoin="round"/>
+      </svg>
+
+      <div class="white-hub"><strong>SAFETY</strong><span>Strategy</span></div>
+
+      <!-- Drop Targets 1, 2, 3 -->
+      <div class="zone" id="zone-1" role="region" tabindex="0" aria-label="Focus Area 1 drop location">
+        <div class="placeholder">
+          <div class="plus">+</div>
+          <div class="name">Focus Area 1</div>
+          <div class="hint">Drop focus area<br>card here</div>
+        </div>
+      </div>
+
+      <div class="zone" id="zone-2" role="region" tabindex="0" aria-label="Focus Area 2 drop location">
+        <div class="placeholder">
+          <div class="plus">+</div>
+          <div class="name">Focus Area 2</div>
+          <div class="hint">Drop focus area<br>card here</div>
+        </div>
+      </div>
+
+      <div class="zone" id="zone-3" role="region" tabindex="0" aria-label="Focus Area 3 drop location">
+        <div class="placeholder">
+          <div class="plus">+</div>
+          <div class="name">Focus Area 3</div>
+          <div class="hint">Drop focus area<br>card here</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Focus Area Options Panel -->
+    <aside class="panel" aria-label="Focus Area Options Panel">
+      <div class="panel-header">Focus Area Options</div>
+      <div class="accent"></div>
+      <div class="panel-body">
+        <p class="instruction motion-animate-in motion-seq-instruction">Drag the three correct focus areas into the circles.</p>
+        <div class="cardlist" id="pool" role="list" aria-label="Focus Area Cards">
+          <div class="card" id="card-A" draggable="true" role="listitem" tabindex="0" aria-label="Capability Management">
+            <div class="ic"><img src="assets/icons/capability-management.svg" alt="" aria-hidden="true"></div>
+            <div class="card-label">Capability Management</div>
+            <span class="grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div class="card" id="card-B" draggable="true" role="listitem" tabindex="0" aria-label="Governance">
+            <div class="ic"><img src="assets/icons/governance.svg" alt="" aria-hidden="true"></div>
+            <div class="card-label">Governance</div>
+            <span class="grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div class="card" id="card-C" draggable="true" role="listitem" tabindex="0" aria-label="Risk Management">
+            <div class="ic"><img src="assets/icons/risk-management.svg" alt="" aria-hidden="true"></div>
+            <div class="card-label">Risk Management</div>
+            <span class="grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div class="card" id="card-D" draggable="true" role="listitem" tabindex="0" aria-label="Employee Engagement">
+            <div class="ic"><img src="assets/icons/employee-engagement.svg" alt="" aria-hidden="true"></div>
+            <div class="card-label">Employee Engagement</div>
+            <span class="grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+        </div>
+
+        <div class="footer">
+          <button id="submit" disabled aria-label="Submit focus areas">Submit <span class="arrow">➜</span></button>
+          <div class="progress" id="progress" aria-live="polite">0 of 3 focus areas placed.</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="../../shared/storyline/storyline-bridge.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      const ids = ['A', 'B', 'C', 'D'];
+      const zones = ['zone-1', 'zone-2', 'zone-3'];
+      const placements = { A: null, B: null, C: null, D: null };
+
+      const cards = Object.fromEntries(ids.map(id => [id, document.getElementById('card-' + id)]));
+      const pool = document.getElementById('pool');
+      const targets = Object.fromEntries(zones.map(z => [z, document.getElementById(z)]));
+      const progress = document.getElementById('progress');
+      const submit = document.getElementById('submit');
+
+      let mode = 'READY';
+      let selected = null;
+      let submitted = null;
+      let revealed = false;
+      let dragging = null;
+
+      // Storyline Bridge Initialization
+      let bridge = null;
+      if (typeof DICVStorylineBridge !== 'undefined') {
+        bridge = new DICVStorylineBridge('Q004', {
+          onReveal: () => {
+            review();
+          },
+          onStateRestored: (saved) => {
+            if (saved && saved.placements) {
+              resume(saved);
+            }
+          }
+        });
+      }
+
+      function valid(raw) {
+        if (!raw || typeof raw !== 'object') return false;
+        let seen = new Set();
+        return ids.every(id => {
+          let z = raw[id] ?? null;
+          if (z !== null && !zones.includes(z)) return false;
+          if (z && seen.has(z)) return false;
+          if (z) seen.add(z);
+          return true;
+        });
+      }
+
+      function draw() {
+        zones.forEach(z => {
+          const el = targets[z];
+          const id = ids.find(x => placements[x] === z);
+          el.classList.toggle('occupied', !!id);
+          if (id && cards[id].parentElement !== el) el.append(cards[id]);
+        });
+
+        ids.forEach(id => {
+          if (placements[id] === null && cards[id].parentElement !== pool) pool.append(cards[id]);
+          cards[id].classList.toggle('selected-move', selected === id);
+        });
+
+        const n = ids.filter(id => placements[id] !== null).length;
+        submit.disabled = mode !== 'READY' || n !== 3;
+
+        if (mode === 'REVEALED') {
+          progress.textContent = 'Review: Capability Management, Governance and Risk Management are correct.';
+        } else if (mode === 'SUBMITTED') {
+          progress.textContent = 'Submitted — view feedback in Storyline.';
+        } else if (mode === 'SUBMITTING') {
+          progress.textContent = 'Submitting…';
+        } else {
+          progress.textContent = `${n} of 3 focus areas placed.`;
+        }
+
+        document.body.classList.toggle('locked', mode !== 'READY');
+        ids.forEach(id => cards[id].draggable = (mode === 'READY'));
+      }
+
+      function move(id, dest) {
+        if (mode !== 'READY' || !ids.includes(id) || !(dest === null || zones.includes(dest))) return;
+        const src = placements[id];
+        if (src === dest) return;
+        const occupant = dest === null ? null : ids.find(x => placements[x] === dest);
+        if (occupant) placements[occupant] = src;
+        placements[id] = dest;
+        selected = null;
+        draw();
+        send('Q004_DRAFT', { placements: { ...placements } });
+      }
+
+      function send(type, extras = {}) {
+        if (window.parent !== window) {
+          window.parent.postMessage({ source: 'DICV_Q004', type, quizId: 'Q004', ...extras }, '*');
+        }
+      }
+
+      function resume(saved) {
+        if (!valid(saved.placements)) return;
+        Object.assign(placements, saved.placements);
+        if (saved.submitted) {
+          submitted = { ...placements };
+          mode = saved.revealed ? 'REVEALED' : 'SUBMITTED';
+          if (saved.revealed) review();
+        } else {
+          mode = 'READY';
+        }
+        draw();
+      }
+
+      function review() {
+        revealed = true;
+        mode = 'REVEALED';
+        ids.forEach(id => {
+          cards[id].classList.remove('correct', 'incorrect', 'missed', 'neutral');
+          cards[id].classList.add(
+            placements[id]
+              ? (id === 'D' ? 'incorrect' : 'correct')
+              : (id === 'D' ? 'neutral' : 'missed')
+          );
+        });
+        draw();
+      }
+
+      // Host Message Listener
+      window.addEventListener('message', e => {
+        if (e.source !== window.parent || !e.data || e.data.quizId !== 'Q004') return;
+        let d = e.data;
+        if (d.type === 'Q004_STATE') resume(d.state);
+        if (d.type === 'Q004_SUBMIT_ACK' && mode === 'SUBMITTING' && d.accepted === true) {
+          mode = 'SUBMITTED';
+          draw();
+        }
+        if (d.type === 'Q004_REVEAL' && submitted) review();
+        if (d.type === 'Q004_RESET') {
+          Object.assign(placements, { A: null, B: null, C: null, D: null });
+          submitted = null;
+          revealed = false;
+          ids.forEach(id => cards[id].classList.remove('correct', 'incorrect', 'missed', 'neutral'));
+          mode = 'READY';
+          draw();
+        }
+      });
+
+      // Draggable Event Handlers
+      ids.forEach(id => {
+        let el = cards[id];
+        el.addEventListener('dragstart', e => {
+          if (mode !== 'READY') {
+            e.preventDefault();
+            return;
+          }
+          dragging = id;
+          e.dataTransfer.setData('text/plain', id);
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        el.addEventListener('dragend', () => {
+          dragging = null;
+          zones.forEach(z => targets[z].classList.remove('dragover'));
+        });
+
+        el.addEventListener('click', () => {
+          if (mode === 'READY') {
+            selected = selected === id ? null : id;
+            draw();
+          }
+        });
+
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Escape' && mode === 'READY') {
+            e.preventDefault();
+            move(id, null);
+          } else if ((e.key === 'Enter' || e.key === ' ') && mode === 'READY') {
+            e.preventDefault();
+            el.click();
+          }
+        });
+      });
+
+      // Drop Targets Handlers
+      zones.forEach(z => {
+        let t = targets[z];
+        t.addEventListener('dragover', e => {
+          if (mode === 'READY') {
+            e.preventDefault();
+            t.classList.add('dragover');
+          }
+        });
+
+        t.addEventListener('dragleave', () => t.classList.remove('dragover'));
+
+        t.addEventListener('drop', e => {
+          e.preventDefault();
+          t.classList.remove('dragover');
+          move(e.dataTransfer.getData('text/plain') || dragging, z);
+        });
+
+        t.addEventListener('click', e => {
+          if (mode === 'READY' && selected && e.target.closest('.card') === null) {
+            move(selected, z);
+          }
+        });
+
+        t.addEventListener('keydown', e => {
+          if (mode === 'READY' && selected && ['Enter', ' '].includes(e.key)) {
+            e.preventDefault();
+            move(selected, z);
+          }
+        });
+      });
+
+      // Pool Handlers
+      pool.addEventListener('dragover', e => {
+        if (mode === 'READY') e.preventDefault();
+      });
+
+      pool.addEventListener('drop', e => {
+        e.preventDefault();
+        move(e.dataTransfer.getData('text/plain') || dragging, null);
+      });
+
+      // Submit Handling
+      submit.addEventListener('click', () => {
+        if (mode !== 'READY' || ids.filter(id => placements[id]).length !== 3) return;
+        submitted = { ...placements };
+        mode = 'SUBMITTING';
+        draw();
+
+        // 3 correct focus areas: Capability Management (A), Governance (B), Risk Management (C). Distractor: Employee Engagement (D).
+        const isCorrect = (placements.A !== null && placements.B !== null && placements.C !== null && placements.D === null);
+        const placedSummary = Object.entries(placements)
+          .filter(([, z]) => z !== null)
+          .map(([id, z]) => `${id}:${z}`)
+          .join(';');
+
+        if (bridge) {
+          bridge.submit(placedSummary, isCorrect);
+        }
+
+        send('Q004_SUBMIT', {
+          placements: { ...placements },
+          correct: isCorrect,
+          submissionId: 'Q004-' + Date.now()
+        });
+
+        mode = 'SUBMITTED';
+        draw();
+
+        // Auto reveal fallback if Storyline does not reveal within 700ms
+        setTimeout(() => {
+          if (!revealed) {
+            review();
+          }
+        }, 700);
+      });
+
+      // Stage Auto-Scaler (Fits any iframe or parent container)
+      function scale() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const x = Math.min(1110 / 1536, (960 - 52) / 1024);
+        document.getElementById('stage').style.transform = `translate(-50%, -50%) scale(${x})`;
+      }
+      window.addEventListener('resize', scale);
+      scale();
+
+      // Check URL parameters for QA harnesses
+      const params = new URLSearchParams(window.location.search);
+      const testState = params.get('state');
+
+      if (testState === 'selected') {
+        placements.A = 'zone-1';
+        placements.B = 'zone-2';
+        placements.C = 'zone-3';
+        draw();
+      } else if (testState === 'review') {
+        placements.A = 'zone-1';
+        placements.B = 'zone-2';
+        placements.D = 'zone-3'; // Incorrect choice for review display
+        submitted = { ...placements };
+        review();
+      } else {
+        // Normal initialization
+        if (bridge && bridge.state && bridge.state.submitted) {
+          mode = 'SUBMITTED';
+          review();
+        } else {
+          mode = 'READY';
+          draw();
+          send('Q004_REQUEST_STATE');
+        }
+      }
+    })();
+  </script>
+
+  <script src="js/motion-controller.js"></script>
+  <script>
+    (function() {
+      var mc = new DICVMotionController({
+        quizId: 'Q004',
+        container: document.querySelector('.shell')
+      });
+      mc.playEntrance();
+
+      var isSlow = false;
+      document.getElementById('btn-speed').addEventListener('click', function() {
+        isSlow = !isSlow;
+        this.textContent = isSlow ? 'Speed: 0.5x' : 'Speed: 1.0x';
+        document.documentElement.style.setProperty('--motion-dur-medium', isSlow ? '900ms' : '450ms');
+        document.documentElement.style.setProperty('--motion-dur-slow', isSlow ? '1100ms' : '550ms');
+        document.documentElement.style.setProperty('--motion-dur-normal', isSlow ? '700ms' : '350ms');
+      });
+
+      document.getElementById('btn-replay').addEventListener('click', function() {
+        var canvas = document.querySelector('.shell');
+        canvas.classList.remove('motion-instant-ready');
+        var anims = canvas.querySelectorAll('.motion-animate-in');
+        anims.forEach(function(el) {
+          el.style.animation = 'none';
+          void el.offsetWidth;
+          el.style.animation = '';
+        });
+        mc.playEntrance();
+      });
+
+      document.getElementById('btn-reduced').addEventListener('click', function() {
+        var isReduced = document.body.classList.toggle('prefers-reduced-motion-simulated');
+        this.textContent = isReduced ? 'Reduced Motion: ON' : 'Reduced Motion: OFF';
+        if (isReduced) {
+          document.querySelector('.shell').classList.add('motion-instant-ready');
+        } else {
+          document.querySelector('.shell').classList.remove('motion-instant-ready');
+        }
+      });
+
+      document.getElementById('btn-reveal').addEventListener('click', function() {
+        var cardElements = [
+          { status: 'CORRECT', element: document.querySelector('.card[data-id="A"]') },
+          { status: 'CORRECT', element: document.querySelector('.card[data-id="B"]') },
+          { status: 'INCORRECT', element: document.querySelector('.card[data-id="C"]') },
+          { status: 'CORRECT', element: document.querySelector('.card[data-id="D"]') }
+        ];
+        mc.sequenceAnswerReveal(cardElements);
+      });
+    })();
+  </script>
+</body>
+</html>

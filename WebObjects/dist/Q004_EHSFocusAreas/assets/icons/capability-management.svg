@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Head Profile facing left with gear inside cranium -->
+  <path d="M22 54 C22 47 26 43 31 41 C23 39 18 32 18 23 C18 13 25 7 35 7 C45 7 52 14 52 23 C52 30 48 36 42 39 C42 45 45 48 48 54" stroke="#004355" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Gear inside cranium -->
+  <g transform="translate(35, 23)">
+    <circle cx="0" cy="0" r="8" fill="#FFFF40" stroke="#004355" stroke-width="2"/>
+    <path d="M-2.5 -11 h5 v3 h-5 z M-2.5 8 h5 v3 h-5 z M-11 -2.5 h3 v5 h-3 z M8 -2.5 h3 v5 h-3 z M-8.5 -8.5 l3.5 3.5 l-2.5 2.5 l-3.5 -3.5 z M6 -6 l3.5 -3.5 l2.5 2.5 l-3.5 3.5 z M-8.5 6 l3.5 -3.5 l2.5 2.5 l-3.5 3.5 z M6 8.5 l3.5 3.5 l-2.5 2.5 l-3.5 -3.5 z" fill="#004355"/>
+    <circle cx="0" cy="0" r="3" fill="#004355"/>
+  </g>
+</svg>

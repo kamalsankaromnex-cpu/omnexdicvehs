@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q001 — Accident Prediction Quiz | DICV Interactive</title>
+  <link rel="stylesheet" href="../../shared/styles/fonts.css">
+  <link rel="stylesheet" href="../../shared/styles/quiz-hud.css">
+  <style>
+    /* ==========================================================================
+       Daimler Design System Tokens — Q001 Precision Spacing & Alignment
+       ========================================================================== */
+    :root {
+      --canvas-width: 806px;
+      --canvas-height: 962px;
+      --canvas-radius: 18px;
+
+      /* Corporate Petrol Gradient */
+      --q-petrol-deep: #003644;
+      --q-petrol-dark: #004355;
+      --q-petrol: #00677F;
+      --q-petrol-light: #5097AB;
+      --q-petrol-hover: #00566A;
+      --q-petrol-subtle: #F0F7F9;
+
+      /* Accents and Neutrals */
+      --q-yellow: #FFFF40;
+      --q-text-dark: #171B1F;
+      --q-text-subtle: #64717B;
+      --q-card-border: #CFDEE3;
+      --q-card-hover-border: #70AAB8;
+      --q-white: #FFFFFF;
+
+      /* Reveal States */
+      --q-correct-green: #008248;
+      --q-correct-bg: #E8F7ED;
+      --q-correct-border: #28A745;
+      --q-incorrect-red: #D92323;
+      --q-incorrect-bg: #FDF0F0;
+      --q-incorrect-border: #E03131;
+
+      --font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      font-family: var(--font-family);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Outer Canvas Box with HUD Tech-Frame */
+    .quiz-container {
+      position: relative;
+      width: var(--canvas-width);
+      height: var(--canvas-height);
+      max-width: 100vw;
+      max-height: 100vh;
+      margin: 0 auto;
+      background: var(--hud-shell-bg, rgba(12, 36, 49, 0.92));
+      border-radius: 12px;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: none;
+      padding: 20px 18px 14px;
+    }
+
+    /* ==========================================================================
+       Header Section: Rhombus Petrol Question Banner
+       ========================================================================== */
+    .quiz-header {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      padding: 6px 24px 0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quiz-header .rhombus-banner {
+      width: 100%;
+      min-height: 68px;
+      padding: 10px 44px;
+    }
+
+    .question-title {
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 25px;
+      line-height: 1.2;
+      color: var(--q-white);
+      margin: 0;
+      letter-spacing: -0.2px;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       Instruction Bar
+       ========================================================================== */
+    .instruction-row {
+      position: relative;
+      z-index: 3;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .instruction-text {
+      font-family: var(--font-family);
+      font-weight: 600;
+      font-size: 17px;
+      color: #DCECF2;
+      margin: 0;
+      letter-spacing: 0.1px;
+    }
+
+    /* ==========================================================================
+       Cards Container: 4 Cards of 140px with Uniform 34px Gaps
+       ========================================================================== */
+    .cards-container {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 0 28px;
+      flex-shrink: 0;
+    }
+
+    .answer-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 140px;
+      padding: 0 24px;
+      background-color: var(--q-white);
+      border: 1.5px solid #C4D7E2;
+      border-radius: 18px;
+      box-shadow: 0 4px 14px rgba(0, 67, 85, 0.06);
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      outline: none;
+      animation: cardSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    .answer-card:nth-child(1) { animation-delay: 0.03s; }
+    .answer-card:nth-child(2) { animation-delay: 0.06s; }
+    .answer-card:nth-child(3) { animation-delay: 0.09s; }
+    .answer-card:nth-child(4) { animation-delay: 0.12s; }
+
+    @keyframes cardSlideUp {
+      from { transform: translateY(4px); }
+      to { transform: translateY(0); }
+    }
+
+    /* Card Interactive States */
+    .answer-card:hover:not(.is-disabled):not(.is-locked) {
+      border-color: var(--q-petrol);
+      background-color: #FAFCFD;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(0, 67, 85, 0.12);
+    }
+
+    .answer-card:active:not(.is-disabled):not(.is-locked) {
+      transform: scale(0.99);
+      transition-duration: 0.08s;
+    }
+
+    .answer-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(0, 103, 127, 0.35);
+      border-color: var(--q-petrol);
+    }
+
+    .answer-card.is-selected {
+      border: 2.5px solid var(--q-petrol-dark);
+      background-color: #F4FAFC;
+      box-shadow: 0 6px 18px rgba(0, 67, 85, 0.14);
+    }
+
+    /* Checkbox Indicator: 26x26px, Centered Alignment */
+    .checkbox-box {
+      width: 26px;
+      height: 26px;
+      border: 2px solid #829AA7;
+      border-radius: 6px;
+      background-color: var(--q-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-right: 22px;
+      transition: all 0.16s ease;
+    }
+
+    .answer-card:hover:not(.is-disabled):not(.is-locked) .checkbox-box {
+      border-color: var(--q-petrol);
+    }
+
+    .answer-card.is-selected .checkbox-box {
+      background-color: var(--q-yellow);
+      border-color: var(--q-petrol-dark);
+      transform: scale(1.10);
+      box-shadow: 0 2px 8px rgba(0, 67, 85, 0.20);
+    }
+
+    .checkbox-box svg {
+      width: 16px;
+      height: 16px;
+      stroke: #000000 !important;
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      display: none;
+    }
+
+    .answer-card.is-selected .checkbox-box svg {
+      display: block;
+    }
+
+    /* Thumbnail Image: 214x120px, Exact 16:9 Aspect Ratio */
+    .card-thumb {
+      width: 214px;
+      height: 120px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-right: 24px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
+      border: 1px solid rgba(0, 67, 85, 0.12);
+    }
+
+    /* Text Group: Vertically Centered with Thumbnail & Checkbox */
+    .card-label-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      font-size: 26px;
+      line-height: 1.3;
+    }
+
+    .card-letter {
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--q-petrol);
+    }
+
+    .card-title {
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--q-text-dark);
+      letter-spacing: -0.15px;
+    }
+
+    /* ==========================================================================
+       Footer Section: Exactly 136px Height, Seamless Pure White Background
+       ========================================================================== */
+    .quiz-footer {
+      position: relative;
+      z-index: 3;
+      height: 92px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background-color: transparent;
+      flex-shrink: 0;
+      border-top: none;
+      box-sizing: border-box;
+    }
+
+    .footer-help-text {
+      font-family: var(--font-family);
+      font-size: 17px;
+      color: #DCECF2;
+    }
+
+    .footer-buttons {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn {
+      height: 50px;
+      padding: 0 28px;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 19px;
+      border-radius: 25px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      outline: none;
+      transition: all 0.18s ease;
+    }
+
+    .btn:focus-visible {
+      box-shadow: 0 0 0 3px rgba(0, 103, 127, 0.35);
+    }
+
+    .btn-reset {
+      background-color: var(--q-white);
+      color: var(--q-petrol-dark);
+      border: 1.5px solid #C4D7E2;
+      min-width: 110px;
+    }
+
+    .btn-reset:hover:not(:disabled) {
+      background-color: #F8FAFB;
+      border-color: var(--q-petrol);
+      transform: translateY(-2px);
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #FFE63B 0%, #FFFF40 100%);
+      color: var(--q-petrol-dark);
+      border: 2.5px solid var(--q-petrol-dark);
+      min-width: 170px;
+      font-style: normal;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    }
+
+    .btn-submit .submit-arrow {
+      color: var(--q-petrol-dark);
+      font-style: normal;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 900;
+      display: inline-block;
+      transition: transform 0.16s ease;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: #FFF91A;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    .btn-submit:hover:not(:disabled) .submit-arrow {
+      transform: translateX(4px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      border: 2px solid rgba(255, 255, 64, 0.35);
+      background: rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.65);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-submit:disabled .submit-arrow {
+      color: rgba(255, 255, 64, 0.55);
+    }
+
+    .quiz-canvas.is-locked .btn-submit,
+    .quiz-canvas.is-locked .btn-reset {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .btn-reset:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      border-color: #DCE6EA;
+      color: var(--q-mid-grey);
+      transform: none;
+    }
+
+    /* ==========================================================================
+       Reveal States (Triggered by Storyline post-feedback command)
+       ========================================================================== */
+    .answer-card.is-revealed-correct {
+      border-color: var(--q-correct-border) !important;
+      background-color: var(--q-correct-bg) !important;
+    }
+
+    .answer-card.is-revealed-correct::after {
+      content: '✓ Approved Answer';
+      position: absolute;
+      top: -9px;
+      right: 16px;
+      background-color: var(--q-correct-green);
+      color: var(--q-white);
+      font-family: var(--font-family);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .answer-card.is-revealed-incorrect {
+      border-color: var(--q-incorrect-border) !important;
+      background-color: var(--q-incorrect-bg) !important;
+    }
+
+    .answer-card.is-revealed-incorrect::after {
+      content: 'Selected';
+      position: absolute;
+      top: -9px;
+      right: 16px;
+      background-color: var(--q-incorrect-red);
+      color: var(--q-white);
+      font-family: var(--font-family);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .quiz-container.is-locked .answer-card {
+      cursor: default;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container" id="quiz-canvas" role="region" aria-label="Accident Prediction Quiz">
+    <!-- Decorative HUD Tech-Frame SVG (strictly non-interactive) -->
+    <svg class="hud-frame-svg" viewBox="0 0 806 900" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="hudGold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#FFE63B"/><stop offset="50%" stop-color="#FFC400"/><stop offset="100%" stop-color="#FFFF40"/>
+        </linearGradient>
+      </defs>
+      <rect x="2.5" y="2.5" width="801" height="895" fill="none" stroke="#18223D" stroke-width="5"/>
+      <rect x="11" y="11" width="784" height="878" fill="none" stroke="#364B6E" stroke-width="1.5"/>
+      <polygon points="0,0 220,0 206,12 88,12 74,22 12,22 12,110 0,124" fill="url(#hudGold)"/>
+      <polygon points="806,0 586,0 600,12 718,12 732,22 794,22 794,110 806,124" fill="url(#hudGold)"/>
+      <polygon points="0,900 220,900 206,888 88,888 74,878 12,878 12,790 0,776" fill="url(#hudGold)"/>
+      <polygon points="806,900 586,900 600,888 718,888 732,878 794,878 794,790 806,776" fill="url(#hudGold)"/>
+      <polygon points="270,900 536,900 518,880 288,880" fill="url(#hudGold)"/>
+    </svg>
+
+    <!-- Header with Rhombus Petrol Question Banner -->
+    <header class="quiz-header">
+      <div class="rhombus-banner">
+        <svg class="rhombus-banner-svg" viewBox="0 0 740 68" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="petrolRhombus" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#003545"/><stop offset="100%" stop-color="#006D87"/>
+            </linearGradient>
+          </defs>
+          <polygon points="26,2 736,2 714,66 4,66" fill="url(#petrolRhombus)" stroke="#FFFF40" stroke-width="2.5" stroke-linejoin="round"/>
+        </svg>
+        <h1 class="question-title rhombus-banner-text">
+          Which of these people will experience the next accident?
+        </h1>
+      </div>
+    </header>
+
+    <!-- Subtitle Instruction -->
+    <div class="instruction-row">
+      <p class="instruction-text">Select the option(s) you think apply.</p>
+    </div>
+
+    <!-- Answer Cards List -->
+    <main class="cards-container" id="cards-container" role="group" aria-label="Answer options">
+      <!-- Card A -->
+      <div class="answer-card" data-option-id="A" role="checkbox" aria-checked="false" tabindex="0">
+        <div class="checkbox-box" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+        </div>
+        <img class="card-thumb" src="assets/thumb_employee_walking.png" alt="Employee walking" loading="eager">
+        <div class="card-label-group">
+          <span class="card-letter">A.</span>
+          <span class="card-title">Employee walking</span>
+        </div>
+      </div>
+
+      <!-- Card B -->
+      <div class="answer-card" data-option-id="B" role="checkbox" aria-checked="false" tabindex="0">
+        <div class="checkbox-box" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+        </div>
+        <img class="card-thumb" src="assets/thumb_mhe_operator.png" alt="MHE operator" loading="eager">
+        <div class="card-label-group">
+          <span class="card-letter">B.</span>
+          <span class="card-title">MHE operator</span>
+        </div>
+      </div>
+
+      <!-- Card C -->
+      <div class="answer-card" data-option-id="C" role="checkbox" aria-checked="false" tabindex="0">
+        <div class="checkbox-box" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+        </div>
+        <img class="card-thumb" src="assets/thumb_maintenance_tech.png" alt="Maintenance technician" loading="eager">
+        <div class="card-label-group">
+          <span class="card-letter">C.</span>
+          <span class="card-title">Maintenance technician</span>
+        </div>
+      </div>
+
+      <!-- Card D -->
+      <div class="answer-card" data-option-id="D" role="checkbox" aria-checked="false" tabindex="0">
+        <div class="checkbox-box" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+        </div>
+        <img class="card-thumb" src="assets/thumb_employee_ladder.png" alt="Employee using a ladder" loading="eager">
+        <div class="card-label-group">
+          <span class="card-letter">D.</span>
+          <span class="card-title">Employee using a ladder</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer: Seamless Pure White Background, Perfectly Aligned Guides -->
+    <footer class="quiz-footer">
+      <span class="footer-help-text" id="footer-status-text">Choose an answer to continue.</span>
+      <div class="footer-buttons">
+        <button type="button" class="btn btn-reset" id="btn-reset" disabled aria-label="Reset answer selections">Reset</button>
+        <button type="button" class="btn btn-submit" id="btn-submit" disabled aria-label="Submit answer selections">
+          <span>Submit</span>
+          <span class="submit-arrow">&#10132;</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Shared Storyline Integration Bridge -->
+  <script src="../../shared/storyline/storyline-bridge.js"></script>
+  <script src="../../shared/audio/sfx.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var QUIZ_ID = 'Q001';
+      var APPROVED_ANSWER_KEY = ['A', 'B', 'C', 'D']; // Safety training: anyone can experience an accident
+
+      var selectedOptions = [];
+      var isSubmitted = false;
+      var isLocked = false;
+
+      var canvasEl = document.getElementById('quiz-canvas');
+      var cardsContainer = document.getElementById('cards-container');
+      var answerCards = Array.from(document.querySelectorAll('.answer-card'));
+      var btnReset = document.getElementById('btn-reset');
+      var btnSubmit = document.getElementById('btn-submit');
+      var statusText = document.getElementById('footer-status-text');
+
+      // Initialize Storyline Communication Bridge
+      var bridge = new DICVStorylineBridge({
+        quizId: QUIZ_ID,
+        storylineVariables: {
+          submitted: 'Q001_Done',
+          answers: 'Q001_Answers',
+          correct: 'Q001_Correct',
+          revealed: 'Q001_Revealed'
+        },
+        onStateReceived: function (state) {
+          handleStorylineState(state);
+        },
+        onRevealAnswers: function (submittedAnswers) {
+          revealApprovedAnswers(submittedAnswers);
+        },
+        onResetAttempt: function () {
+          resetQuiz(true);
+        }
+      });
+
+      // Handle Card Selection
+      function toggleCard(card) {
+        if (isSubmitted || isLocked) return;
+
+        var optId = card.getAttribute('data-option-id');
+        var index = selectedOptions.indexOf(optId);
+
+        if (index > -1) {
+          selectedOptions.splice(index, 1);
+          card.classList.remove('is-selected');
+          card.setAttribute('aria-checked', 'false');
+          if (window.DICVSFX) window.DICVSFX.play('deselect');
+        } else {
+          selectedOptions.push(optId);
+          card.classList.add('is-selected');
+          card.setAttribute('aria-checked', 'true');
+          if (window.DICVSFX) window.DICVSFX.play('select');
+        }
+
+        updateControls();
+        bridge.notifyDraftChange(selectedOptions);
+      }
+
+      function updateControls() {
+        var hasSelection = selectedOptions.length > 0;
+        btnReset.disabled = !hasSelection || isSubmitted;
+        btnSubmit.disabled = !hasSelection || isSubmitted;
+
+        if (isSubmitted) {
+          statusText.textContent = 'Submitted. Reviewing feedback in Storyline...';
+        } else if (hasSelection) {
+          statusText.textContent = selectedOptions.length + ' option(s) selected.';
+        } else {
+          statusText.textContent = 'Choose an answer to continue.';
+        }
+      }
+
+      function resetQuiz(force) {
+        if ((isSubmitted || isLocked) && force !== true) return;
+        isSubmitted = false;
+        isLocked = false;
+        canvasEl.classList.remove('is-locked');
+        selectedOptions = [];
+        answerCards.forEach(function (card) {
+          card.classList.remove('is-selected', 'is-revealed-correct', 'is-revealed-incorrect');
+          card.setAttribute('aria-checked', 'false');
+        });
+        updateControls();
+        bridge.notifyDraftChange([]);
+      }
+
+      function submitQuiz() {
+        if (selectedOptions.length === 0 || isSubmitted) return;
+
+        isSubmitted = true;
+        isLocked = true;
+        canvasEl.classList.add('is-locked');
+
+        // Evaluate correctness against approved key
+        var isCorrect = false;
+        if (APPROVED_ANSWER_KEY && APPROVED_ANSWER_KEY.length > 0) {
+          var matchAll = APPROVED_ANSWER_KEY.every(function (k) {
+            return selectedOptions.indexOf(k) > -1;
+          });
+          isCorrect = matchAll && (selectedOptions.length === APPROVED_ANSWER_KEY.length);
+        }
+
+        // Lock buttons immediately
+        btnReset.disabled = true;
+        btnSubmit.disabled = true;
+        statusText.textContent = 'Submitted.';
+
+        // Single authoritative submission through bridge (handles GetPlayer SetVar & postMessage without duplicate toggles)
+        bridge.submit(selectedOptions.slice().sort(), isCorrect);
+      }
+
+      function handleStorylineState(state) {
+        if (state.submitted) {
+          isSubmitted = true;
+          isLocked = true;
+          canvasEl.classList.add('is-locked');
+
+          var prevAnswers = state.submittedSelection || [];
+          if (typeof prevAnswers === 'string') {
+            try { prevAnswers = JSON.parse(prevAnswers); } catch (e) { prevAnswers = prevAnswers.split(','); }
+          }
+          selectedOptions = Array.isArray(prevAnswers) ? prevAnswers : [prevAnswers];
+
+          answerCards.forEach(function (card) {
+            var optId = card.getAttribute('data-option-id');
+            var isSel = selectedOptions.indexOf(optId) > -1;
+            card.classList.toggle('is-selected', isSel);
+            card.setAttribute('aria-checked', isSel ? 'true' : 'false');
+          });
+
+          btnReset.disabled = true;
+          btnSubmit.disabled = true;
+          statusText.textContent = 'Submitted (Locked).';
+        } else if (state.draftSelection && state.draftSelection.length > 0) {
+          selectedOptions = state.draftSelection.slice();
+          answerCards.forEach(function (card) {
+            var optId = card.getAttribute('data-option-id');
+            var isSel = selectedOptions.indexOf(optId) > -1;
+            card.classList.toggle('is-selected', isSel);
+            card.setAttribute('aria-checked', isSel ? 'true' : 'false');
+          });
+          updateControls();
+        }
+      }
+
+      function revealApprovedAnswers(userAnswers) {
+        isSubmitted = true;
+        isLocked = true;
+        canvasEl.classList.add('is-locked');
+        btnReset.disabled = true;
+        btnSubmit.disabled = true;
+
+        var userSet = userAnswers || selectedOptions;
+        if (typeof userSet === 'string') {
+          try { userSet = JSON.parse(userSet); } catch (e) { userSet = userSet.split(','); }
+        }
+        if (!Array.isArray(userSet)) userSet = [];
+
+        answerCards.forEach(function (card) {
+          var optId = card.getAttribute('data-option-id');
+          var isApproved = APPROVED_ANSWER_KEY.indexOf(optId) > -1;
+          var wasSelected = userSet.indexOf(optId) > -1;
+
+          if (isApproved) {
+            card.classList.add('is-revealed-correct');
+          } else if (wasSelected && !isApproved) {
+            card.classList.add('is-revealed-incorrect');
+          }
+        });
+
+        statusText.textContent = 'Approved answers revealed.';
+      }
+
+      // Event Listeners
+      answerCards.forEach(function (card) {
+        card.addEventListener('click', function () {
+          toggleCard(card);
+        });
+
+        card.addEventListener('keydown', function (e) {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            toggleCard(card);
+          }
+        });
+      });
+
+      btnReset.addEventListener('click', function () {
+        resetQuiz(false);
+      });
+      btnSubmit.addEventListener('click', submitQuiz);
+
+    })();
+  </script>
+</body>
+</html>

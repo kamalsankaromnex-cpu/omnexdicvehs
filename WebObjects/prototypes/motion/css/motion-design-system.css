@@ -1,0 +1,373 @@
+/* ==========================================================================
+   DICV Interactive  Cinematic Animation & Motion System Tokens
+   Design Direction: Modern Minimal (50%) + Game Interaction (30%) + Comic Storytelling (20%)
+   Compliance: Daimler Corporate Design Guidelines + WCAG 2.1 AA Reduced Motion
+   ========================================================================== */
+
+:root {
+  /* Motion Timing Constants */
+  --motion-dur-instant: 150ms;
+  --motion-dur-fast: 220ms;
+  --motion-dur-normal: 320ms;
+  --motion-dur-medium: 450ms;
+  --motion-dur-slow: 550ms;
+
+  /* Sequential Entrance Delays */
+  --delay-header: 0ms;
+  --delay-diagram: 100ms;
+  --delay-instruction: 200ms;
+  --delay-card-1: 320ms;
+  --delay-card-2: 500ms;
+  --delay-card-3: 680ms;
+  --delay-card-4: 860ms;
+  --delay-card-5: 1040ms;
+  --delay-submit: 1200ms;
+
+  /* Cinematic Deceleration & Easing Curves */
+  /* Fluid deceleration without bounce (Daimler Precision) */
+  --ease-cinematic-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Smooth natural restorative return for invalid drag drops */
+  --ease-return: cubic-bezier(0.25, 1, 0.5, 1);
+  /* Responsive pickup and interactive lift */
+  --ease-pickup: cubic-bezier(0.2, 0, 0, 1);
+  /* Progressive focus reveal curve */
+  --ease-reveal: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Snappy micro-interaction curve */
+  --ease-micro: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Elevation Shadows for Motion */
+  --shadow-resting: 0 4px 16px rgba(0, 67, 85, 0.08);
+  --shadow-hover: 0 10px 28px rgba(0, 67, 85, 0.16);
+  --shadow-lifted: 0 18px 36px rgba(0, 67, 85, 0.26), 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-snapped: 0 6px 20px rgba(0, 67, 85, 0.14);
+}
+
+/* ==========================================================================
+   1. SEQUENTIAL ENTRANCE KEYFRAMES & UTILITY CLASSES
+   ========================================================================== */
+
+/* Fade In & Rise (Header, Instructions, Subtitles) */
+@keyframes motionFadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade In with Subtle Scale (Cards, Badges) */
+@keyframes motionCardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Diagram & Illustration Lateral Fade */
+@keyframes motionDiagramEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Path Draw Effect for Curves (Q005 Bradley Curve) */
+@keyframes motionPathDraw {
+  0% {
+    stroke-dashoffset: 1200;
+    opacity: 0.2;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* Base Motion Stagger Classes */
+.motion-animate-in {
+  opacity: 0;
+  animation-fill-mode: forwards;
+  animation-timing-function: var(--ease-cinematic-out);
+  will-change: transform, opacity;
+}
+
+.motion-seq-header {
+  animation-name: motionFadeSlideUp;
+  animation-duration: var(--motion-dur-medium);
+  animation-delay: var(--delay-header);
+}
+
+.motion-seq-diagram {
+  animation-name: motionDiagramEnter;
+  animation-duration: var(--motion-dur-slow);
+  animation-delay: var(--delay-diagram);
+}
+
+.motion-seq-instruction {
+  animation-name: motionFadeSlideUp;
+  animation-duration: var(--motion-dur-medium);
+  animation-delay: var(--delay-instruction);
+}
+
+.motion-seq-card-1 {
+  animation-name: motionCardEnter;
+  animation-duration: var(--motion-dur-normal);
+  animation-delay: var(--delay-card-1);
+}
+
+.motion-seq-card-2 {
+  animation-name: motionCardEnter;
+  animation-duration: var(--motion-dur-normal);
+  animation-delay: var(--delay-card-2);
+}
+
+.motion-seq-card-3 {
+  animation-name: motionCardEnter;
+  animation-duration: var(--motion-dur-normal);
+  animation-delay: var(--delay-card-3);
+}
+
+.motion-seq-card-4 {
+  animation-name: motionCardEnter;
+  animation-duration: var(--motion-dur-normal);
+  animation-delay: var(--delay-card-4);
+}
+
+.motion-seq-card-5 {
+  animation-name: motionCardEnter;
+  animation-duration: var(--motion-dur-normal);
+  animation-delay: var(--delay-card-5);
+}
+
+.motion-seq-submit {
+  animation-name: motionFadeSlideUp;
+  animation-duration: var(--motion-dur-normal);
+  animation-delay: var(--delay-submit);
+}
+
+/* Revisit / Instant Skip Class */
+.motion-instant-ready .motion-animate-in {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ==========================================================================
+   2. SELECTION & TACTILE MICRO-INTERACTIONS
+   ========================================================================== */
+
+.motion-card-tactile {
+  transition: transform var(--motion-dur-fast) var(--ease-cinematic-out),
+              box-shadow var(--motion-dur-fast) var(--ease-cinematic-out),
+              border-color var(--motion-dur-fast) ease,
+              background-color var(--motion-dur-fast) ease;
+  will-change: transform, box-shadow;
+}
+
+.motion-card-tactile:hover:not(:disabled):not(.is-disabled) {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.motion-card-tactile:active:not(:disabled):not(.is-disabled) {
+  transform: translateY(-1px) scale(0.995);
+  box-shadow: var(--shadow-resting);
+  transition-duration: 80ms;
+}
+
+/* Checkbox Pop Animation */
+@keyframes motionCheckPop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.motion-checkbox-check {
+  animation: motionCheckPop var(--motion-dur-fast) var(--ease-micro) forwards;
+}
+
+/* ==========================================================================
+   3. DRAG & DROP PHYSICS (Q004 & Q005)
+   ========================================================================== */
+
+/* Drag Pickup State */
+.motion-drag-lifted {
+  transform: scale(1.025) translateY(-6px) !important;
+  box-shadow: var(--shadow-lifted) !important;
+  z-index: 1000 !important;
+  cursor: grabbing !important;
+  transition: transform var(--motion-dur-fast) var(--ease-pickup),
+              box-shadow var(--motion-dur-fast) var(--ease-pickup) !important;
+  will-change: transform, box-shadow, left, top;
+}
+
+/* Source Placeholder */
+.motion-drag-placeholder {
+  opacity: 0.35;
+  border-style: dashed !important;
+  transform: scale(0.98);
+  filter: grayscale(40%);
+  pointer-events: none;
+}
+
+/* Target Hover Glow */
+.motion-target-hover {
+  border-color: #004355 !important;
+  background-color: rgba(255, 255, 64, 0.16) !important;
+  box-shadow: 0 0 0 3px rgba(0, 67, 85, 0.18) !important;
+  transform: scale(1.015);
+  transition: all var(--motion-dur-fast) var(--ease-cinematic-out);
+}
+
+/* Successful Drop Snap Animation */
+@keyframes motionDropSnapPulse {
+  0% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 4px #FFFF40;
+  }
+  40% {
+    transform: scale(0.99);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-snapped);
+  }
+}
+
+.motion-snap-success {
+  animation: motionDropSnapPulse 320ms var(--ease-cinematic-out) forwards;
+}
+
+/* Smooth Return for Invalid Drop */
+.motion-invalid-return {
+  transition: left var(--motion-dur-medium) var(--ease-return),
+              top var(--motion-dur-medium) var(--ease-return),
+              transform var(--motion-dur-medium) var(--ease-return),
+              box-shadow var(--motion-dur-medium) var(--ease-return) !important;
+  z-index: 999 !important;
+}
+
+/* FLIP Swap Animation Utility */
+.motion-flip-transition {
+  transition: transform var(--motion-dur-normal) var(--ease-cinematic-out) !important;
+  will-change: transform;
+}
+
+/* ==========================================================================
+   4. POST-FEEDBACK CORRECT-ANSWER REVEAL SEQUENCER
+   ========================================================================== */
+
+@keyframes motionRevealCorrectPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 130, 72, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 6px rgba(0, 130, 72, 0.15);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 16px rgba(0, 130, 72, 0.18);
+  }
+}
+
+@keyframes motionRevealIncorrectSettle {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.985);
+    opacity: 0.88;
+  }
+}
+
+@keyframes motionRevealMissedAmberPulse {
+  0% {
+    border-color: #D97706;
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.015);
+    box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.2);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 14px rgba(217, 119, 6, 0.15);
+  }
+}
+
+.motion-reveal-correct {
+  animation: motionRevealCorrectPulse 380ms var(--ease-reveal) forwards;
+  border-color: #008248 !important;
+  background-color: #E8F7ED !important;
+}
+
+.motion-reveal-incorrect {
+  animation: motionRevealIncorrectSettle 280ms var(--ease-reveal) forwards;
+  border-color: #D92323 !important;
+  background-color: #FDF0F0 !important;
+}
+
+.motion-reveal-missed {
+  animation: motionRevealMissedAmberPulse 350ms var(--ease-reveal) forwards;
+  border-color: #D97706 !important;
+  background-color: #FFF8E7 !important;
+}
+
+/* ==========================================================================
+   5. ACCESSIBILITY: REDUCED MOTION SUPPORT (WCAG 2.1 Criterion 2.3.3)
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .motion-animate-in {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .motion-card-tactile:hover {
+    transform: none !important;
+  }
+
+  .motion-drag-lifted {
+    transform: none !important;
+  }
+
+  .motion-snap-success,
+  .motion-reveal-correct,
+  .motion-reveal-incorrect,
+  .motion-reveal-missed {
+    animation: none !important;
+    transform: none !important;
+  }
+}

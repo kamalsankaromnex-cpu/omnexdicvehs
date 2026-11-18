@@ -1,0 +1,62 @@
+{
+  "quizId": "Q002",
+  "title": "DICV Safety Commitments",
+  "status": "ready-for-review",
+  "type": "multiple_response",
+  "canvas": {
+    "width": 1110,
+    "height": 900,
+    "radius": 20
+  },
+  "theme": "daimler-petrol-v1",
+  "question": "What should a company commit to for a safer workplace?",
+  "instruction": "Select all that apply.",
+  "helperText": "Choose one or more answers to continue.",
+  "options": [
+    {
+      "id": "A",
+      "row": "top",
+      "text": "The safety and well-being of employees",
+      "icon": "assets/icons/employees.png"
+    },
+    {
+      "id": "B",
+      "row": "top",
+      "text": "Protecting the environment",
+      "icon": "assets/icons/environment.png"
+    },
+    {
+      "id": "C",
+      "row": "top",
+      "text": "Using energy responsibly",
+      "icon": "assets/icons/energy.png"
+    },
+    {
+      "id": "D",
+      "row": "bottom",
+      "text": "Reducing risks and continuously improving",
+      "icon": "assets/icons/risk-reduction.png"
+    },
+    {
+      "id": "E",
+      "row": "bottom",
+      "text": "Ensuring compliance and active participation in safety",
+      "icon": "assets/icons/compliance.png"
+    }
+  ],
+  "approvedAnswerKey": ["A", "B", "C", "D", "E"],
+  "answerKeyStatus": "approved-all-five-commitments-apply",
+  "scoringRule": {
+    "correct": "A,B,C,D,E",
+    "partialCredit": false
+  },
+  "feedbackOwner": "storyline",
+  "revealPolicy": "after-feedback-dismissed",
+  "allowResubmitWithinAttempt": false,
+  "storylineVariables": {
+    "submitted": "Q002_Done",
+    "answers": "Q002_Answers",
+    "correct": "Q002_Correct",
+    "revealed": "Q002_Revealed"
+  }
+}

@@ -1,0 +1,87 @@
+/**
+ * Daimler Truck Typography Definition
+ * Fonts sourced from WebObjects/references/fonts/
+ * Designer: Kurt Weidemann | Typo: URW++ Design & Development
+ *
+ * Notice: Inspect licensing & embedding permissions prior to external distribution.
+ */
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-Demi.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-DemiItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Daimler CS';
+  src: url('../../references/fonts/DaimlerCS-ExtraBoldItalic.ttf') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}

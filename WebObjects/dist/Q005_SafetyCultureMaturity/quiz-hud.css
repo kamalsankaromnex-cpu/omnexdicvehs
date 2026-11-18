@@ -1,0 +1,129 @@
+/* ==========================================================================
+   DICV Interactive — Shared HUD Tech-Frame & Two-Portion Feedback System
+   Module: WebObjects/shared/styles/quiz-hud.css
+   ========================================================================== */
+:root {
+  --hud-petrol-dark: #004355;
+  --hud-petrol-deep: #003545;
+  --hud-petrol-end: #006D87;
+  --hud-shell-bg: rgba(6, 20, 29, 0.96);
+  --hud-panel-bg: rgba(6, 20, 29, 0.96);
+  --hud-panel-shadow: 0 22px 54px rgba(0, 0, 0, 0.52);
+  --hud-yellow: #FFFF40;
+  --hud-white: #FFFFFF;
+  --hud-off-white: #F5F7F8;
+  --hud-text-dark: #0A1419;
+  --hud-text-light: #EAF5F8;
+  --hud-text-muted: #CBE3EC;
+  --hud-neutral-grey: #657780;
+  --hud-correct: #008248;
+  --hud-incorrect: #D92323;
+}
+
+/* Decorative Vector HUD Frame (strictly non-interactive) */
+.hud-frame-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Rhombus Petrol Question Banner */
+.rhombus-banner {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 44px;
+  min-height: 52px;
+  box-sizing: border-box;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
+}
+
+.rhombus-banner-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.rhombus-banner-text {
+  margin: 0;
+  color: var(--hud-white);
+  font-family: var(--font-family, "Daimler CS", "Segoe UI", Arial, sans-serif);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.25;
+}
+
+/* Two-Portion Feedback Panel (Green/Red Top + White Bottom) */
+.feedback-side-panel.is-two-portion {
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden;
+  background: var(--hud-white) !important;
+  border: 2.5px solid var(--hud-correct) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.40) !important;
+}
+
+.feedback-side-panel.is-two-portion.is-missed {
+  border-color: var(--hud-incorrect) !important;
+}
+
+.feedback-side-panel.is-two-portion .feedback-top-portion {
+  background: var(--hud-correct);
+  color: var(--hud-white);
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.feedback-side-panel.is-two-portion.is-missed .feedback-top-portion {
+  background: var(--hud-incorrect);
+}
+
+.feedback-side-panel.is-two-portion .feedback-icon-circle {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 2.5px solid var(--hud-white) !important;
+  color: var(--hud-white) !important;
+}
+
+.feedback-side-panel.is-two-portion .feedback-badge {
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: var(--hud-white) !important;
+}
+
+.feedback-side-panel.is-two-portion .feedback-heading {
+  color: var(--hud-white) !important;
+}
+
+.feedback-side-panel.is-two-portion .feedback-bottom-portion {
+  background: var(--hud-white);
+  padding: 18px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feedback-side-panel.is-two-portion .feedback-body {
+  color: var(--hud-text-dark);
+}
+
+.feedback-side-panel.is-two-portion .btn-continue {
+  background: var(--hud-petrol-dark) !important;
+  color: var(--hud-white) !important;
+  border: 2.5px solid var(--hud-yellow) !important;
+  font-style: normal !important;
+}
+
+.feedback-side-panel.is-two-portion .btn-continue .submit-arrow,
+.feedback-side-panel.is-two-portion .btn-continue .arrow {
+  color: var(--hud-yellow) !important;
+}

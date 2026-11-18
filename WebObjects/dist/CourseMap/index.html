@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DICV Safety eLearning — Course Map</title>
+  <link rel="stylesheet" href="coursemap.css" />
+</head>
+<body>
+  <main id="map-stage" aria-label="DICV Safety Course Map">
+    <!-- Industrial Futuristic Factory Hall Background -->
+    <img class="industrial-bg" src="assets/map-bg.jpg" alt="" aria-hidden="true" draggable="false" />
+
+    <button type="button" class="map-close" id="btn-back-to-lesson">Close Map <span aria-hidden="true">×</span></button>
+    <section class="lesson-panel" id="lesson-panel" aria-labelledby="selected-module-title">
+      <div class="module-summary" aria-live="polite">
+        <span class="modal-module-tag" id="selected-module-tag">Module 1 of 6</span>
+        <h2 id="selected-module-title">DICV Safety Culture &amp; Vision Zero</h2>
+        <span class="module-state-pill" id="selected-module-state">Available</span>
+        <div class="modal-progress-row">
+          <span class="modal-progress-label" id="modal-progress-label">0 of 6 Lessons Complete</span>
+          <div class="modal-progress-track" aria-hidden="true">
+            <div class="modal-progress-fill" id="modal-progress-fill"></div>
+          </div>
+        </div>
+        <button type="button" class="resume-btn" id="btn-resume-next">Start First Lesson →</button>
+      </div>
+      <div class="module-lessons">
+        <div class="topics-grid" id="topics-grid"></div>
+        <div class="denied-banner" id="denied-banner" role="status"></div>
+      </div>
+    </section>
+
+    <!-- Conveyor Belt Assembly (Full convey.svg 3D Perspective) -->
+    <section class="conveyor-stage" aria-label="Course Modules Conveyor Belt">
+      <div class="conveyor-assembly">
+        <img src="SVG/Full converyor belt latest.svg" class="conveyor-chassis" alt="" draggable="false" />
+
+        <!-- Subtle Animated Belt Slats Over Top Deck -->
+        <div class="conveyor-deck-clip" aria-hidden="true">
+          <div class="conveyor-slats"></div>
+        </div>
+
+        <!-- VO-Synchronized Pathway Glow Beam (Block 1 -> Block 2) -->
+        <div class="conveyor-pathway-pulse" id="conveyor-pathway-pulse" aria-hidden="true"></div>
+
+        <!-- 6 Interactive Module Checkpoints -->
+        <div class="checkpoints-layer" id="checkpoints-row"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="coursemap-data.js"></script>
+  <script src="coursemap-bridge.js"></script>
+  <script src="coursemap.js"></script>
+</body>
+</html>

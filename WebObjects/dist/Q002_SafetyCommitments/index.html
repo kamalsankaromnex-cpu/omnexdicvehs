@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q002 — DICV Safety Commitments | DICV Interactive</title>
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="quiz-hud.css">
+  <style>
+    /* ==========================================================================
+       Daimler Design System Tokens — Q002 Safety Commitments (Corporate Petrol)
+       Harmonized with Quiz 1 Brand Palette & Diagonal Beveled Background Panel
+       ========================================================================== */
+    :root {
+      --canvas-width: 1110px;
+      --canvas-height: 900px;
+
+      /* Official Daimler Corporate Petrol Palette (Harmonized with Quiz 1) */
+      --q-petrol-deep: #003644;
+      --q-petrol-dark: #004355;
+      --q-petrol: #00677F;
+      --q-petrol-bright: #028DA6;
+      --q-petrol-light: #5097AB;
+      --q-petrol-hover: #00566A;
+      --q-petrol-subtle: #F0F9FB;
+
+      /* Card Surfaces & Distinct Petrol Outlines matching Reference */
+      --q-card-border: #00677F;
+      --q-card-border-selected: #00677F;
+      --q-card-hover-border: #028DA6;
+      --q-panel-bg: #FFFFFF;
+      --q-panel-border: #D6E3E8;
+
+      /* Neutrals & Text */
+      --q-dark: #1F2428;
+      --q-text-dark: #000000;
+      --q-text-subtle: #444444;
+      --q-white: #FFFFFF;
+      --q-accent-yellow: #FFFF40;
+
+      /* Post-Feedback Review Mode Semantic States */
+      --q-correct-green: #008248;
+      --q-correct-border: #28A745;
+      --q-correct-bg: #E8F7ED;
+      --q-amber: #D97706;
+      --q-amber-border: #E67E22;
+      --q-amber-bg: #FFF8E7;
+
+      --font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      font-family: var(--font-family);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Outer Transparent Viewport matching Storyline Slide Canvas */
+    .quiz-viewport {
+      position: relative;
+      width: var(--canvas-width);
+      height: var(--canvas-height);
+      max-width: 100vw;
+      max-height: 100vh;
+      margin: 0 auto;
+      background-color: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Staggered One-by-One Entrance Animation Keyframes */
+    @keyframes itemEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(22px) scale(0.96);
+      }
+      65% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.008);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes panelFade {
+      0% {
+        opacity: 0;
+        transform: scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes checkPop {
+      0% {
+        transform: scale(0.4);
+        opacity: 0;
+      }
+      70% {
+        transform: scale(1.15);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* ==========================================================================
+       Dim Dark-Petrol HUD Tech-Frame Container
+       ========================================================================== */
+    .main-panel-box {
+      position: absolute;
+      top: 48px;
+      left: 35px;
+      width: 1040px;
+      height: 786px;
+      background: var(--hud-panel-bg);
+      border-radius: 20px;
+      box-shadow: var(--hud-panel-shadow);
+      z-index: 1;
+      pointer-events: none;
+      animation: panelFade 0.4s ease-out backwards;
+    }
+
+    /* ==========================================================================
+       1. Question Heading Tab: Rhombus Petrol Banner with Yellow Stroke
+       ========================================================================== */
+    .question-tab-container {
+      position: relative;
+      z-index: 10;
+      margin-top: 12px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      flex-shrink: 0;
+      animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.05s backwards;
+    }
+
+    .question-tab-container .rhombus-banner {
+      width: 960px;
+      height: 80px;
+    }
+
+    .question-title {
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-style: normal;
+      font-size: 29px;
+      line-height: 1.25;
+      color: var(--q-white);
+      margin: 0;
+      text-align: center;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    /* ==========================================================================
+       2. Instruction Row: Clean Corporate Instruction (Daimler CS Regular)
+       ========================================================================== */
+    .instruction-row {
+      position: relative;
+      z-index: 5;
+      height: 38px;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      animation: itemEntrance 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.14s backwards;
+    }
+
+    .instruction-text {
+      font-family: var(--font-family);
+      font-weight: 500;
+      font-style: normal;
+      font-size: 21px;
+      color: var(--hud-text-light, #EAF5F8);
+      letter-spacing: 0.1px;
+    }
+
+    /* ==========================================================================
+       3. Answer Cards: Balanced 3 + 2 Grid Inside Diagonal White Panel
+       ========================================================================== */
+    .cards-grid {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin-top: 12px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .cards-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .cards-row-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      width: 100%;
+    }
+
+    /* Staggered Entrance Delays for Answer Cards */
+    .answer-card[data-option-id="A"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.22s backwards; }
+    .answer-card[data-option-id="B"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.30s backwards; }
+    .answer-card[data-option-id="C"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.38s backwards; }
+    .answer-card[data-option-id="D"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.46s backwards; }
+    .answer-card[data-option-id="E"] { animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.54s backwards; }
+
+    /* Individual Card Box */
+    .answer-card {
+      position: relative;
+      background-color: var(--q-white);
+      border: 3px solid var(--q-card-border);
+      border-radius: 20px;
+      height: 255px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 4px 14px rgba(0, 103, 127, 0.08);
+      transition: all 0.20s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cards-row-top .answer-card {
+      width: 316px;
+    }
+
+    .cards-row-bottom .answer-card {
+      width: 388px;
+    }
+
+    /* Custom Checkbox Indicator at Upper-Left (Size: 34 × 34 px) */
+    .card-checkbox {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 34px;
+      height: 34px;
+      border: 2.8px solid var(--q-card-border);
+      border-radius: 9px;
+      background-color: var(--q-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.16s ease;
+      z-index: 2;
+    }
+
+    .card-checkbox svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--q-white);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      display: none;
+    }
+
+    /* Review Status Badge at Upper-Right */
+    .card-review-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-family: var(--font-family);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 6px;
+      display: none;
+      z-index: 2;
+    }
+
+    /* Consistent Icon Container across all 5 cards */
+    .card-icon-container {
+      width: 120px;
+      height: 102px;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-icon {
+      max-height: 98px;
+      max-width: 116px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.12));
+    }
+
+    /* Card Answer Label (Daimler CS Bold 30px, Option E 27px) */
+    .card-label {
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 30px;
+      line-height: 1.22;
+      color: #0E1418;
+      text-align: center;
+      text-wrap: balance;
+      hyphens: none;
+      padding: 0 18px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+      min-height: 76px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .answer-card[data-option-id="E"] .card-label {
+      font-size: 27px;
+      line-height: 1.20;
+      padding: 0 16px;
+    }
+
+    /* Card Interactive States */
+    .answer-card:hover:not(.is-disabled):not(.is-locked) {
+      border-color: #0294AD;
+      background-color: #FAFCFD;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(0, 103, 127, 0.15);
+    }
+
+    .answer-card:hover:not(.is-disabled):not(.is-locked) .card-checkbox {
+      border-color: #0294AD;
+    }
+
+    .answer-card:active:not(.is-disabled):not(.is-locked) {
+      transform: translateY(0);
+      transition-duration: 0.08s;
+    }
+
+    .answer-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(0, 103, 127, 0.40);
+      border-color: var(--q-petrol);
+    }
+
+    /* Selected State (Corporate Petrol Outline & Daimler Yellow Checkbox) */
+    .answer-card.is-selected {
+      border: 3px solid var(--q-petrol) !important;
+      background-color: var(--q-petrol-subtle) !important;
+      box-shadow: 0 6px 18px rgba(0, 103, 127, 0.16) !important;
+      transform: translateY(-3px);
+    }
+
+    .answer-card.is-selected .card-checkbox {
+      background-color: var(--q-accent-yellow) !important;
+      border-color: #D6D600 !important;
+      transform: scale(1.08);
+      box-shadow: 0 2px 8px rgba(214, 214, 0, 0.40);
+    }
+
+    .answer-card.is-selected .card-checkbox svg {
+      display: block;
+      stroke: var(--q-text-dark, #000000) !important;
+      stroke-width: 3.8 !important;
+      animation: checkPop 0.20s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* ==========================================================================
+       4. Post-Feedback Review Mode States
+       ========================================================================== */
+    .answer-card.is-review-selected {
+      border: 3.5px solid var(--q-correct-border) !important;
+      background-color: var(--q-correct-bg) !important;
+    }
+
+    .answer-card.is-review-selected .card-checkbox {
+      background-color: var(--q-correct-green) !important;
+      border-color: var(--q-correct-green) !important;
+    }
+
+    .answer-card.is-review-selected .card-checkbox svg {
+      display: block !important;
+    }
+
+    .answer-card.is-review-selected .card-review-badge {
+      display: block;
+      background-color: var(--q-correct-green);
+      color: var(--q-white);
+    }
+
+    .answer-card.is-review-missed {
+      border: 3.5px solid var(--q-amber-border) !important;
+      background-color: var(--q-amber-bg) !important;
+    }
+
+    .answer-card.is-review-missed .card-checkbox {
+      background-color: var(--q-white) !important;
+      border: 2.5px solid var(--q-amber-border) !important;
+    }
+
+    .answer-card.is-review-missed .card-checkbox svg {
+      display: block !important;
+      stroke: var(--q-correct-green) !important;
+    }
+
+    .answer-card.is-review-missed .card-review-badge {
+      display: block;
+      background-color: var(--q-amber);
+      color: var(--q-white);
+    }
+
+    .quiz-viewport.is-locked .answer-card {
+      cursor: default;
+    }
+
+    /* ==========================================================================
+       5. Centered Submit Button: Reduced Gap & High Contrast (Height: 64px)
+       ========================================================================== */
+    .footer-action-row {
+      position: relative;
+      z-index: 10;
+      margin-top: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      animation: itemEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.62s backwards;
+    }
+
+    .btn-submit {
+      width: 250px;
+      height: 56px;
+      border-radius: 28px;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-style: normal;
+      font-size: 23px;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      outline: none;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 14px rgba(0, 67, 85, 0.25);
+    }
+
+    .btn-submit:not(:disabled) {
+      background: var(--q-accent-yellow);
+      color: var(--hud-text-dark, #0A1419);
+      border: 2px solid #C8C800;
+      box-shadow: 0 8px 22px rgba(255, 255, 64, 0.28);
+    }
+
+    .btn-submit:not(:disabled):hover {
+      background: #F4F420;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(255, 255, 64, 0.38);
+    }
+
+    .btn-submit:not(:disabled):hover .submit-arrow {
+      transform: translateX(4px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 1;
+      cursor: not-allowed;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.14);
+      color: rgba(234, 245, 248, 0.45);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-submit .submit-arrow {
+      color: var(--hud-text-dark, #0A1419);
+      font-style: normal;
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 900;
+      display: inline-block;
+      transition: transform 0.16s ease;
+    }
+
+    .btn-submit:disabled .submit-arrow {
+      color: rgba(234, 245, 248, 0.45);
+    }
+
+    .quiz-viewport.is-locked .btn-submit {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* Stage 3 Right-Side Feedback Panel (inside 1800x900 Split Mode) */
+    .feedback-side-panel {
+      display: none;
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      width: 620px;
+      background: #FFFFFF;
+      border: 2px solid var(--q-correct-border);
+      border-top: 8px solid var(--q-correct-green);
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(0, 67, 85, 0.16);
+      padding: 30px 34px 28px;
+      box-sizing: border-box;
+      flex-direction: column;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(-50%) translateX(24px);
+      pointer-events: none;
+      transition: opacity 0.45s ease 0.12s, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+      z-index: 20;
+    }
+
+    .feedback-side-panel.is-missed {
+      border-color: #E03131;
+      border-top-color: #D92323;
+    }
+
+    body.is-split-mode .feedback-side-panel {
+      display: flex;
+    }
+
+    body.is-split-mode:not(.is-feedback-split) .feedback-side-panel {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    body.is-split-mode.is-feedback-split .feedback-side-panel {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+      pointer-events: auto;
+    }
+
+    .feedback-header-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .feedback-icon-circle {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--q-correct-bg);
+      border: 2px solid var(--q-correct-border);
+      color: var(--q-correct-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feedback-side-panel.is-missed .feedback-icon-circle {
+      background: #FDF0F0;
+      border-color: #E03131;
+      color: #D92323;
+    }
+
+    .feedback-icon-circle svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 3.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feedback-icon-cross {
+      display: none;
+    }
+
+    .feedback-side-panel.is-missed .feedback-icon-tick {
+      display: none;
+    }
+
+    .feedback-side-panel.is-missed .feedback-icon-cross {
+      display: block;
+    }
+
+    .feedback-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .feedback-badge {
+      align-self: flex-start;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: #FFFFFF;
+      background: var(--q-correct-green);
+    }
+
+    .feedback-side-panel.is-missed .feedback-badge {
+      background: #D92323;
+    }
+
+    .feedback-heading {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--q-petrol-dark);
+      line-height: 1.15;
+    }
+
+    .feedback-divider {
+      height: 1px;
+      background: #E2ECEF;
+      width: 100%;
+    }
+
+    .feedback-body {
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #1F2428;
+    }
+
+    .feedback-actions {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .feedback-side-panel .btn-continue {
+      display: inline-flex;
+    }
+
+    .footer-help-text {
+      font-family: var(--font-family);
+      font-size: 17px;
+      color: var(--hud-text-muted, #CBE3EC);
+      font-weight: 500;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Headless & Snapshot Instant-Render Mode */
+    html.no-animation *,
+    html.no-animation *::before,
+    html.no-animation *::after {
+      animation: none !important;
+      transition: none !important;
+      opacity: 1 !important;
+    }
+
+    /* ==========================================================================
+       1800x900 Storyline Media-Sync Mode (Stage 1 Split -> Stage 2 Expanded)
+       ========================================================================== */
+    body.is-split-mode {
+      width: 1800px;
+      height: 900px;
+      position: relative;
+      pointer-events: none;
+    }
+
+    body.is-split-mode .quiz-viewport {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      width: 1110px;
+      height: 900px;
+      max-width: none;
+      max-height: none;
+      transform-origin: right center;
+      transform: scale(0.8018);
+      pointer-events: auto;
+      transition: right 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.is-split-mode.is-split-expanded .quiz-viewport {
+      right: 345px;
+      transform: scale(1);
+    }
+
+    body.is-split-mode.is-feedback-split .quiz-viewport,
+    body.is-split-mode.is-split-expanded.is-feedback-split .quiz-viewport {
+      right: 690px;
+      transform: scale(0.96);
+    }
+
+    body.is-media-locked .answer-card {
+      pointer-events: none !important;
+      cursor: not-allowed !important;
+    }
+
+    body.is-media-locked .btn-submit:disabled {
+      background: #9CA8AF !important;
+      border-color: #CBD4D9 !important;
+      color: #FFFFFF !important;
+      opacity: 1 !important;
+    }
+
+    body.is-media-locked .btn-submit:disabled .submit-arrow {
+      color: #FFFFFF !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body.is-split-mode .quiz-viewport {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-viewport" id="quiz-viewport" role="region" aria-label="DICV Safety Commitments Quiz">
+
+    <!-- Dim Dark-Petrol HUD Tech-Frame Background -->
+    <div class="main-panel-box" aria-hidden="true">
+      <svg class="hud-frame-svg" viewBox="0 0 1040 786" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="hudGradQ2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0294AD" stop-opacity="0.90" />
+            <stop offset="50%" stop-color="#00677F" stop-opacity="0.35" />
+            <stop offset="100%" stop-color="#FFFF40" stop-opacity="0.80" />
+          </linearGradient>
+        </defs>
+        <path d="M 28 2 L 1012 2 L 1038 28 L 1038 758 L 1012 784 L 28 784 L 2 758 L 2 28 Z" fill="none" stroke="url(#hudGradQ2)" stroke-width="2" />
+        <path d="M 2 44 L 2 28 L 28 2 L 56 2" fill="none" stroke="#FFFF40" stroke-width="3.5" stroke-linecap="square" />
+        <path d="M 984 2 L 1012 2 L 1038 28 L 1038 44" fill="none" stroke="#00D2FF" stroke-width="3.5" stroke-linecap="square" />
+        <path d="M 2 742 L 2 758 L 28 784 L 56 784" fill="none" stroke="#00D2FF" stroke-width="3.5" stroke-linecap="square" />
+        <path d="M 984 784 L 1012 784 L 1038 758 L 1038 742" fill="none" stroke="#FFFF40" stroke-width="3.5" stroke-linecap="square" />
+      </svg>
+    </div>
+
+    <!-- 1. Rhombus Petrol Question Banner with Yellow Stroke -->
+    <header class="question-tab-container">
+      <div class="rhombus-banner">
+        <svg class="rhombus-banner-svg" viewBox="0 0 960 80" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="rhombusGradQ2" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#003645" />
+              <stop offset="50%" stop-color="#005266" />
+              <stop offset="100%" stop-color="#003645" />
+            </linearGradient>
+          </defs>
+          <polygon points="34,2 926,2 958,40 926,78 34,78 2,40" fill="url(#rhombusGradQ2)" stroke="#FFFF40" stroke-width="2.5" />
+        </svg>
+        <h1 class="question-title rhombus-banner-text">
+          What should a company commit to for a safer workplace?
+        </h1>
+      </div>
+    </header>
+
+    <!-- 2. Clean Corporate Subtitle Instruction (Daimler CS Regular) -->
+    <div class="instruction-row">
+      <span class="instruction-text">Select all that apply.</span>
+    </div>
+
+    <!-- 3. Answer Cards 3 + 2 Grid -->
+    <main class="cards-grid" id="cards-grid" role="group" aria-label="Safety commitment options">
+      
+      <!-- Top Row: 3 Cards (A, B, C) -->
+      <div class="cards-row-top">
+        <!-- Card A: Employees -->
+        <div class="answer-card" data-option-id="A" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="assets/icons/employees.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">The safety and well-being of employees</div>
+        </div>
+
+        <!-- Card B: Environment -->
+        <div class="answer-card" data-option-id="B" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="assets/icons/environment.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">Protecting the environment</div>
+        </div>
+
+        <!-- Card C: Energy -->
+        <div class="answer-card" data-option-id="C" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="assets/icons/energy.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">Using energy responsibly</div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: 2 Cards (D, E) Centered -->
+      <div class="cards-row-bottom">
+        <!-- Card D: Risk Reduction -->
+        <div class="answer-card" data-option-id="D" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="assets/icons/risk-reduction.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">Reducing risks and continuously improving</div>
+        </div>
+
+        <!-- Card E: Compliance -->
+        <div class="answer-card" data-option-id="E" role="checkbox" aria-checked="false" tabindex="0">
+          <div class="card-checkbox" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"></path></svg>
+          </div>
+          <div class="card-review-badge">✓ Correct</div>
+          <div class="card-icon-container">
+            <img class="card-icon" src="assets/icons/compliance.png" alt="" aria-hidden="true" loading="eager">
+          </div>
+          <div class="card-label">Ensuring compliance and active participation in safety</div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 4. Centered Submit Button: Corporate Petrol Gradient (Mounted Overlapping Panel Bottom) -->
+    <footer class="footer-action-row">
+      <button type="button" class="btn-submit" id="btn-submit" disabled aria-label="Submit answer selections">
+        <span>Submit</span>
+        <span class="submit-arrow">&#10132;</span>
+      </button>
+      <span class="footer-help-text" id="footer-status-text">Choose one or more answers to continue.</span>
+    </footer>
+
+  </div>
+
+  <!-- Stage 3 Right-Side Two-Portion Feedback Panel (1800x900 Split Mode) -->
+  <aside class="feedback-side-panel is-two-portion" id="feedback-side-panel" role="status" aria-live="polite">
+    <div class="feedback-top-portion">
+      <div class="feedback-header-row">
+        <div class="feedback-icon-circle" aria-hidden="true">
+          <svg class="feedback-icon-tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg class="feedback-icon-cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <div class="feedback-title-group">
+          <span class="feedback-badge" id="feedback-badge">All 5 Commitments Selected</span>
+          <h2 class="feedback-heading" id="feedback-heading">Well done!</h2>
+        </div>
+      </div>
+    </div>
+    <div class="feedback-bottom-portion">
+      <p class="feedback-body" id="feedback-body">You've recognised that workplace safety involves more than preventing injuries. Let's see how DICV puts these commitments into practice.</p>
+      <div class="feedback-actions">
+        <button type="button" class="btn-submit btn-continue" id="btn-continue" aria-label="Continue to next slide">
+          <span>Continue</span>
+          <span class="submit-arrow">&#10132;</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Shared Storyline Integration Bridge -->
+  <script src="storyline-bridge.js"></script>
+  <script src="sfx.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var QUIZ_ID = 'Q002';
+      var APPROVED_ANSWER_KEY = ['A', 'B', 'C', 'D', 'E']; // All five commitments apply
+
+      var selectedOptions = [];
+      var isSubmitted = false;
+      var isLocked = false;
+      var isRevealed = false;
+      var isMediaLocked = false;
+      var isSplitMode = false;
+
+      var viewportEl = document.getElementById('quiz-viewport');
+      var instructionEl = document.querySelector('.instruction-text');
+      var answerCards = Array.from(document.querySelectorAll('.answer-card'));
+      var btnSubmit = document.getElementById('btn-submit');
+      var btnContinue = document.getElementById('btn-continue');
+      var feedbackPanelEl = document.getElementById('feedback-side-panel');
+      var feedbackBadgeEl = document.getElementById('feedback-badge');
+      var feedbackHeadingEl = document.getElementById('feedback-heading');
+      var feedbackBodyEl = document.getElementById('feedback-body');
+      var statusText = document.getElementById('footer-status-text');
+
+      function showSplitFeedback(allSelected) {
+        if (!isSplitMode || !feedbackPanelEl) return;
+        feedbackPanelEl.classList.toggle('is-missed', !allSelected);
+        if (allSelected) {
+          if (feedbackBadgeEl) feedbackBadgeEl.textContent = 'All 5 Commitments Selected';
+          if (feedbackHeadingEl) feedbackHeadingEl.textContent = 'Well done!';
+          if (feedbackBodyEl) feedbackBodyEl.textContent = "You've recognised that workplace safety involves more than preventing injuries. Let's see how DICV puts these commitments into practice.";
+        } else {
+          if (feedbackBadgeEl) feedbackBadgeEl.textContent = 'One or More Missed';
+          if (feedbackHeadingEl) feedbackHeadingEl.textContent = 'Good thinking!';
+          if (feedbackBodyEl) feedbackBodyEl.textContent = "A safer workplace depends on several commitments working together. Let's see how DICV approaches them.";
+        }
+        document.body.classList.add('is-feedback-split');
+      }
+
+      function initSplitMediaMode() {
+        var params;
+        try { params = new URLSearchParams(window.location.search || ''); } catch (e) { params = null; }
+        var modeParam = params ? params.get('mode') : null;
+        if (modeParam === 'standalone') return;
+        if (modeParam === 'split' || (window.innerWidth || 0) >= 1500) {
+          isSplitMode = true;
+          isMediaLocked = true;
+          document.body.classList.add('is-split-mode', 'is-media-locked');
+          answerCards.forEach(function (c) {
+            c.setAttribute('tabindex', '-1');
+            c.setAttribute('aria-disabled', 'true');
+          });
+          updateControls();
+        }
+      }
+
+      function completeMediaStage() {
+        if (!isSplitMode || !isMediaLocked) return;
+        document.body.classList.add('is-split-expanded');
+        var unlockDelay = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 560;
+        window.setTimeout(function () {
+          isMediaLocked = false;
+          document.body.classList.remove('is-media-locked');
+          answerCards.forEach(function (c) {
+            c.setAttribute('tabindex', '0');
+            c.setAttribute('aria-disabled', 'false');
+          });
+          if (instructionEl) instructionEl.textContent = 'Select all that apply.';
+          updateControls();
+        }, unlockDelay);
+      }
+
+      window.Q002_ON_MEDIA_COMPLETE = completeMediaStage;
+      window.addEventListener('message', function (e) {
+        if (window.parent && window.parent !== window && e.source !== window.parent) return;
+        var d = e && e.data;
+        if (d && typeof d === 'object' && d.source === 'DICV_STORYLINE_HOST' && d.type === 'Q002_MEDIA_COMPLETE') {
+          completeMediaStage();
+        }
+      });
+
+      // Initialize Storyline Communication Bridge
+      var bridge = new DICVStorylineBridge({
+        quizId: QUIZ_ID,
+        storylineVariables: {
+          submitted: 'Q002_Done',
+          answers: 'Q002_Answers',
+          correct: 'Q002_Correct',
+          revealed: 'Q002_Revealed'
+        },
+        onStateReceived: function (state) {
+          handleStorylineState(state);
+        },
+        onRevealAnswers: function (submittedAnswers) {
+          applyReviewMode(submittedAnswers);
+        },
+        onResetAttempt: function () {
+          resetAttempt();
+        }
+      });
+
+      // Card Selection Interaction
+      function toggleCard(card) {
+        if (isSubmitted || isLocked || isMediaLocked) return;
+
+        var optId = card.getAttribute('data-option-id');
+        var index = selectedOptions.indexOf(optId);
+
+        if (index > -1) {
+          selectedOptions.splice(index, 1);
+          card.classList.remove('is-selected');
+          card.setAttribute('aria-checked', 'false');
+          if (window.DICVSFX) window.DICVSFX.play('deselect');
+        } else {
+          selectedOptions.push(optId);
+          card.classList.add('is-selected');
+          card.setAttribute('aria-checked', 'true');
+          if (window.DICVSFX) window.DICVSFX.play('select');
+        }
+
+        updateControls();
+        bridge.notifyDraftChange(selectedOptions);
+      }
+
+      function updateControls() {
+        var hasSelection = selectedOptions.length > 0;
+        btnSubmit.disabled = !hasSelection || isSubmitted || isMediaLocked;
+
+        if (isRevealed) {
+          statusText.textContent = 'Review mode: All 5 commitments are essential.';
+        } else if (isMediaLocked) {
+          statusText.textContent = 'Watch the video to enable the quiz.';
+        } else if (isSubmitted) {
+          statusText.textContent = 'Submitted. Reviewing feedback in Storyline...';
+        } else if (hasSelection) {
+          statusText.textContent = selectedOptions.length + ' commitment(s) selected.';
+        } else {
+          statusText.textContent = 'Choose one or more answers to continue.';
+        }
+      }
+
+      function submitQuiz() {
+        if (selectedOptions.length === 0 || isSubmitted || isMediaLocked) return;
+
+        isSubmitted = true;
+        isLocked = true;
+        viewportEl.classList.add('is-locked');
+        btnSubmit.disabled = true;
+
+        // Deterministic Sort of selected options
+        selectedOptions.sort();
+
+        // Exact Evaluation: All five options A+B+C+D+E must be selected
+        var isCorrect = false;
+        if (selectedOptions.length === APPROVED_ANSWER_KEY.length) {
+          isCorrect = APPROVED_ANSWER_KEY.every(function (k) {
+            return selectedOptions.indexOf(k) > -1;
+          });
+        }
+        if (window.DICVSFX) window.DICVSFX.play(isCorrect ? 'correct' : 'incorrect');
+
+        // Single authoritative submit call through bridge (handles GetPlayer SetVar & postMessage)
+        var playerConnected = bridge.submit(selectedOptions, isCorrect);
+        showSplitFeedback(isCorrect);
+
+        if (playerConnected) {
+          statusText.textContent = 'Submitted to Storyline. Opening feedback...';
+        } else {
+          // Informative notice when testing inside Storyline Desktop Preview (where iframe GetPlayer is sandboxed)
+          statusText.textContent = 'Submitted! (Publish to Web or LMS to trigger Storyline layers)';
+        }
+      }
+
+      function handleStorylineState(state) {
+        if (state.submitted) {
+          isSubmitted = true;
+          isLocked = true;
+          viewportEl.classList.add('is-locked');
+
+          var prevAnswers = state.submittedSelection || [];
+          if (typeof prevAnswers === 'string') {
+            try { prevAnswers = JSON.parse(prevAnswers); } catch (e) { prevAnswers = prevAnswers.split(','); }
+          }
+          selectedOptions = Array.isArray(prevAnswers) ? prevAnswers : [prevAnswers];
+
+          answerCards.forEach(function (card) {
+            var optId = card.getAttribute('data-option-id');
+            var isSel = selectedOptions.indexOf(optId) > -1;
+            card.classList.toggle('is-selected', isSel);
+            card.setAttribute('aria-checked', isSel ? 'true' : 'false');
+          });
+
+          btnSubmit.disabled = true;
+
+          // If Storyline indicates reveal completed, restore review mode
+          if (state.revealed) {
+            applyReviewMode(selectedOptions);
+          } else {
+            statusText.textContent = 'Submitted (Locked).';
+          }
+        } else if (state.draftSelection && state.draftSelection.length > 0) {
+          selectedOptions = state.draftSelection.slice();
+          answerCards.forEach(function (card) {
+            var optId = card.getAttribute('data-option-id');
+            var isSel = selectedOptions.indexOf(optId) > -1;
+            card.classList.toggle('is-selected', isSel);
+            card.setAttribute('aria-checked', isSel ? 'true' : 'false');
+          });
+          updateControls();
+        }
+      }
+
+      // Visual Review Mode Implementation
+      function applyReviewMode(userAnswers) {
+        isRevealed = true;
+        isLocked = true;
+        viewportEl.classList.add('is-locked');
+        btnSubmit.disabled = true;
+
+        var submittedSet = userAnswers || selectedOptions;
+        if (typeof submittedSet === 'string') {
+          try { submittedSet = JSON.parse(submittedSet); } catch (e) { submittedSet = submittedSet.split(','); }
+        }
+
+        answerCards.forEach(function (card) {
+          var optId = card.getAttribute('data-option-id');
+          var wasSelected = submittedSet.indexOf(optId) > -1;
+          var badgeEl = card.querySelector('.card-review-badge');
+
+          if (wasSelected) {
+            // Selected by learner: Green border, green checkmark, "✓ Selected"
+            card.classList.remove('is-review-missed');
+            card.classList.add('is-review-selected');
+            if (badgeEl) {
+              badgeEl.textContent = '✓ Selected';
+            }
+          } else {
+            // Missed by learner: Amber border, green checkmark, "Missed" badge
+            card.classList.remove('is-review-selected');
+            card.classList.add('is-review-missed');
+            if (badgeEl) {
+              badgeEl.textContent = 'Missed';
+            }
+          }
+        });
+
+        statusText.textContent = 'Review: All 5 commitments are required for workplace safety.';
+        var allMatch = APPROVED_ANSWER_KEY.every(function (k) { return submittedSet.indexOf(k) > -1; });
+        showSplitFeedback(allMatch);
+
+        // Persist revealed state in Storyline
+        var player = bridge.getPlayer ? bridge.getPlayer() : null;
+        if (player) {
+          try { player.SetVar('Q002_Revealed', true); } catch (e) {}
+        }
+      }
+
+      function resetAttempt() {
+        isSubmitted = false;
+        isLocked = false;
+        isRevealed = false;
+        viewportEl.classList.remove('is-locked');
+        document.body.classList.remove('is-feedback-split');
+        selectedOptions = [];
+
+        answerCards.forEach(function (card) {
+          card.classList.remove('is-selected', 'is-review-selected', 'is-review-missed');
+          card.setAttribute('aria-checked', 'false');
+          var badgeEl = card.querySelector('.card-review-badge');
+          if (badgeEl) {
+            badgeEl.textContent = '✓ Correct';
+          }
+        });
+
+        updateControls();
+        bridge.notifyDraftChange([]);
+      }
+
+      // Event Listeners
+      answerCards.forEach(function (card) {
+        card.addEventListener('click', function () {
+          toggleCard(card);
+        });
+
+        card.addEventListener('keydown', function (e) {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            toggleCard(card);
+          }
+        });
+      });
+
+      btnSubmit.addEventListener('click', submitQuiz);
+      if (btnContinue) {
+        btnContinue.addEventListener('click', function () {
+          var p = bridge && typeof bridge.getPlayer === 'function' ? bridge.getPlayer() : null;
+          if (p && typeof p.SetVar === 'function') {
+            try {
+              var curVal = typeof p.GetVar === 'function' ? p.GetVar('Q002_Continue') : false;
+              var isAlreadyTrue = curVal === true || curVal === 'true' || curVal === 1 || curVal === '1';
+              if (isAlreadyTrue) {
+                p.SetVar('Q002_Continue', false);
+                setTimeout(function () {
+                  try {
+                    p.SetVar('Q002_Continue', true);
+                    p.SetVar('q002_continue', true);
+                  } catch (e2) {}
+                }, 250);
+              } else {
+                p.SetVar('Q002_Continue', true);
+                p.SetVar('q002_continue', true);
+              }
+            } catch (e) {}
+          }
+          if (bridge && typeof bridge.sendToParent === 'function') {
+            bridge.sendToParent('QUIZ_CONTINUE_CLICKED', { timestamp: Date.now() });
+          }
+        });
+      }
+      initSplitMediaMode();
+
+      // Automated QA & Headless Capture Hook: support ?state=selected and ?state=review
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('stage') === 'expanded') {
+          isMediaLocked = false;
+          document.body.classList.remove('is-media-locked');
+          document.body.classList.add('is-split-expanded');
+          if (instructionEl) instructionEl.textContent = 'Select all that apply.';
+          updateControls();
+        }
+        if (urlParams.has('no_anim') || urlParams.has('state')) {
+          document.documentElement.classList.add('no-animation');
+        }
+        if (urlParams.get('state') === 'selected') {
+          toggleCard(answerCards[0]); // Select A
+          toggleCard(answerCards[1]); // Select B
+          toggleCard(answerCards[2]); // Select C
+          toggleCard(answerCards[3]); // Select D
+        } else if (urlParams.get('state') === 'review') {
+          selectedOptions = ['A', 'B', 'C', 'D']; // A, B, C, D selected; E missed
+          applyReviewMode(['A', 'B', 'C', 'D']);
+        } else if (urlParams.get('state') === 'review_correct') {
+          selectedOptions = ['A', 'B', 'C', 'D', 'E'];
+          applyReviewMode(['A', 'B', 'C', 'D', 'E']);
+        }
+      } catch (e) {}
+
+    })();
+  </script>
+</body>
+</html>

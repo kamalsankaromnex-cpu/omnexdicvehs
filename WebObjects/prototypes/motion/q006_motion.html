@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q006_R1 — Safety Review Structure | DICV Interactive</title>
+  <link rel="stylesheet" href="../../../shared/styles/fonts.css">
+  <link rel="stylesheet" href="../../../shared/styles/theme.css">
+  <link rel="stylesheet" href="../../quizzes/Q006_SafetyReviewStructure/shared/committee-quiz.css">
+
+  <link rel="stylesheet" href="css/motion-design-system.css">
+  <style>
+  
+/* Floating Motion Toolbar for Review & Testing */
+.motion-dev-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 46px;
+  background: #004355;
+  color: #FFFFFF;
+  font-family: 'Daimler CS', Arial, sans-serif;
+  font-size: 13px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 2.5px solid #FFFF40;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+.motion-dev-toolbar .toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.motion-dev-toolbar .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.motion-btn {
+  background: #00677F;
+  color: #FFFFFF;
+  border: 1.5px solid #FFFF40;
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 180ms ease;
+  outline: none;
+}
+.motion-btn:hover {
+  background: #00566A;
+  transform: translateY(-1px);
+}
+.motion-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+}
+.motion-btn-reveal {
+  background: #008248;
+  border-color: #FFFF40;
+}
+.motion-toolbar-spacer {
+  height: 52px;
+}
+
+  :root {
+    --canvas-width: 1110px !important;
+    --canvas-height: 960px !important;
+  }
+  .quiz-viewport {
+    width: 1110px !important;
+    height: 960px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .quiz-board {
+    width: 820px !important;
+    height: 580px !important;
+    box-shadow: 0 16px 44px rgba(0, 67, 85, 0.18) !important;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="motion-dev-toolbar">
+    <div class="toolbar-left">
+      <strong style="color: #FFFF40;">Q006 Motion Prototype</strong>
+      <span style="background: rgba(255,255,64,0.2); color: #FFFF40; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700;">1110×960 px</span>
+      <span style="opacity: 0.7;">| Safety Review Structure (Round 1: Apex Committee)</span>
+    </div>
+    <div class="toolbar-right">
+      <button class="motion-btn" id="btn-replay">↺ Replay Entrance</button>
+      <button class="motion-btn motion-btn-secondary" id="btn-speed">Speed: 1.0x</button>
+      <button class="motion-btn motion-btn-reveal" id="btn-reveal">★ Reveal (Post-Feedback)</button>
+      <button class="motion-btn motion-btn-secondary" id="btn-reduced">Reduced Motion: OFF</button>
+      <a href="index.html" class="motion-btn motion-btn-secondary" style="text-decoration: none; padding: 4px 8px;">☰ Hub</a>
+    </div>
+  </div>
+  <div class="motion-toolbar-spacer"></div>
+
+
+  <div class="quiz-viewport" id="quiz-viewport" role="region" aria-label="DICV Safety Review Structure Quiz — Issue 1 of 3">
+
+    <div class="quiz-board">
+
+      <!-- TOP HEADER ROW: Safety Issue Badge & 3-Step Progress Indicator -->
+      <header class="header-row motion-animate-in motion-seq-header">
+        <div class="issue-badge" id="issue-badge">Safety Issue 1 of 3</div>
+        <div class="progress-tracker" id="progress-tracker" aria-label="Progress tracker: Issue 1 of 3"></div>
+      </header>
+
+      <!-- SCENARIO ROW: Issue Illustration + Divider + Scenario Description Text -->
+      <section class="scenario-row motion-animate-in motion-seq-diagram" aria-label="Scenario Description">
+        <div class="scenario-image-box">
+          <img class="scenario-image" id="scenario-image" src="../../quizzes/Q006_SafetyReviewStructure/R1_PolicyReview/assets/issue-image/r1-policy-review.png" alt="Policy Review Scenario Illustration">
+        </div>
+        <div class="scenario-divider" aria-hidden="true"></div>
+        <div class="scenario-text" id="scenario-text">
+          An organisation-wide safety policy requires review and update based on recent analysis.
+        </div>
+      </section>
+
+      <!-- QUESTION STRIP: Soft Petrol Gradient + Target Icon + Question Text -->
+      <div class="question-strip motion-animate-in motion-seq-instruction" role="heading" aria-level="2">
+        <img class="question-target-icon" src="../../quizzes/Q006_SafetyReviewStructure/R1_PolicyReview/assets/icons/target.png" alt="" aria-hidden="true">
+        <span class="question-text" id="question-text">Which committee should review this issue?</span>
+      </div>
+
+      <!-- COMMITTEE OPTIONS GRID: 3 Horizontally Arranged Cards -->
+      <div class="options-grid motion-animate-in motion-seq-card-1" id="options-grid" role="radiogroup" aria-label="Safety Committee Options"></div>
+
+      <!-- FOOTER ROW: Submit Button (Bottom-Right Daimler Stadium Pill) -->
+      <footer class="footer-row motion-animate-in motion-seq-submit">
+        <button class="btn-submit" id="btn-submit" disabled aria-label="Submit Answer">
+          <span>Submit</span>
+          <span class="submit-arrow">&#10132;</span>
+        </button>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- Shared Storyline Integration Bridge & Committee Quiz Runtime -->
+  <script src="../../shared/storyline/storyline-bridge.js"></script>
+  <script src="../../quizzes/Q006_SafetyReviewStructure/shared/committee-data.js"></script>
+  <script src="../../quizzes/Q006_SafetyReviewStructure/shared/committee-quiz.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      window.initCommitteeQuiz('R1');
+    })();
+  </script>
+
+  <script src="js/motion-controller.js"></script>
+  <script>
+    (function() {
+      var mc = new DICVMotionController({
+        quizId: 'Q006_R1',
+        container: document.querySelector('.quiz-board')
+      });
+      mc.playEntrance();
+
+      // Resolve relative path to R1 issue image in prototype sandbox
+      var img = document.getElementById('scenario-image');
+      if (img) img.src = '../../quizzes/Q006_SafetyReviewStructure/R1_PolicyReview/assets/issue-image/r1-policy-review.png';
+
+      var isSlow = false;
+      document.getElementById('btn-speed').addEventListener('click', function() {
+        isSlow = !isSlow;
+        this.textContent = isSlow ? 'Speed: 0.5x' : 'Speed: 1.0x';
+        document.documentElement.style.setProperty('--motion-dur-medium', isSlow ? '900ms' : '450ms');
+        document.documentElement.style.setProperty('--motion-dur-slow', isSlow ? '1100ms' : '550ms');
+        document.documentElement.style.setProperty('--motion-dur-normal', isSlow ? '700ms' : '350ms');
+      });
+
+      document.getElementById('btn-replay').addEventListener('click', function() {
+        var canvas = document.querySelector('.quiz-board');
+        canvas.classList.remove('motion-instant-ready');
+        var anims = canvas.querySelectorAll('.motion-animate-in');
+        anims.forEach(function(el) {
+          el.style.animation = 'none';
+          void el.offsetWidth;
+          el.style.animation = '';
+        });
+        mc.playEntrance();
+      });
+
+      document.getElementById('btn-reduced').addEventListener('click', function() {
+        var isReduced = document.body.classList.toggle('prefers-reduced-motion-simulated');
+        this.textContent = isReduced ? 'Reduced Motion: ON' : 'Reduced Motion: OFF';
+        if (isReduced) {
+          document.querySelector('.quiz-board').classList.add('motion-instant-ready');
+        } else {
+          document.querySelector('.quiz-board').classList.remove('motion-instant-ready');
+        }
+      });
+
+      document.getElementById('btn-reveal').addEventListener('click', function() {
+        var cards = [
+          { status: 'CORRECT', element: document.querySelector('.option-card[data-option-id="apex"]') },
+          { status: 'INCORRECT', element: document.querySelector('.option-card[data-option-id="sub"]') },
+          { status: 'INCORRECT', element: document.querySelector('.option-card[data-option-id="adhoc"]') }
+        ];
+        mc.sequenceAnswerReveal(cards);
+      });
+    })();
+  </script>
+</body>
+</html>

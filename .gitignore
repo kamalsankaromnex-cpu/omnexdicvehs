@@ -1,0 +1,20 @@
+# OS & Editor
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+
+# Python
+__pycache__/
+*.pyc
+
+# Environment / Secrets
+.env
+.env.*
+
+# Generated Storyline published output (re-generated on Publish)
+Storyline_Output/
+
+# Large binary Storyline source files (>100 MB GitHub limit; kept locally)
+*.story
+

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DICV Interactive — Header 2 Progress Bar</title>
+  <link rel="stylesheet" href="header2.css">
+</head>
+<body>
+  <div class="dicv-h2" id="dicv-header2" role="region" aria-label="Module progress bar">
+    <div class="dicv-h2-left">
+      <span class="dicv-h2-badge" id="h2-module-badge">MODULE 1</span>
+      <span class="dicv-h2-title" id="h2-title">DICV Safety Culture &amp; Vision Zero</span>
+    </div>
+
+    <div class="dicv-h2-right" aria-label="Topic completion progress">
+      <div class="dicv-h2-segments" id="h2-segments" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
+        <span class="dicv-h2-seg" data-topic="103" title="DICV's Commitment to a Safer Workplace"></span>
+        <span class="dicv-h2-seg" data-topic="102" title="EHS Vision"></span>
+        <span class="dicv-h2-seg" data-topic="104" title="Safety Strategy"></span>
+        <span class="dicv-h2-seg" data-topic="105" title="Safety Culture"></span>
+        <span class="dicv-h2-seg" data-topic="106" title="Safety Review Structure"></span>
+      </div>
+      <span class="dicv-h2-count" id="h2-count">0/5 Topics</span>
+      <span class="dicv-h2-pct" id="h2-pct">0%</span>
+    </div>
+  </div>
+
+  <script src="header2.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
+  <!-- Industrial Facility Building -->
+  <path d="M14 62 L14 36 L30 46 L30 36 L46 46 L46 22 L66 22 L66 62 Z" fill="#E8F4F8" stroke="#00677F" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Factory Base Line -->
+  <path d="M10 62 L70 62" stroke="#004355" stroke-width="4" stroke-linecap="round"/>
+  <!-- Safety Hardhat in Foreground -->
+  <path d="M26 54 C26 43 33 36 40 36 C47 36 54 43 54 54 Z" fill="#FFFF40" stroke="#004355" stroke-width="3"/>
+  <path d="M22 54 L58 54" stroke="#004355" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Hardhat Ridge -->
+  <path d="M40 36 L40 46" stroke="#004355" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
