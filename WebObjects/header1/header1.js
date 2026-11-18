@@ -53,11 +53,31 @@
     try {
       var parsed = typeof rawProgress === 'string' ? JSON.parse(rawProgress) : rawProgress;
       var t = (parsed && parsed.t) ? parsed.t : {};
+      var m = (parsed && parsed.m) ? parsed.m : null;
+      if (m && typeof m === 'object' && Object.keys(m).length > 0) {
+        var modStars = 0;
+        Object.keys(m).forEach(function (k) {
+          if (Number(m[k]) === 2) modStars += 1;
+        });
+        if (modStars > 0) return Math.min(6, modStars);
+      }
       var allDone = MODULE1_TOPICS.every(function (id) { return Number(t[id]) === 2; });
       return allDone ? 1 : 0;
     } catch (e) {
       return 0;
     }
+  }
+
+  function getTargetOrigin() {
+    try {
+      if (root.location && root.location.origin && root.location.origin !== 'null') {
+        return root.location.origin;
+      }
+      if (typeof document !== 'undefined' && document.referrer) {
+        return new URL(document.referrer).origin;
+      }
+    } catch (e) {}
+    return '*';
   }
 
   function applyProfile(profileKey) {
@@ -208,9 +228,11 @@
         if (rawStars === null || rawStars === undefined || String(rawStars).trim() === '') {
           rawStars = player.GetVar('ModuleStars');
         }
-        var nStars = Number(rawStars);
-        if (isFinite(nStars) && nStars > starsCount) {
-          starsCount = nStars;
+        if (rawStars !== null && rawStars !== undefined && String(rawStars).trim() !== '') {
+          var nStars = Number(rawStars);
+          if (isFinite(nStars)) {
+            starsCount = Math.max(0, Math.min(6, Math.round(nStars)));
+          }
         }
       } catch (e2b) {}
       try {
@@ -263,7 +285,7 @@
           source: 'DICV_HEADER1_WEBOBJECT',
           type: 'HEADER_ACTION',
           payload: { action: action }
-        }, '*');
+        }, getTargetOrigin());
       } catch (e3) {}
     }
   }
@@ -277,9 +299,23 @@
     return root.document || null;
   }
 
+  function getInitialMuteState() {
+    try {
+      if (root.DICVSFX && typeof root.DICVSFX.isMuted === 'function') {
+        return !!root.DICVSFX.isMuted();
+      }
+      if (root.localStorage) {
+        return root.localStorage.getItem('dicv_sfx_muted') === 'true';
+      }
+    } catch (e) {}
+    return false;
+  }
+
   function updateMuteButtonUI(isMuted) {
     var btn = document.getElementById('btn-mute');
     if (!btn) return;
+    btn.setAttribute('aria-pressed', isMuted ? 'true' : 'false');
+    if (typeof btn.querySelector !== 'function') return;
     var unmutedIco = btn.querySelector('.ico-unmuted');
     var mutedIco = btn.querySelector('.ico-muted');
     var lbl = btn.querySelector('.dicv-btn-lbl');
@@ -296,9 +332,10 @@
     }
     try {
       if (root.parent && root.parent !== root && root.parent.frames) {
+        var targetOrigin = getTargetOrigin();
         for (var i = 0; i < root.parent.frames.length; i++) {
           try {
-            root.parent.frames[i].postMessage({ type: 'SFX_MUTE_CHANGED', muted: !!isMuted }, '*');
+            root.parent.frames[i].postMessage({ type: 'SFX_MUTE_CHANGED', muted: !!isMuted }, targetOrigin);
           } catch (ef) {}
         }
       }
@@ -308,7 +345,14 @@
     try {
       var slVolBtn = doc.querySelector('#volume, button[aria-label*="volume" i], button[aria-label*="mute" i], .volume-control button');
       if (slVolBtn && typeof slVolBtn.click === 'function') {
-        slVolBtn.click();
+        var pressedAttr = slVolBtn.getAttribute ? slVolBtn.getAttribute('aria-pressed') : null;
+        var labelAttr = slVolBtn.getAttribute ? String(slVolBtn.getAttribute('aria-label') || '').toLowerCase() : '';
+        var slCurrentlyMuted = pressedAttr !== null
+          ? pressedAttr === 'true'
+          : (labelAttr.indexOf('unmute') !== -1 || slVolBtn.classList && slVolBtn.classList.contains('muted'));
+        if (slCurrentlyMuted !== !!isMuted) {
+          slVolBtn.click();
+        }
       }
     } catch (e1) {}
     try {
@@ -349,6 +393,28 @@
     } catch (e2) {}
   }
 
+  function syncFullscreenButtonUI() {
+    var btn = document.getElementById('btn-fullscreen');
+    if (!btn) return;
+    var doc = getHostDocument();
+    var isFs = !!(doc && (doc.fullscreenElement || doc.webkitFullscreenElement));
+    btn.setAttribute('aria-pressed', isFs ? 'true' : 'false');
+  }
+
+  function bindFullscreenListeners() {
+    var bind = function (targetDoc) {
+      if (!targetDoc || typeof targetDoc.addEventListener !== 'function') return;
+      targetDoc.addEventListener('fullscreenchange', syncFullscreenButtonUI);
+      targetDoc.addEventListener('webkitfullscreenchange', syncFullscreenButtonUI);
+    };
+    if (typeof document !== 'undefined') bind(document);
+    var hostDoc = getHostDocument();
+    if (hostDoc && hostDoc !== (typeof document !== 'undefined' ? document : null)) {
+      bind(hostDoc);
+    }
+    syncFullscreenButtonUI();
+  }
+
   function announceReady() {
     if (root.parent && root.parent !== root) {
       try {
@@ -356,7 +422,7 @@
           source: 'DICV_HEADER1_WEBOBJECT',
           type: 'HEADER1_READY',
           payload: { timestamp: Date.now() }
-        }, '*');
+        }, getTargetOrigin());
       } catch (e) {}
     }
   }
@@ -388,6 +454,8 @@
     });
   }
 
+  updateMuteButtonUI(getInitialMuteState());
+  bindFullscreenListeners();
   syncFromStoryline();
   announceReady();
 
