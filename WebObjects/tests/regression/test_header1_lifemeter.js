@@ -205,5 +205,112 @@ test('ReviewHub renders UI-16 Life Meter and corrected UI-00 variables cleanly',
   assert.ok(/RequestedMission.*Number.*0/.test(setupHtml), 'RequestedMission must be Number 0');
 });
 
+test('Header 1 initializes mute from localStorage, lowers stars on StarsEarned=0, and syncs fullscreenchange', function () {
+  var docListeners = {};
+  var byId = {
+    'h1-life': makeEl('h1-life', ['dicv-h1-stat']),
+    'h1-life-val': makeEl('h1-life-val', ['dicv-stat-val']),
+    'h1-stars': makeEl('h1-stars', ['dicv-h1-stat']),
+    'h1-stars-val': makeEl('h1-stars-val', ['dicv-stat-val']),
+    'btn-mute': makeEl('btn-mute', ['dicv-h1-btn'], { 'data-action': 'TOGGLE_MUTE', 'aria-pressed': 'false' }),
+    'btn-fullscreen': makeEl('btn-fullscreen', ['dicv-h1-btn'], { 'data-action': 'TOGGLE_FULLSCREEN', 'aria-pressed': 'true' })
+  };
+  var stateVars = {
+    HeaderProfile: 'C',
+    CourseProgressData: '{"v":1,"t":{"103":2,"102":2,"104":2,"105":2,"106":2}}',
+    StarsEarned: 0,
+    LivesRemaining: 3
+  };
+  var docStub = {
+    fullscreenElement: null,
+    getElementById: function (id) { return byId[id] || null; },
+    querySelectorAll: function () { return []; },
+    addEventListener: function (ev, fn) { docListeners[ev] = fn; }
+  };
+  var ctx = {
+    location: { search: '', origin: 'https://lms.example.com' },
+    URLSearchParams: URLSearchParams,
+    localStorage: { getItem: function (k) { return k === 'dicv_sfx_muted' ? 'true' : null; }, setItem: function () {} },
+    parent: {
+      GetPlayer: function () { return { GetVar: function (k) { return stateVars.hasOwnProperty(k) ? stateVars[k] : null; }, SetVar: function (k, v) { stateVars[k] = v; } }; },
+      postMessage: function () {}
+    },
+    document: docStub,
+    addEventListener: function () {},
+    console: console
+  };
+  ctx.window = ctx; ctx.top = ctx.parent;
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(DIST_DIR, 'header1.js'), 'utf8'), ctx);
+
+  assert.strictEqual(byId['btn-mute'].getAttribute('aria-pressed'), 'true', 'Mute button should initialize pressed from dicv_sfx_muted');
+  assert.strictEqual(byId['h1-stars-val'].textContent, '0/6', 'StarsEarned=0 should override Module 1 completion star on reset');
+  docStub.fullscreenElement = {};
+  docListeners.fullscreenchange();
+  assert.strictEqual(byId['btn-fullscreen'].getAttribute('aria-pressed'), 'true');
+  docStub.fullscreenElement = null;
+  docListeners.fullscreenchange();
+  assert.strictEqual(byId['btn-fullscreen'].getAttribute('aria-pressed'), 'false', 'fullscreenchange should clear pressed state on Esc exit');
+});
+
+test('Header 2 dist sync, config-driven aria-valuetext, title priority, and M1_CompletedCount fallback', function () {
+  var h2Src = path.join(ROOT, 'WebObjects', 'header2');
+  var h2Dist = path.join(ROOT, 'WebObjects', 'dist', 'Header2');
+  ['header2.css', 'header2.js'].forEach(function (f) {
+    assert.strictEqual(fs.readFileSync(path.join(h2Dist, f), 'utf8'), fs.readFileSync(path.join(h2Src, f), 'utf8'), f + ' out of sync with dist/Header2');
+    assert.strictEqual(/https?:\/\//i.test(fs.readFileSync(path.join(h2Dist, f), 'utf8')), false, f + ' contains external URL');
+  });
+  assert.strictEqual(fs.existsSync(path.join(h2Dist, 'coursemap-data.js')), true, 'dist/Header2/coursemap-data.js missing');
+
+  function runH2(vars) {
+    var segs = ['103', '102', '104', '105', '106'].map(function (id) {
+      return makeEl('seg-' + id, ['dicv-h2-seg'], { 'data-topic': id });
+    });
+    var bar = makeEl('h2-segments', ['dicv-h2-segments'], { role: 'progressbar' });
+    bar.querySelectorAll = function () { return segs; };
+    var byId = {
+      'h2-module-badge': makeEl('h2-module-badge', ['dicv-h2-badge']),
+      'h2-title': makeEl('h2-title', ['dicv-h2-title']),
+      'h2-segments': bar,
+      'h2-count': makeEl('h2-count', ['dicv-h2-count']),
+      'h2-pct': makeEl('h2-pct', ['dicv-h2-pct'])
+    };
+    var ctx = {
+      location: { search: '', origin: 'https://lms.example.com' },
+      URLSearchParams: URLSearchParams,
+      parent: {
+        GetPlayer: function () { return { GetVar: function (k) { return vars.hasOwnProperty(k) ? vars[k] : null; }, SetVar: function () {} }; },
+        postMessage: function () {}
+      },
+      document: {
+        getElementById: function (id) { return byId[id] || null; },
+        querySelectorAll: function (sel) { return sel === '#h2-segments .dicv-h2-seg' ? segs : []; }
+      },
+      addEventListener: function () {},
+      console: console
+    };
+    ctx.window = ctx; ctx.top = ctx.parent;
+    vm.createContext(ctx);
+    vm.runInContext(fs.readFileSync(path.join(h2Dist, 'coursemap-data.js'), 'utf8'), ctx);
+    vm.runInContext(fs.readFileSync(path.join(h2Dist, 'header2.js'), 'utf8'), ctx);
+    return { byId: byId, segs: segs, bar: bar };
+  }
+
+  // In-progress topic (104=1) must take priority over stale RequestedMission (103)
+  var r1 = runH2({
+    CourseProgressData: JSON.stringify({ v: 2, t: { '103': 2, '102': 2, '104': 1, '105': 0, '106': 0 } }),
+    RequestedMission: 103
+  });
+  assert.strictEqual(r1.byId['h2-title'].textContent, 'Safety Strategy');
+  assert.strictEqual(r1.bar.getAttribute('aria-valuetext'), '2 of 5 topics');
+
+  // M1_CompletedCount=2 fallback should mark index 2 (104) as active
+  var r2 = runH2({ CourseProgressData: '', M1_CompletedCount: 2 });
+  assert.strictEqual(r2.segs[0].classList.contains('is-completed'), true);
+  assert.strictEqual(r2.segs[1].classList.contains('is-completed'), true);
+  assert.strictEqual(r2.segs[2].classList.contains('is-active'), true);
+  assert.strictEqual(r2.byId['h2-title'].textContent, 'Safety Strategy');
+});
+
 console.log('\nResult: ' + passed + ' passed, ' + failed + ' failed\n');
 if (failed > 0) process.exit(1);
