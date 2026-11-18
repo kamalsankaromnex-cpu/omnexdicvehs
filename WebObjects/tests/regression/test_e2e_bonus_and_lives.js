@@ -36,8 +36,8 @@ test('StorylineBridge deducts 1 life heart on incorrect submit and clamps at 0',
     window: { parent: { GetPlayer: () => player }, addEventListener: () => {}, location: { search: '' } },
     document: { addEventListener: () => {} },
     console,
-    setTimeout,
-    clearTimeout,
+    setTimeout: (fn) => { fn(); return 0; },
+    clearTimeout: () => {},
     setInterval: () => 1,
     clearInterval: () => {}
   };
@@ -137,7 +137,7 @@ test('Q004 includes Bonus Question flow, +3 Life Hearts reward, and Q004_Continu
   assert.ok(q4.includes('id="bonus-overlay"'), 'Q004 should include bonus-overlay');
   assert.ok(q4.includes('Q004_BonusCorrect'), 'Q004 should set Q004_BonusCorrect');
   assert.ok(q4.includes("p.SetVar('LivesRemaining', 3)"), 'Q004 bonus should restore LivesRemaining to 3');
-  assert.ok(q4.includes('+3 Life Hearts Bonus'), 'Q004 bonus badge should show +3 Life Hearts Bonus');
+  assert.ok(q4.includes('Restore up to 3 Hearts'), 'Q004 bonus badge should show Restore up to 3 Hearts');
   assert.ok(q4.includes('Q004_Continue'), 'Q004 bonus continue should fire Q004_Continue');
   assert.ok(q4.includes('Preventive Maintenance'), 'Q004 distractor should be Preventive Maintenance');
 });

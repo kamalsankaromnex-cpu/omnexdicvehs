@@ -369,8 +369,7 @@
     }
 
     .answer-card.is-review-correct-missed .card-checkbox svg {
-      display: block !important;
-      stroke: var(--q-correct-green) !important;
+      display: none !important;
     }
 
     .answer-card.is-review-correct-missed .card-review-badge {
@@ -916,7 +915,12 @@
         } else {
           if (feedbackBadgeEl) feedbackBadgeEl.textContent = 'Incorrect';
           if (feedbackHeadingEl) feedbackHeadingEl.textContent = 'Not quite.';
-          if (feedbackBodyEl) feedbackBodyEl.textContent = "Higher production output is not an EHS commitment. Let's explore DICV's EHS vision.";
+          var pickedWrong = state.submittedAnswers.indexOf('E') > -1;
+          if (feedbackBodyEl) {
+            feedbackBodyEl.textContent = pickedWrong
+              ? "Higher production output is not an EHS commitment. Let's explore DICV's EHS vision."
+              : "You missed one or more DICV EHS commitments. Let's explore DICV's EHS vision.";
+          }
         }
         document.body.classList.add('is-feedback-split');
       }

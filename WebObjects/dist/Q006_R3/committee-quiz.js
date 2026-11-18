@@ -207,10 +207,10 @@
         lockInteraction();
 
         // Submit to Storyline Bridge
-        var playerConnected = bridge.submit(answerLabel, isCorrect);
+        bridge.submit(answerLabel, isCorrect);
         if (global.DICVSFX) global.DICVSFX.play(isCorrect ? 'correct' : 'incorrect');
         // In embedded Storyline mode, let Storyline show its feedback layer and trigger reveal via Q006_R*_Revealed
-        if (!playerConnected) {
+        if (!(bridge && bridge.isStorylineAvailable)) {
           showFeedbackPanel(isCorrect);
         }
       });

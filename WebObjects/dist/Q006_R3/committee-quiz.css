@@ -423,11 +423,11 @@ html, body {
 
 /* Card Icon (Aligned across all 3 cards + breathing room above Petrol footer) */
 .committee-icon {
-  height: 70px;
+  height: 64px;
   width: auto;
   max-width: 112px;
   object-fit: contain;
-  margin: 12px auto 10px auto;
+  margin: 10px auto 8px auto;
   flex-shrink: 0;
   pointer-events: none;
   filter: drop-shadow(0 1px 1px rgba(0, 67, 85, 0.28)) drop-shadow(0 2px 5px rgba(0, 67, 85, 0.10));
@@ -436,15 +436,15 @@ html, body {
 /* Card Committee Label (Dark Petrol Footer Band with White Bold Text) */
 .committee-label {
   width: 100%;
-  min-height: 52px;
+  min-height: 62px;
   padding: 6px 10px;
   box-sizing: border-box;
   background: linear-gradient(180deg, #004D61 0%, #003948 100%);
   font-family: var(--font-family);
-  font-size: 17.5px;
+  font-size: 16.5px;
   font-weight: 700;
   font-style: normal;
-  line-height: 1.15;
+  line-height: 1.16;
   color: var(--q-white);
   text-align: center;
   white-space: pre-line;

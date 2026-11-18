@@ -502,9 +502,9 @@
     .btn-submit:disabled {
       opacity: 1;
       cursor: not-allowed;
-      border: 2px solid rgba(255, 255, 255, 0.18);
-      background: rgba(255, 255, 255, 0.14);
-      color: rgba(234, 245, 248, 0.45);
+      border: 2px solid #BAC7CE;
+      background: #E3EAEF;
+      color: #4A5A63;
       box-shadow: none;
       transform: none;
     }
@@ -520,7 +520,7 @@
     }
 
     .btn-submit:disabled .submit-arrow {
-      color: rgba(255, 255, 64, 0.50);
+      color: #4A5A63;
     }
 
     /* ==========================================================================
@@ -1498,9 +1498,19 @@
           var expectedStage = CORRECT_SEQUENCE[tid];
           return state.placements[expectedStage] === tid;
         });
+        // Hide empty bottom tray and redundant sequence banner when already 100% correct
+        var dockRowEl = document.querySelector('.footer-dock-row');
+        if (allCorrect) {
+          if (reviewBanner) reviewBanner.classList.remove('is-active');
+          if (dockRowEl) dockRowEl.style.display = 'none';
+        } else if (dockRowEl) {
+          dockRowEl.style.display = '';
+        }
         showFeedbackPanel(allCorrect);
       }
       function resetQuiz() {
+        var dockRowEl = document.querySelector('.footer-dock-row');
+        if (dockRowEl) dockRowEl.style.display = '';
         state.placements = {
           'interdependent': null,
           'independent': null,

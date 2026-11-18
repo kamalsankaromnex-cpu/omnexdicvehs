@@ -432,10 +432,40 @@ test('StorylineBridge aborts cleanly without marking Done or deducting a heart w
 });
 
 // 9. Q006 embedded submit defers feedback display to Storyline (no double feedback)
-test('Q006 committee-quiz.js gates HTML feedback panel on !playerConnected in submit handler', () => {
+test('Q006 committee-quiz.js gates HTML feedback panel on isStorylineAvailable in submit handler', () => {
   const q006 = fs.readFileSync(path.join(ROOT, 'quizzes/Q006_SafetyReviewStructure/shared/committee-quiz.js'), 'utf8');
-  assert.ok(/var playerConnected = bridge\.submit\(answerLabel, isCorrect\);/.test(q006), 'Q006 must capture playerConnected from bridge.submit');
-  assert.ok(/if\s*\(!playerConnected\)\s*\{\s*showFeedbackPanel\(isCorrect\);/.test(q006), 'Q006 must only open HTML feedback on Submit when standalone (!playerConnected)');
+  assert.ok(/if\s*\(!\(bridge && bridge\.isStorylineAvailable\)\)\s*\{\s*showFeedbackPanel\(isCorrect\);/.test(q006), 'Q006 must gate HTML feedback on !bridge.isStorylineAvailable');
+});
+
+// 10. Done read-back failure rolls back submitted state and preserves LivesRemaining
+test('StorylineBridge rolls back submitted state and avoids heart deduction when Done read-back fails', () => {
+  const env = createBridgeSandbox({
+    Q002_Done: false,
+    LivesRemaining: 3
+  });
+
+  const bridge = new env.Bridge({
+    quizId: 'Q002',
+    autoPoll: false,
+    storylineVariables: {
+      submitted: 'Q002_Done',
+      answers: 'Q002_Answers',
+      correct: 'Q002_Correct',
+      revealed: 'Q002_Revealed'
+    }
+  });
+
+  const origSetVar = env.parentObj.GetPlayer().SetVar;
+  env.parentObj.GetPlayer().SetVar = (k, v) => {
+    if (k === 'Q002_Done') {
+      return; // Silent no-op SetVar failure
+    }
+    return origSetVar(k, v);
+  };
+
+  bridge.submit(['A'], false);
+  assert.strictEqual(env.vars.LivesRemaining, 3, 'LivesRemaining must stay 3 when Q002_Done read-back fails');
+  assert.strictEqual(bridge.state.submitted, false, 'bridge.state.submitted must roll back when Done fails');
 });
 
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);

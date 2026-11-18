@@ -356,22 +356,40 @@
       var answersSaved = false;
       var correctSaved = (typeof isCorrect === 'undefined');
 
-      // 1. Save answers string variable (required before Done)
+      // 1. Save answers string variable (required before Done) + GetVar read-back check
       try {
         p.SetVar(answersVar, jsonAnswers);
-        answersSaved = true;
-        try { p.SetVar(this.quizId + '_answers', jsonAnswers); } catch (eLowerA) {}
+        if (typeof p.GetVar === 'function') {
+          var savedA = p.GetVar(answersVar);
+          answersSaved = (savedA === jsonAnswers);
+        } else {
+          answersSaved = true;
+        }
+        if (answersSaved) {
+          try { p.SetVar(this.quizId + '_answers', jsonAnswers); } catch (eLowerA) {}
+        } else {
+          console.warn('[DICV StorylineBridge] Read-back mismatch for ' + answersVar);
+        }
       } catch (eAns) {
         console.warn('[DICV StorylineBridge] Failed to save ' + answersVar + ':', eAns);
       }
 
-      // 2. Save correct boolean variable BEFORE trigger fires (required before Done)
+      // 2. Save correct boolean variable BEFORE trigger fires + GetVar read-back check
       var boolCorrect = Boolean(isCorrect);
       if (answersSaved && typeof isCorrect !== 'undefined') {
         try {
           p.SetVar(correctVar, boolCorrect);
-          correctSaved = true;
-          try { p.SetVar(this.quizId + '_correct', boolCorrect); } catch (eLowerC) {}
+          if (typeof p.GetVar === 'function') {
+            var savedC = p.GetVar(correctVar);
+            correctSaved = (savedC !== undefined && savedC !== null && parseBoolVar(savedC) === boolCorrect);
+          } else {
+            correctSaved = true;
+          }
+          if (correctSaved) {
+            try { p.SetVar(this.quizId + '_correct', boolCorrect); } catch (eLowerC) {}
+          } else {
+            console.warn('[DICV StorylineBridge] Read-back mismatch for ' + correctVar);
+          }
         } catch (eCorr) {
           console.warn('[DICV StorylineBridge] Failed to save ' + correctVar + ':', eCorr);
         }
@@ -383,32 +401,49 @@
         return false;
       }
 
-      // 3. Commit in-memory submission state & deduct 1 life heart on incorrect submission
+      // 3. Commit in-memory submission state (heart deduction waits until Done is confirmed)
       this.state.submitted = true;
       this.state.lastSubmissionId = eventId;
       this.state.submittedSelection = selection;
       this.state.result = isCorrect;
 
-      if (typeof isCorrect !== 'undefined' && !boolCorrect && typeof p.GetVar === 'function') {
-        try {
-          var curLives = p.GetVar('LivesRemaining');
-          if (curLives !== null && curLives !== undefined && String(curLives).trim() !== '') {
-            var nLives = Number(curLives);
-            if (isFinite(nLives) && nLives > 0) {
-              p.SetVar('LivesRemaining', Math.max(0, Math.round(nLives) - 1));
-            }
-          }
-        } catch (eLives) {}
-      }
-
-      // 4. Set submitted Done variable only after answer and correctness are confirmed saved
+      // 4. Set submitted Done variable, verify via GetVar, then deduct life heart if incorrect
       var self = this;
       var currVal = false;
       try { currVal = p.GetVar(submittedVar); } catch (e) {}
 
       var commitDone = function () {
-        try { p.SetVar(submittedVar, true); } catch (e) {}
-        try { p.SetVar(submittedVar.toLowerCase(), true); } catch (e) {}
+        var doneConfirmed = false;
+        try {
+          p.SetVar(submittedVar, true);
+          try { p.SetVar(submittedVar.toLowerCase(), true); } catch (eLd) {}
+          if (typeof p.GetVar === 'function') {
+            doneConfirmed = parseBoolVar(p.GetVar(submittedVar));
+          } else {
+            doneConfirmed = true;
+          }
+        } catch (eDone) {
+          console.warn('[DICV StorylineBridge] Failed to save ' + submittedVar + ':', eDone);
+        }
+
+        if (!doneConfirmed) {
+          self.state.submitted = false;
+          return;
+        }
+
+        // Deduct 1 life heart only after Done is confirmed
+        if (typeof isCorrect !== 'undefined' && !boolCorrect && typeof p.GetVar === 'function') {
+          try {
+            var curLives = p.GetVar('LivesRemaining');
+            if (curLives !== null && curLives !== undefined && String(curLives).trim() !== '') {
+              var nLives = Number(curLives);
+              if (isFinite(nLives) && nLives > 0) {
+                p.SetVar('LivesRemaining', Math.max(0, Math.round(nLives) - 1));
+              }
+            }
+          } catch (eLives) {}
+        }
+
         console.log('[DICV StorylineBridge] SetVar committed successfully:', {
           quizId: self.quizId,
           answersVar: answersVar,
