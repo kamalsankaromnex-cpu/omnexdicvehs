@@ -279,24 +279,23 @@
       progressFillEl.style.width = '0%';
     }
 
-    // 3. Render Two-Column Topic Cards (or 5 non-clickable placeholders for Modules 2–6)
+    // 3. Render Two-Column Topic Cards (or single Coming Soon card for Modules 2–6)
     topicsGridEl.innerHTML = '';
     if (!topics.length) {
       var badgeText = activeState === 'locked' ? 'Locked' : 'Coming Soon';
       var lockIco = '<svg class="cm-inline-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
-      for (var pIdx = 1; pIdx <= 5; pIdx++) {
-        var ph = document.createElement('button');
-        ph.type = 'button';
-        ph.className = 'topic-card is-locked is-placeholder';
-        ph.disabled = true;
-        ph.setAttribute('aria-disabled', 'true');
-        ph.innerHTML =
-          '<span class="topic-title">' + activeMod.title + ' — Topic ' + pIdx + '</span>' +
-          '<span class="topic-status-badge status-locked">' + lockIco + '<span>' + badgeText + '</span></span>';
-        topicsGridEl.appendChild(ph);
-      }
+      var ph = document.createElement('button');
+      ph.type = 'button';
+      ph.className = 'topic-card is-locked is-placeholder';
+      ph.disabled = true;
+      ph.setAttribute('aria-disabled', 'true');
+      ph.style.gridColumn = '1 / -1';
+      ph.innerHTML =
+        '<span class="topic-title">' + (activeState === 'locked' ? 'Complete Module 1 to unlock' : 'Coming soon') + '</span>' +
+        '<span class="topic-status-badge status-locked">' + lockIco + '<span>' + badgeText + '</span></span>';
+      topicsGridEl.appendChild(ph);
       if (progressLabelEl && !progressLabelEl.textContent) {
-        progressLabelEl.textContent = '5 Topics (Coming Soon)';
+        progressLabelEl.textContent = activeState === 'locked' ? 'Locked — Complete Module 1' : 'Coming Soon';
       }
     } else {
       topics.forEach(function (topic) {
@@ -322,7 +321,7 @@
         card.addEventListener('click', function () {
           clearDenied();
           if (locked) {
-            showDenied('Locked in Restricted mode. Complete the prerequisite lesson first.');
+            showDenied('Complete the previous lesson first to unlock this topic.');
             return;
           }
           bridge.requestMission(topic.missionId);
@@ -337,6 +336,9 @@
       resumeModalBtn.textContent = activeMod.id === 2
         ? 'Begin Block 2 →'
         : (completedCount === 0 ? 'Start First Lesson →' : 'Continue →');
+    } else if (!topics.length) {
+      resumeModalBtn.disabled = true;
+      resumeModalBtn.textContent = activeState === 'locked' ? 'Complete Module 1 to Unlock' : 'Coming Soon';
     } else {
       resumeModalBtn.disabled = !nextTarget;
       resumeModalBtn.textContent = nextTarget
@@ -352,6 +354,8 @@
       bridge.send('TRANSITION_CONTINUE', { moduleId: selectedModuleId });
       return;
     }
+    var activeMod = getModuleById(selectedModuleId);
+    if (!activeMod || !activeMod.topics || !activeMod.topics.length) return;
     var target = findNextUnfinishedTopic();
     if (!target) return;
     bridge.requestMission(target.topic.missionId);
@@ -431,6 +435,7 @@
       return;
     }
     if (!e.key || e.key.toLowerCase() !== 'l') return;
+    if (window.parent !== window && getUrlParam('admin') !== '1' && getUrlParam('preview') !== '1') return;
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
     bridge.requestModeToggle();
   });
@@ -441,7 +446,7 @@
       render();
     },
     onDenied: function (payload) {
-      showDenied((payload && payload.reason) || 'Locked in Restricted mode.');
+      showDenied((payload && payload.reason) || 'Complete the previous lesson first to unlock this topic.');
     },
     onTransitionCommand: function (cmd, payload) {
       handleTransitionCommand(cmd, payload);

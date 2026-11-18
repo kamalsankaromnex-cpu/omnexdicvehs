@@ -468,7 +468,7 @@
         <img class="conveyor-chassis" src="assets/Full converyor belt latest.svg" alt="">
 
         <div class="station is-active" style="left: 13.8%; bottom: 144px;">
-          <div class="station-callout">Module 1: Safety Culture</div>
+          <div class="station-callout">Module 1: DICV Safety Culture &amp; Vision Zero</div>
           <div class="station-badge-wrap"><img class="station-badge" src="assets/Asset 6.svg" alt=""></div>
           <img class="station-pad" src="assets/Asset 7.svg" alt="">
         </div>
@@ -515,7 +515,7 @@
       </div>
     </section>
 
-    <main class="intro-wrap" role="region" aria-label="Module 1 Introduction">
+    <main class="intro-wrap" aria-label="Module 1 Introduction">
       <section class="intro-card">
         <header class="hero-banner">
           <div class="hero-left">
@@ -526,13 +526,13 @@
             </div>
           </div>
 
-          <div class="lives-pill" aria-label="3 of 3 Life Hearts">
-            <span class="lives-hearts" aria-hidden="true">
+          <div class="lives-pill" id="lives-pill" aria-label="3 of 3 Life Hearts">
+            <span class="lives-hearts" id="lives-hearts" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             </span>
-            <span>3 / 3 Hearts</span>
+            <span id="lives-label">3 / 3 Hearts</span>
           </div>
         </header>
 
@@ -570,7 +570,7 @@
           <footer class="intro-footer">
             <button type="button" class="btn-start" id="btn-start" aria-label="Start Module 1">
               <span>Start Module 1</span>
-              <span aria-hidden="true">&#10132;</span>
+              <span aria-hidden="true">&rarr;</span>
             </button>
           </footer>
         </section>
@@ -579,6 +579,7 @@
   </div>
 
   <script src="../../shared/storyline/storyline-bridge.js"></script>
+  <script src="../../shared/audio/sfx.js"></script>
   <script>
     (function () {
       'use strict';
@@ -592,8 +593,9 @@
       window.addEventListener('resize', scaleStage);
       scaleStage();
 
+      var params = null;
       try {
-        var params = new URLSearchParams(window.location.search || '');
+        params = new URLSearchParams(window.location.search || '');
         if (params.has('no_anim')) {
           document.documentElement.classList.add('no-animation');
         }
@@ -604,9 +606,40 @@
         storylineVariables: { submitted: 'M1_Intro_Done', correct: 'M1_Intro_Continue', revealed: 'M1_Intro_Done' }
       });
 
+      function renderLivesSummary(lives) {
+        var count = Math.max(0, Math.min(3, Math.round(Number(lives))));
+        if (!isFinite(count)) count = 3;
+        var pill = document.getElementById('lives-pill');
+        var label = document.getElementById('lives-label');
+        var svgs = document.querySelectorAll('#lives-hearts svg');
+        svgs.forEach(function (s, idx) {
+          s.style.opacity = idx >= count ? '0.26' : '1';
+        });
+        if (label) label.textContent = count + ' / 3 Hearts';
+        if (pill) pill.setAttribute('aria-label', count + ' of 3 Life Hearts');
+      }
+
+      var pInit = bridge && typeof bridge.getPlayer === 'function' ? bridge.getPlayer() : null;
+      if (pInit && typeof pInit.GetVar === 'function') {
+        try {
+          var rawLives = pInit.GetVar('LivesRemaining');
+          if (rawLives !== null && rawLives !== undefined && String(rawLives).trim() !== '') {
+            renderLivesSummary(rawLives);
+          }
+        } catch (eLives) {}
+      } else if (params && params.has('simLife')) {
+        renderLivesSummary(params.get('simLife'));
+      }
+
       var btnStart = document.getElementById('btn-start');
+      var startInFlight = false;
       if (btnStart) {
         btnStart.addEventListener('click', function () {
+          if (startInFlight || btnStart.disabled) return;
+          startInFlight = true;
+          btnStart.disabled = true;
+          if (window.DICVSFX) window.DICVSFX.play('click');
+
           var p = bridge && typeof bridge.getPlayer === 'function' ? bridge.getPlayer() : null;
           if (p && typeof p.SetVar === 'function') {
             try {
@@ -625,6 +658,11 @@
           if (bridge && typeof bridge.sendToParent === 'function') {
             bridge.sendToParent('MODULE1_INTRO_START', { timestamp: Date.now() });
           }
+          // Recovery fallback if host slide stays open
+          setTimeout(function () {
+            startInFlight = false;
+            btnStart.disabled = false;
+          }, 3000);
         });
       }
     })();

@@ -1,5 +1,5 @@
 /**
- * coursemap-data.js — Option B Six-Topic Module 1 Configuration
+ * coursemap-data.js — Module 1 Five-Topic Configuration
  * Preserves the exact 1-22 Storyline slide order and Phase B1 Mission IDs (101, 102)
  * so existing saved CourseProgressData migrates without losing completed states.
  */

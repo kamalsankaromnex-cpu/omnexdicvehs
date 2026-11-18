@@ -647,7 +647,7 @@
         <div class="transfer-beam"></div>
 
         <div class="station station-m1" style="left: 13.8%; bottom: 144px;">
-          <div class="station-callout">&#10003; Block 1 Completed</div>
+          <div class="station-callout">&#10003; Module 1 Completed</div>
           <div class="station-badge-wrap">
             <img class="station-badge" src="assets/Asset 6.svg" alt="">
             <span class="station-star" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg></span>
@@ -698,7 +698,7 @@
       </div>
     </section>
 
-    <main class="outro-wrap" role="region" aria-label="Module 1 Completion Summary">
+    <main class="outro-wrap" aria-label="Module 1 Completion Summary">
       <section class="outro-card">
         <header class="hero-banner">
           <div class="hero-left">
@@ -729,35 +729,37 @@
               <div class="passport-line-fill"></div>
             </div>
             <div class="passport-grid">
-              <div class="passport-item">
+              <div class="passport-item" data-topic="103">
                 <div class="passport-check" aria-hidden="true">&#10003;</div>
                 <strong>DICV's Commitment to a Safer Workplace</strong>
               </div>
-              <div class="passport-item">
+              <div class="passport-item" data-topic="102">
                 <div class="passport-check" aria-hidden="true">&#10003;</div>
                 <strong>EHS Vision</strong>
               </div>
-              <div class="passport-item">
+              <div class="passport-item" data-topic="104">
                 <div class="passport-check" aria-hidden="true">&#10003;</div>
                 <strong>Safety Strategy</strong>
               </div>
-              <div class="passport-item">
+              <div class="passport-item" data-topic="105">
                 <div class="passport-check" aria-hidden="true">&#10003;</div>
                 <strong>Safety Culture</strong>
               </div>
-              <div class="passport-item">
+              <div class="passport-item" data-topic="106">
                 <div class="passport-check" aria-hidden="true">&#10003;</div>
                 <strong>Safety Review Structure</strong>
               </div>
             </div>
           </div>
 
+          <p class="aura-summary" id="aura-summary" aria-live="polite">Clean sweep — all 3 hearts intact and Star 1 unlocked! Ready for Module 2?</p>
+
           <footer class="outro-footer">
             <div class="outro-actions">
               <button type="button" class="btn-map" id="btn-map" aria-label="View Course Map">View Course Map</button>
               <button type="button" class="btn-next" id="btn-next" aria-label="Continue to Module 2">
                 <span>Continue to Module 2</span>
-                <span aria-hidden="true">&#10132;</span>
+                <span aria-hidden="true">&rarr;</span>
               </button>
             </div>
           </footer>
@@ -824,6 +826,24 @@
             renderLivesSummary(rawLives);
           }
         } catch (eLives) {}
+        try {
+          var rawProg = p.GetVar('CourseProgressData');
+          if (rawProg) {
+            var parsedProg = typeof rawProg === 'string' ? JSON.parse(rawProg) : rawProg;
+            var topicMap = (parsedProg && parsedProg.t) ? parsedProg.t : null;
+            if (topicMap) {
+              document.querySelectorAll('.passport-item[data-topic]').forEach(function (item) {
+                var tid = item.getAttribute('data-topic');
+                var done = Number(topicMap[tid]) === 2;
+                var chk = item.querySelector('.passport-check');
+                if (chk) {
+                  chk.innerHTML = done ? '&#10003;' : '&bull;';
+                  chk.style.opacity = done ? '1' : '0.45';
+                }
+              });
+            }
+          }
+        } catch (eProg) {}
       } else if (params && params.has('simLife')) {
         renderLivesSummary(params.get('simLife'));
       }
@@ -853,20 +873,35 @@
       var btnNext = document.getElementById('btn-next');
       var btnMap = document.getElementById('btn-map');
       var isTransitioning = false;
+      var mapClicked = false;
 
       if (btnNext) {
         btnNext.addEventListener('click', function () {
-          if (isTransitioning) return;
+          if (isTransitioning || btnNext.disabled) return;
           isTransitioning = true;
+          btnNext.disabled = true;
           document.body.classList.add('is-transitioning');
           setTimeout(function () {
             triggerStorylineBool('M1_Outro_Continue', 'MODULE1_OUTRO_CONTINUE');
           }, 1500);
+          // Recovery fallback if host slide does not navigate
+          setTimeout(function () {
+            isTransitioning = false;
+            btnNext.disabled = false;
+            document.body.classList.remove('is-transitioning');
+          }, 4500);
         });
       }
       if (btnMap) {
         btnMap.addEventListener('click', function () {
+          if (mapClicked || btnMap.disabled) return;
+          mapClicked = true;
+          btnMap.disabled = true;
           triggerStorylineBool('M1_Outro_Map', 'MODULE1_OUTRO_MAP');
+          setTimeout(function () {
+            mapClicked = false;
+            btnMap.disabled = false;
+          }, 3000);
         });
       }
     })();
