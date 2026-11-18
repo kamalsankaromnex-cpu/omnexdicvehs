@@ -273,6 +273,16 @@
           result: null,
           revealed: false
         };
+        // Clear Storyline Done/Revealed flags on explicit reset so retry submission is permitted
+        var resetPlayer = this.getPlayer();
+        if (resetPlayer && typeof resetPlayer.SetVar === 'function') {
+          var resetSubVar = this.variableMap.submitted || (this.quizId + '_Done');
+          var resetRevVar = this.variableMap.revealed || (this.quizId + '_Revealed');
+          try { resetPlayer.SetVar(resetSubVar, false); } catch (eRs1) {}
+          try { resetPlayer.SetVar(resetSubVar.toLowerCase(), false); } catch (eRs2) {}
+          try { resetPlayer.SetVar(resetRevVar, false); } catch (eRs3) {}
+          try { resetPlayer.SetVar(resetRevVar.toLowerCase(), false); } catch (eRs4) {}
+        }
         this.startPolling();
         this.onResetAttempt();
         break;
@@ -318,81 +328,110 @@
       return false;
     }
 
-    var eventId = this.generateId();
-    this.state.submitted = true;
-    this.state.lastSubmissionId = eventId;
-    this.state.submittedSelection = selection;
-    this.state.result = isCorrect;
-
-    // Direct Storyline Variable Updates: dynamically query player at submit time
     var p = this.getPlayer();
+    var submittedVar = this.variableMap.submitted || (this.quizId + '_Done');
+    var answersVar = this.variableMap.answers || this.variableMap.answer || (this.quizId + '_Answers');
+    var correctVar = this.variableMap.correct || (this.quizId + '_Correct');
+    var revealedVar = this.variableMap.revealed || (this.quizId + '_Revealed');
+
+    // Guard against stale/reloaded Web Object state when Storyline already recorded completion
+    if (p && typeof p.GetVar === 'function') {
+      try {
+        var alreadyDone = parseBoolVar(p.GetVar(submittedVar)) || parseBoolVar(p.GetVar(submittedVar.toLowerCase()));
+        var alreadyRevealed = parseBoolVar(p.GetVar(revealedVar)) || parseBoolVar(p.GetVar(revealedVar.toLowerCase()));
+        if (alreadyDone || alreadyRevealed) {
+          console.warn('[DICV StorylineBridge] Storyline already recorded completion for ' + this.quizId + '. Restoring saved state.');
+          this.syncFromDirectPlayer();
+          return false;
+        }
+      } catch (eGuard) {}
+    }
+
+    var eventId = this.generateId();
     var playerFound = false;
 
     if (p && typeof p.SetVar === 'function') {
+      playerFound = true;
+      var jsonAnswers = typeof selection === 'string' ? selection : JSON.stringify(selection);
+      var answersSaved = false;
+      var correctSaved = (typeof isCorrect === 'undefined');
+
+      // 1. Save answers string variable (required before Done)
       try {
-        playerFound = true;
-        var submittedVar = this.variableMap.submitted || (this.quizId + '_Done');
-        var answersVar = this.variableMap.answers || this.variableMap.answer || (this.quizId + '_Answers');
-        var correctVar = this.variableMap.correct || (this.quizId + '_Correct');
+        p.SetVar(answersVar, jsonAnswers);
+        answersSaved = true;
+        try { p.SetVar(this.quizId + '_answers', jsonAnswers); } catch (eLowerA) {}
+      } catch (eAns) {
+        console.warn('[DICV StorylineBridge] Failed to save ' + answersVar + ':', eAns);
+      }
 
-        var jsonAnswers = typeof selection === 'string' ? selection : JSON.stringify(selection);
+      // 2. Save correct boolean variable BEFORE trigger fires (required before Done)
+      var boolCorrect = Boolean(isCorrect);
+      if (answersSaved && typeof isCorrect !== 'undefined') {
+        try {
+          p.SetVar(correctVar, boolCorrect);
+          correctSaved = true;
+          try { p.SetVar(this.quizId + '_correct', boolCorrect); } catch (eLowerC) {}
+        } catch (eCorr) {
+          console.warn('[DICV StorylineBridge] Failed to save ' + correctVar + ':', eCorr);
+        }
+      }
 
-        // 1. Set answers string variable
-        try { p.SetVar(answersVar, jsonAnswers); } catch (e) {}
-        try { p.SetVar(this.quizId + '_answers', jsonAnswers); } catch (e) {}
+      // Abort cleanly without deducting lives or marking Done if required writes failed
+      if (!answersSaved || !correctSaved) {
+        this.state.submitted = false;
+        return false;
+      }
 
-        // 2. Set correct boolean variable BEFORE trigger fires
-        if (typeof isCorrect !== 'undefined') {
-          var boolCorrect = Boolean(isCorrect);
-          try { p.SetVar(correctVar, boolCorrect); } catch (e) {}
-          try { p.SetVar(this.quizId + '_correct', boolCorrect); } catch (e) {}
+      // 3. Commit in-memory submission state & deduct 1 life heart on incorrect submission
+      this.state.submitted = true;
+      this.state.lastSubmissionId = eventId;
+      this.state.submittedSelection = selection;
+      this.state.result = isCorrect;
 
-          // Deduct 1 life heart on incorrect quiz submission (clamped to 0)
-          if (!boolCorrect && typeof p.GetVar === 'function') {
-            try {
-              var curLives = p.GetVar('LivesRemaining');
-              if (curLives !== null && curLives !== undefined && String(curLives).trim() !== '') {
-                var nLives = Number(curLives);
-                if (isFinite(nLives) && nLives > 0) {
-                  p.SetVar('LivesRemaining', Math.max(0, Math.round(nLives) - 1));
-                }
-              }
-            } catch (eLives) {}
+      if (typeof isCorrect !== 'undefined' && !boolCorrect && typeof p.GetVar === 'function') {
+        try {
+          var curLives = p.GetVar('LivesRemaining');
+          if (curLives !== null && curLives !== undefined && String(curLives).trim() !== '') {
+            var nLives = Number(curLives);
+            if (isFinite(nLives) && nLives > 0) {
+              p.SetVar('LivesRemaining', Math.max(0, Math.round(nLives) - 1));
+            }
           }
-        }
+        } catch (eLives) {}
+      }
 
-        // 3. Set submitted done variable
-        // Check current value: only toggle false->true if it was already true
-        var currVal = false;
-        try { currVal = p.GetVar(submittedVar); } catch (e) {}
+      // 4. Set submitted Done variable only after answer and correctness are confirmed saved
+      var self = this;
+      var currVal = false;
+      try { currVal = p.GetVar(submittedVar); } catch (e) {}
 
-        if (parseBoolVar(currVal)) {
-          try { p.SetVar(submittedVar, false); } catch (e) {}
-          setTimeout(function () {
-            try { p.SetVar(submittedVar, true); } catch (e) {}
-            try { p.SetVar(submittedVar.toLowerCase(), true); } catch (e) {}
-          }, 35);
-        } else {
-          // Slight 25ms delay to guarantee Storyline commits correctVar before firing the doneVar trigger
-          setTimeout(function () {
-            try { p.SetVar(submittedVar, true); } catch (e) {}
-            try { p.SetVar(submittedVar.toLowerCase(), true); } catch (e) {}
-          }, 25);
-        }
-
-        // Ensure poller is actively running to catch Q002_Revealed = true
-        this.startPolling();
-
+      var commitDone = function () {
+        try { p.SetVar(submittedVar, true); } catch (e) {}
+        try { p.SetVar(submittedVar.toLowerCase(), true); } catch (e) {}
         console.log('[DICV StorylineBridge] SetVar committed successfully:', {
-          quizId: this.quizId,
+          quizId: self.quizId,
           answersVar: answersVar,
           correctVar: correctVar,
           correct: isCorrect,
           submittedVar: submittedVar
         });
-      } catch (e) {
-        console.warn('[DICV StorylineBridge] Direct SetVar failed:', e);
+      };
+
+      if (parseBoolVar(currVal)) {
+        try { p.SetVar(submittedVar, false); } catch (e) {}
+        setTimeout(commitDone, 35);
+      } else {
+        setTimeout(commitDone, 25);
       }
+
+      // Ensure poller is actively running to catch Qxxx_Revealed = true
+      this.startPolling();
+    } else {
+      this.state.submitted = true;
+      this.state.lastSubmissionId = eventId;
+      this.state.submittedSelection = selection;
+      this.state.result = isCorrect;
     }
 
     // Send Authoritative Submit Request to Storyline via postMessage

@@ -358,5 +358,85 @@ test('All 8 dist packages exist with required runtime files', () => {
   });
 });
 
+// 7. Reloaded / stale frame with Q002_Done = true protects LivesRemaining and saved answer
+test('Q002 reload guard prevents duplicate heart deduction and preserves saved answer when Q002_Done is true', () => {
+  const env = createBridgeSandbox({
+    Q002_Done: true,
+    Q002_Answers: '["A","B"]',
+    Q002_Correct: false,
+    Q002_Revealed: false,
+    LivesRemaining: 2
+  });
+
+  const bridge = new env.Bridge({
+    quizId: 'Q002',
+    autoPoll: false,
+    storylineVariables: {
+      submitted: 'Q002_Done',
+      answers: 'Q002_Answers',
+      correct: 'Q002_Correct',
+      revealed: 'Q002_Revealed'
+    }
+  });
+
+  // Simulate stale in-memory state (e.g. iframe reload or race before sync)
+  bridge.state.submitted = false;
+  const submitted = bridge.submit(['C'], false);
+
+  assert.strictEqual(submitted, false, 'Repeated submission must be blocked when Storyline already has Q002_Done = true');
+  assert.strictEqual(env.vars.LivesRemaining, 2, 'LivesRemaining must remain 2 without second deduction');
+  assert.strictEqual(env.vars.Q002_Answers, '["A","B"]', 'Saved Q002_Answers must remain intact');
+  assert.strictEqual(env.vars.Q002_Done, true, 'Q002_Done must stay true without re-toggling feedback');
+  assert.strictEqual(bridge.state.submitted, true, 'Restored state must mark bridge.state.submitted = true');
+});
+
+// 8. Answer / correctness SetVar failure must not mark Done or deduct a heart
+test('StorylineBridge aborts cleanly without marking Done or deducting a heart when answer write fails', () => {
+  const env = createBridgeSandbox({
+    Q002_Done: false,
+    LivesRemaining: 3
+  });
+
+  const bridge = new env.Bridge({
+    quizId: 'Q002',
+    autoPoll: false,
+    storylineVariables: {
+      submitted: 'Q002_Done',
+      answers: 'Q002_Answers',
+      correct: 'Q002_Correct',
+      revealed: 'Q002_Revealed'
+    }
+  });
+
+  // Inject failure on Q002_Answers write
+  const origSetVar = env.parentObj.GetPlayer().SetVar;
+  env.parentObj.GetPlayer().SetVar = (k, v) => {
+    if (k === 'Q002_Answers') {
+      throw new Error('Simulated LMS SetVar failure');
+    }
+    return origSetVar(k, v);
+  };
+
+  const firstAttempt = bridge.submit(['A'], false);
+  assert.strictEqual(firstAttempt, false, 'Failed answer write must return false');
+  assert.strictEqual(env.vars.Q002_Done, false, 'Q002_Done must remain false after failed write');
+  assert.strictEqual(env.vars.LivesRemaining, 3, 'LivesRemaining must remain 3 on failed write');
+  assert.strictEqual(bridge.state.submitted, false, 'Quiz must remain recoverable for retry');
+
+  // Restore SetVar and verify retry succeeds cleanly
+  env.parentObj.GetPlayer().SetVar = origSetVar;
+  const retryAttempt = bridge.submit(['A'], false);
+  assert.strictEqual(retryAttempt, true, 'Retry after restored SetVar must succeed');
+  assert.strictEqual(env.vars.Q002_Done, true, 'Q002_Done must become true after retry');
+  assert.strictEqual(env.vars.LivesRemaining, 2, 'LivesRemaining must deduct once on retry');
+});
+
+// 9. Q006 embedded submit defers feedback display to Storyline (no double feedback)
+test('Q006 committee-quiz.js gates HTML feedback panel on !playerConnected in submit handler', () => {
+  const q006 = fs.readFileSync(path.join(ROOT, 'quizzes/Q006_SafetyReviewStructure/shared/committee-quiz.js'), 'utf8');
+  assert.ok(/var playerConnected = bridge\.submit\(answerLabel, isCorrect\);/.test(q006), 'Q006 must capture playerConnected from bridge.submit');
+  assert.ok(/if\s*\(!playerConnected\)\s*\{\s*showFeedbackPanel\(isCorrect\);/.test(q006), 'Q006 must only open HTML feedback on Submit when standalone (!playerConnected)');
+});
+
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

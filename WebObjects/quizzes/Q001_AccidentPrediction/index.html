@@ -750,6 +750,29 @@
       });
       btnSubmit.addEventListener('click', submitQuiz);
 
+      // Automated QA & Headless Capture URL Hooks: ?state=selected, ?state=review
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('no_anim') || urlParams.has('state')) {
+          document.documentElement.classList.add('no-animation');
+        }
+        var qaState = urlParams.get('state');
+        if (qaState === 'selected') {
+          toggleCard(answerCards[0]);
+          toggleCard(answerCards[1]);
+          toggleCard(answerCards[2]);
+        } else if (qaState === 'review') {
+          selectedOptions = ['A', 'B', 'C'];
+          answerCards.forEach(function (c, i) {
+            if (i < 3) {
+              c.classList.add('is-selected');
+              c.setAttribute('aria-checked', 'true');
+            }
+          });
+          revealApprovedAnswers(['A', 'B', 'C']);
+        }
+      } catch (e) {}
+
     })();
   </script>
 </body>
