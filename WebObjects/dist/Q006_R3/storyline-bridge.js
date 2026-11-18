@@ -79,6 +79,7 @@
     this.player = null;
     this.isStorylineAvailable = false;
     this._pollingInterval = null;
+    this._synced = false;
     this.init();
   }
 
@@ -106,14 +107,21 @@
         var p = self.getPlayer();
         if (!p || typeof p.GetVar !== 'function') return;
 
+        // Hydrate saved state if GetPlayer() became available after init()
+        if (!self._synced) {
+          self._synced = true;
+          self.syncFromDirectPlayer();
+          if (self.state.revealed) return;
+        }
+
         var val1 = p.GetVar(revealedVar);
         var val2 = p.GetVar(revealedVar.toLowerCase());
         var isRev = parseBoolVar(val1) || parseBoolVar(val2);
         if (isRev && !self.state.revealed) {
-          self.state.revealed = true;
           self.stopPolling();
-          console.log('[DICV StorylineBridge] Poller detected ' + revealedVar + ' = true. Triggering review mode.');
-          self.onRevealAnswers(self.state.submittedSelection);
+          console.log('[DICV StorylineBridge] Poller detected ' + revealedVar + ' = true. Syncing and triggering review mode.');
+          self.syncFromDirectPlayer();
+          return;
         }
       } catch (e) {}
     }, 150);
@@ -152,6 +160,7 @@
 
     // If direct player is available, read state immediately
     if (this.player) {
+      this._synced = true;
       this.syncFromDirectPlayer();
     }
 
@@ -226,6 +235,11 @@
         return;
       }
     }
+    if (this.allowedOrigins && this.allowedOrigins.indexOf('*') === -1 && event.origin) {
+      if (this.allowedOrigins.indexOf(event.origin) === -1) {
+        return;
+      }
+    }
     var data = event.data;
     if (!data || typeof data !== 'object') {
       return;
@@ -292,26 +306,61 @@
     }
   };
 
-  StorylineBridge.prototype.sendToParent = function (type, payload) {
+  StorylineBridge.post = function (type, payload, quizId, allowedOrigins) {
     var message = {
       protocol: 'DICV_STORYLINE_INTERACTIVE',
       version: PROTOCOL_VERSION,
-      quizId: this.quizId,
+      quizId: quizId || 'GLOBAL',
       type: type,
-      payload: payload
+      payload: payload || {}
     };
+    var targetOrigin = (allowedOrigins && allowedOrigins.length === 1 && allowedOrigins[0] !== '*')
+      ? allowedOrigins[0]
+      : '*';
 
     try {
       if (window.parent && window.parent !== window) {
-        window.parent.postMessage(message, '*');
+        window.parent.postMessage(message, targetOrigin);
       }
     } catch (e) {}
 
     try {
       if (window.top && window.top !== window && window.top !== window.parent) {
-        window.top.postMessage(message, '*');
+        window.top.postMessage(message, targetOrigin);
       }
     } catch (e) {}
+  };
+
+  StorylineBridge.prototype.sendToParent = function (type, payload) {
+    StorylineBridge.post(type, payload, this.quizId, this.allowedOrigins);
+  };
+
+  StorylineBridge.prototype.setLives = function (n) {
+    var p = this.getPlayer();
+    var clamped = Math.max(0, Math.min(3, Math.round(Number(n))));
+    if (!isFinite(clamped)) return null;
+    if (p && typeof p.SetVar === 'function') {
+      try { p.SetVar('LivesRemaining', clamped); } catch (e) {}
+    }
+    if (clamped === 0) {
+      this.sendToParent('LIVES_EXHAUSTED', { lives: 0, timestamp: Date.now() });
+    }
+    return clamped;
+  };
+
+  StorylineBridge.prototype.adjustLives = function (delta) {
+    var p = this.getPlayer();
+    if (!p || typeof p.GetVar !== 'function') return null;
+    try {
+      var curLives = p.GetVar('LivesRemaining');
+      if (curLives !== null && curLives !== undefined && String(curLives).trim() !== '') {
+        var nLives = Number(curLives);
+        if (isFinite(nLives)) {
+          return this.setLives(Math.round(nLives) + Math.round(Number(delta) || 0));
+        }
+      }
+    } catch (e) {}
+    return null;
   };
 
   StorylineBridge.prototype.notifyDraftChange = function (selection) {
@@ -325,7 +374,7 @@
   StorylineBridge.prototype.submit = function (selection, isCorrect) {
     if (this.state.submitted) {
       console.warn('[DICV StorylineBridge] Submission already committed for this attempt.');
-      return false;
+      return { ok: false, reason: 'already-submitted', playerConnected: this.isStorylineAvailable };
     }
 
     var p = this.getPlayer();
@@ -341,8 +390,9 @@
         var alreadyRevealed = parseBoolVar(p.GetVar(revealedVar)) || parseBoolVar(p.GetVar(revealedVar.toLowerCase()));
         if (alreadyDone || alreadyRevealed) {
           console.warn('[DICV StorylineBridge] Storyline already recorded completion for ' + this.quizId + '. Restoring saved state.');
+          this._synced = true;
           this.syncFromDirectPlayer();
-          return false;
+          return { ok: false, reason: 'already-completed', playerConnected: true };
         }
       } catch (eGuard) {}
     }
@@ -398,7 +448,7 @@
       // Abort cleanly without deducting lives or marking Done if required writes failed
       if (!answersSaved || !correctSaved) {
         this.state.submitted = false;
-        return false;
+        return { ok: false, reason: 'write-failed', playerConnected: true };
       }
 
       // 3. Commit in-memory submission state (heart deduction waits until Done is confirmed)
@@ -432,16 +482,8 @@
         }
 
         // Deduct 1 life heart only after Done is confirmed
-        if (typeof isCorrect !== 'undefined' && !boolCorrect && typeof p.GetVar === 'function') {
-          try {
-            var curLives = p.GetVar('LivesRemaining');
-            if (curLives !== null && curLives !== undefined && String(curLives).trim() !== '') {
-              var nLives = Number(curLives);
-              if (isFinite(nLives) && nLives > 0) {
-                p.SetVar('LivesRemaining', Math.max(0, Math.round(nLives) - 1));
-              }
-            }
-          } catch (eLives) {}
+        if (typeof isCorrect !== 'undefined' && !boolCorrect) {
+          self.adjustLives(-1);
         }
 
         console.log('[DICV StorylineBridge] SetVar committed successfully:', {
@@ -453,12 +495,7 @@
         });
       };
 
-      if (parseBoolVar(currVal)) {
-        try { p.SetVar(submittedVar, false); } catch (e) {}
-        setTimeout(commitDone, 35);
-      } else {
-        setTimeout(commitDone, 25);
-      }
+      setTimeout(commitDone, 25);
 
       // Ensure poller is actively running to catch Qxxx_Revealed = true
       this.startPolling();
@@ -477,7 +514,7 @@
       timestamp: Date.now()
     });
 
-    return playerFound;
+    return { ok: true, playerConnected: playerFound };
   };
 
   return StorylineBridge;

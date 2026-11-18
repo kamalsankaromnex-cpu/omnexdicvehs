@@ -381,9 +381,10 @@ test('Q002 reload guard prevents duplicate heart deduction and preserves saved a
 
   // Simulate stale in-memory state (e.g. iframe reload or race before sync)
   bridge.state.submitted = false;
-  const submitted = bridge.submit(['C'], false);
+  const res = bridge.submit(['C'], false);
 
-  assert.strictEqual(submitted, false, 'Repeated submission must be blocked when Storyline already has Q002_Done = true');
+  assert.strictEqual(res.ok, false, 'Repeated submission must be blocked when Storyline already has Q002_Done = true');
+  assert.strictEqual(res.reason, 'already-completed');
   assert.strictEqual(env.vars.LivesRemaining, 2, 'LivesRemaining must remain 2 without second deduction');
   assert.strictEqual(env.vars.Q002_Answers, '["A","B"]', 'Saved Q002_Answers must remain intact');
   assert.strictEqual(env.vars.Q002_Done, true, 'Q002_Done must stay true without re-toggling feedback');
@@ -418,7 +419,8 @@ test('StorylineBridge aborts cleanly without marking Done or deducting a heart w
   };
 
   const firstAttempt = bridge.submit(['A'], false);
-  assert.strictEqual(firstAttempt, false, 'Failed answer write must return false');
+  assert.strictEqual(firstAttempt.ok, false, 'Failed answer write must return ok: false');
+  assert.strictEqual(firstAttempt.reason, 'write-failed');
   assert.strictEqual(env.vars.Q002_Done, false, 'Q002_Done must remain false after failed write');
   assert.strictEqual(env.vars.LivesRemaining, 3, 'LivesRemaining must remain 3 on failed write');
   assert.strictEqual(bridge.state.submitted, false, 'Quiz must remain recoverable for retry');
@@ -426,15 +428,17 @@ test('StorylineBridge aborts cleanly without marking Done or deducting a heart w
   // Restore SetVar and verify retry succeeds cleanly
   env.parentObj.GetPlayer().SetVar = origSetVar;
   const retryAttempt = bridge.submit(['A'], false);
-  assert.strictEqual(retryAttempt, true, 'Retry after restored SetVar must succeed');
+  assert.strictEqual(retryAttempt.ok, true, 'Retry after restored SetVar must succeed');
   assert.strictEqual(env.vars.Q002_Done, true, 'Q002_Done must become true after retry');
   assert.strictEqual(env.vars.LivesRemaining, 2, 'LivesRemaining must deduct once on retry');
 });
 
-// 9. Q006 embedded submit defers feedback display to Storyline (no double feedback)
-test('Q006 committee-quiz.js gates HTML feedback panel on isStorylineAvailable in submit handler', () => {
+// 9. Q006 matches Q002-Q005 by showing feedback panel and checking res.ok
+test('Q006 committee-quiz.js checks res.ok and displays feedback panel consistently', () => {
   const q006 = fs.readFileSync(path.join(ROOT, 'quizzes/Q006_SafetyReviewStructure/shared/committee-quiz.js'), 'utf8');
-  assert.ok(/if\s*\(!\(bridge && bridge\.isStorylineAvailable\)\)\s*\{\s*showFeedbackPanel\(isCorrect\);/.test(q006), 'Q006 must gate HTML feedback on !bridge.isStorylineAvailable');
+  assert.ok(/var res = bridge\.submit\(answerLabel, isCorrect\);/.test(q006), 'Q006 must capture result object from bridge.submit');
+  assert.ok(/if\s*\(!res \|\| !res\.ok\)\s*return;/.test(q006), 'Q006 must abort when !res.ok');
+  assert.ok(/showFeedbackPanel\(isCorrect\);/.test(q006), 'Q006 must show feedback panel after valid submit');
 });
 
 // 10. Done read-back failure rolls back submitted state and preserves LivesRemaining
@@ -466,6 +470,45 @@ test('StorylineBridge rolls back submitted state and avoids heart deduction when
   bridge.submit(['A'], false);
   assert.strictEqual(env.vars.LivesRemaining, 3, 'LivesRemaining must stay 3 when Q002_Done read-back fails');
   assert.strictEqual(bridge.state.submitted, false, 'bridge.state.submitted must roll back when Done fails');
+});
+
+// 11. Late GetPlayer() initialization syncs saved state on first poll tick
+test('StorylineBridge hydrates saved state on first poll tick when GetPlayer() initializes late', () => {
+  const env = createBridgeSandbox({
+    Q002_Done: true,
+    Q002_Answers: '["A","B","C"]',
+    Q002_Correct: false,
+    Q002_Revealed: true
+  });
+  let playerReady = false;
+  const realGetPlayer = env.parentObj.GetPlayer;
+  env.parentObj.GetPlayer = () => (playerReady ? realGetPlayer() : null);
+
+  let revealedWith = null;
+  const bridge = new env.Bridge({
+    quizId: 'Q002',
+    autoPoll: true,
+    storylineVariables: {
+      submitted: 'Q002_Done',
+      answers: 'Q002_Answers',
+      correct: 'Q002_Correct',
+      revealed: 'Q002_Revealed'
+    },
+    onRevealAnswers: (sel) => {
+      revealedWith = sel;
+    }
+  });
+
+  assert.strictEqual(bridge._synced, false, '_synced starts false when GetPlayer() is null at init');
+  playerReady = true;
+  // Trigger one poll tick
+  const timer = Array.from(env.timers.values())[0];
+  assert.ok(timer, 'Polling timer should be active');
+  timer.fn();
+
+  assert.strictEqual(bridge._synced, true, '_synced must become true after late player sync');
+  assert.strictEqual(bridge.state.submitted, true);
+  assert.deepStrictEqual(revealedWith, ['A', 'B', 'C']);
 });
 
 console.log(`\nSummary: ${passed} passed, ${failed} failed.`);

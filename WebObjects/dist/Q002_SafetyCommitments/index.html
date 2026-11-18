@@ -1033,7 +1033,9 @@
         } else if (isMediaLocked) {
           statusText.textContent = 'Watch the video to enable the quiz.';
         } else if (isSubmitted) {
-          statusText.textContent = 'Submitted. Reviewing feedback in Storyline...';
+          statusText.textContent = (bridge && bridge.isStorylineAvailable)
+            ? 'Answer saved.'
+            : 'Preview mode: not saved to Storyline.';
         } else if (hasSelection) {
           statusText.textContent = selectedOptions.length + ' commitment(s) selected.';
         } else {
@@ -1062,7 +1064,9 @@
         if (window.DICVSFX) window.DICVSFX.play(isCorrect ? 'correct' : 'incorrect');
 
         // Single authoritative submit call through bridge (handles GetPlayer SetVar & postMessage)
-        var playerConnected = bridge.submit(selectedOptions, isCorrect);
+        var res = bridge.submit(selectedOptions, isCorrect);
+        if (!res || !res.ok) return;
+        var playerConnected = !!res.playerConnected;
         showSplitFeedback(isCorrect);
 
         if (playerConnected) {
@@ -1152,9 +1156,6 @@
 
         // Persist revealed state in Storyline
         var player = bridge.getPlayer ? bridge.getPlayer() : null;
-        if (player) {
-          try { player.SetVar('Q002_Revealed', true); } catch (e) {}
-        }
       }
 
       function resetAttempt() {

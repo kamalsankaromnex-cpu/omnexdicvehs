@@ -126,8 +126,8 @@ test('EC-4: Rapid double-click blocked on Quiz submit, Header1 HeaderAction (250
     storylineVariables: { submitted: 'Q004_Done', answers: 'Q004_Answers', correct: 'Q004_Correct', revealed: 'Q004_Revealed' }
   });
   b.init();
-  assert.strictEqual(b.submit('A:zone-1', true), true);
-  assert.strictEqual(b.submit('A:zone-1', true), false);
+  assert.strictEqual(b.submit('A:zone-1', true).ok, true);
+  assert.strictEqual(b.submit('A:zone-1', true).ok, false);
   b.destroy();
 
   // 4b. CourseMapHost mode toggle 250ms debounce

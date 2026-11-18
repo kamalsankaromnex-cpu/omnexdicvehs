@@ -245,8 +245,15 @@
     var player = findPlayer();
     if (player && typeof player.SetVar === 'function') {
       try {
-        // Single reset owner: Storyline clears HeaderAction = "" as its final Master trigger
-        player.SetVar('HeaderAction', action);
+        // Clear then set so repeated clicks on the same action always fire Storyline's "When variable changes" trigger
+        player.SetVar('HeaderAction', '');
+        if (typeof setTimeout === 'function') {
+          setTimeout(function () {
+            try { player.SetVar('HeaderAction', action); } catch (e2b) {}
+          }, 30);
+        } else {
+          player.SetVar('HeaderAction', action);
+        }
       } catch (e2) {}
     }
 

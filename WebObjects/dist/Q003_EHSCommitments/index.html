@@ -1005,7 +1005,9 @@
         if (state.status === 'REVEALED') {
           statusText.textContent = 'Review mode: A, B, C, and D are DICV EHS commitments.';
         } else if (state.status === 'SUBMITTED' || state.status === 'SUBMITTING') {
-          statusText.textContent = 'Submitted. Reviewing feedback in Storyline...';
+          statusText.textContent = (bridge && bridge.isStorylineAvailable)
+            ? 'Answer saved.'
+            : 'Preview mode: not saved to Storyline.';
         } else if (count === state.maxSelections) {
           statusText.textContent = 'Maximum 4 options selected. Deselect one to change.';
         } else if (count > 0) {
@@ -1036,7 +1038,9 @@
         state.isCorrect = isCorrect;
 
         // Authoritative submit call through bridge
-        var playerConnected = bridge.submit(state.submittedAnswers, isCorrect);
+        var res = bridge.submit(state.submittedAnswers, isCorrect);
+        if (!res || !res.ok) return;
+        var playerConnected = !!res.playerConnected;
         if (window.DICVSFX) window.DICVSFX.play(isCorrect ? 'correct' : 'incorrect');
         state.status = 'SUBMITTED';
         showFeedbackPanel(isCorrect);

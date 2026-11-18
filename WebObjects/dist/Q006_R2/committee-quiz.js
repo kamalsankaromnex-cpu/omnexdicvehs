@@ -207,12 +207,10 @@
         lockInteraction();
 
         // Submit to Storyline Bridge
-        bridge.submit(answerLabel, isCorrect);
+        var res = bridge.submit(answerLabel, isCorrect);
+        if (!res || !res.ok) return;
         if (global.DICVSFX) global.DICVSFX.play(isCorrect ? 'correct' : 'incorrect');
-        // In embedded Storyline mode, let Storyline show its feedback layer and trigger reveal via Q006_R*_Revealed
-        if (!(bridge && bridge.isStorylineAvailable)) {
-          showFeedbackPanel(isCorrect);
-        }
+        showFeedbackPanel(isCorrect);
       });
     }
 
@@ -348,9 +346,7 @@
         }
       });
 
-      if (!(bridge && bridge.isStorylineAvailable)) {
-        showFeedbackPanel(state.selectedOptionId === data.correctAnswerId);
-      }
+      showFeedbackPanel(state.selectedOptionId === data.correctAnswerId);
     }
 
     // Reset Quiz

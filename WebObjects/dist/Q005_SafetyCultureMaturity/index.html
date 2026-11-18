@@ -1386,7 +1386,8 @@
         });
 
         // Notify Storyline
-        bridge.submit(answerMapping, isAllCorrect);
+        var res = bridge.submit(answerMapping, isAllCorrect);
+        if (!res || !res.ok) return;
 
         updateUI();
         showFeedbackPanel(isAllCorrect);

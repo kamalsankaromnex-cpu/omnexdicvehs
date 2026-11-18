@@ -45,15 +45,9 @@ Depending on instructional design requirements, a quiz operates in one of two mo
 > 2. **Publish > Review 360**, OR
 > 3. **Publish > LMS (SCORM 1.2 / 2004)**.
 
-### Pitfall 2: The "Variable Was Already True" Storyline Trigger Quirk
-In Storyline 360, the trigger *"When variable changes"* **only fires if the variable value transitions from its current value to a different value**.
-- If `Qxxx_Done` was already `True` (from a previous test run or default variable value), executing `player.SetVar('Qxxx_Done', true)` is treated as a **no-op** by Storyline and the slide jump trigger will NOT execute.
-- **The Codified Solution**: The bridge always executes a forced toggle:
-  ```javascript
-  p.SetVar('Qxxx_Done', false);
-  p.SetVar('Qxxx_Done', true);
-  ```
-  This forces Storyline's internal event listener to fire on every submission.
+### Pitfall 2: Stale `Done = True` & Authorized Reset
+In Storyline 360, the trigger *"When variable changes"* only fires on a value transition.
+- **The Codified Solution:** `StorylineBridge.submit()` checks Storyline's saved `Qxxx_Done` / `Qxxx_Revealed` **before** mutating answers or deducting a heart. If `Done` is already `True`, `submit()` refuses to re-submit (`{ ok: false, reason: 'already-completed' }`) and restores the saved state via `syncFromDirectPlayer()`. Storyline must trigger `QUIZ_RESET_ATTEMPT` (which clears `Done` and `Revealed`) to authorize a fresh retry.
 
 ### Pitfall 3: Asynchronous Player Initialization
 At `t = 0` when the Web Object iframe loads, the Storyline parent window may still be initializing its JavaScript engine.
@@ -116,5 +110,21 @@ If an LMS (like SAP SuccessFactors or Canvas) hosts SCORM content across differe
 | **Module 1 Outro** | `dist/Module1_Outro/` | Reads `LivesRemaining`. Writes `M1_Outro_Done`, `M1_Outro_Continue`. | Summary card + Star 1 celebration + animated hearts/stars; triggers advance on continue. |
 
 ### 5.3 Shared Web Audio SFX (`shared/audio/sfx.js`)
-- Every quiz (`Q001–Q006`), `Header1`, and `Module1_Outro` bundles `sfx.js` (synthesized Web Audio API, zero external `.mp3`/`.wav` assets, 100% offline/SCORM-safe).
+- Every quiz (`Q001–Q006`), `Header1`, `Module1_Intro`, and `Module1_Outro` bundles `sfx.js` (synthesized Web Audio API, zero external `.mp3`/`.wav` assets, 100% offline/SCORM-safe).
 - Clicking **Mute** in `Header1` updates `localStorage` (`dicv_sfx_muted`) and broadcasts `{ type: 'SFX_MUTE_CHANGED', muted }` across sibling frames so Web Object SFX (`click`, `select`, `deselect`, `drop`, `limit`, `correct`, `incorrect`, `heart_lost`, `heart_gain`, `star`) mute in sync with Storyline audio.
+- When `LivesRemaining` reaches `0` via `bridge.setLives(0)` / `bridge.adjustLives(-1)`, the bridge emits `LIVES_EXHAUSTED` (`{ lives: 0 }`) while allowing the learner to continue without lockout.
+
+### 5.4 Storyline Project Variable Manifest
+| Variable | Type | Default | Owner |
+|---|---|---|---|
+| `HeaderProfile`, `HeaderAction`, `Header2Title` | Text | `""` | Header 1 / Header 2 |
+| `LivesRemaining`, `StarsEarned`, `M1_CompletedCount`, `RequestedMission` | Number | `3`, `0`, `0`, `0` | Global / CourseMap |
+| `CourseProgressData` | Text | `""` | CourseMap |
+| `NavigationMode`, `CourseMapCloseRequested` | True/False | `False` | CourseMap |
+| `M1_Intro_Done`, `M1_Intro_Continue`, `M1_Outro_Done`, `M1_Outro_Continue`, `M1_Outro_Map` | True/False | `False` | Module 1 Intro / Outro |
+| `Q001_Done`, `Q001_Correct`, `Q001_Revealed` / `Q001_Answers` | True/False / Text | `False` / `""` | Q001 |
+| `Q002_Done`, `Q002_Correct`, `Q002_Revealed`, `Q002_Continue`, `Q002_MEDIA_COMPLETE` / `Q002_Answers` | True/False / Text | `False` / `""` | Q002 |
+| `Q003_Done`, `Q003_Correct`, `Q003_Revealed`, `Q003_Continue` / `Q003_Answers` | True/False / Text | `False` / `""` | Q003 |
+| `Q004_Done`, `Q004_Correct`, `Q004_Revealed`, `Q004_BonusCorrect`, `Q004_Continue` / `Q004_Answers` | True/False / Text | `False` / `""` | Q004 |
+| `Q005_Done`, `Q005_Correct`, `Q005_Revealed`, `Q005_Continue` / `Q005_Answers` | True/False / Text | `False` / `""` | Q005 |
+| `Q006_R{1,2,3}_Done`, `_Correct`, `_Revealed`, `_Continue` / `_Answer` | True/False / Text | `False` / `""` | Q006 (`R2 → R3 → R1`) |

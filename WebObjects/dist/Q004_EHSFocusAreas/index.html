@@ -1030,7 +1030,7 @@
       <div class="bonus-card">
         <div class="bonus-top-row">
           <span class="bonus-pill">&#9733; Bonus Question</span>
-          <span class="bonus-reward-hint">Restore up to 3 Hearts</span>
+          <span class="bonus-reward-hint">Hearts restored to full</span>
         </div>
         <h2 class="bonus-question" id="bonus-question-text">
           True or False: All three Safety Strategy focus areas — Risk Management, Capability Management, and Governance — work together to build a safer workplace.
@@ -1373,7 +1373,8 @@
           .join(';');
 
         if (bridge) {
-          bridge.submit(placedSummary, isCorrect);
+          const res = bridge.submit(placedSummary, isCorrect);
+          if (!res || !res.ok) return;
         }
 
         send('Q004_SUBMIT', {
@@ -1467,11 +1468,9 @@
           const p = bridge && typeof bridge.getPlayer === 'function' ? bridge.getPlayer() : null;
           if (p && typeof p.SetVar === 'function') {
             try { p.SetVar('Q004_BonusCorrect', isBonusCorrect); } catch (e) {}
-            if (isBonusCorrect) {
-              try {
-                p.SetVar('LivesRemaining', 3);
-              } catch (e2) {}
-            }
+          }
+          if (isBonusCorrect && bridge && typeof bridge.setLives === 'function') {
+            bridge.setLives(3);
           }
 
           if (window.DICVSFX) window.DICVSFX.play(isBonusCorrect ? 'heart_gain' : 'incorrect');

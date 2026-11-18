@@ -666,7 +666,8 @@
         statusText.textContent = 'Submitted.';
 
         // Single authoritative submission through bridge (handles GetPlayer SetVar & postMessage without duplicate toggles)
-        bridge.submit(selectedOptions.slice().sort(), isCorrect);
+        var res = bridge.submit(selectedOptions.slice().sort(), isCorrect);
+        if (!res || !res.ok) return;
       }
 
       function handleStorylineState(state) {
