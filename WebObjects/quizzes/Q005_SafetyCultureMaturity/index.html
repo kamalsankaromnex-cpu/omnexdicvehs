@@ -762,6 +762,53 @@
         padding: 30px 34px 28px;
       }
     }
+    /* 1800x900 Storyline Media-Sync Mode (Right -> Center) */
+    body.is-split-mode {
+      width: 1800px;
+      height: 900px;
+      position: relative;
+      pointer-events: none;
+    }
+
+    body.is-split-mode .quiz-viewport {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      left: auto;
+      margin: 0;
+      width: 1110px;
+      height: 640px;
+      max-width: none;
+      max-height: none;
+      transform-origin: right center;
+      transform: translateY(-50%) scale(0.8018);
+      pointer-events: auto;
+      transition: right 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.is-split-mode.is-split-expanded .quiz-viewport {
+      right: 345px;
+      transform: translateY(-50%) scale(1);
+    }
+
+    body.is-split-mode.is-feedback-split .quiz-viewport,
+    body.is-split-mode.is-split-expanded.is-feedback-split .quiz-viewport {
+      left: auto;
+      right: 690px;
+      transform: translateY(-50%) scale(0.96);
+    }
+
+    body.is-media-locked .stage-card,
+    body.is-media-locked .drop-target {
+      pointer-events: none !important;
+      cursor: not-allowed !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body.is-split-mode .quiz-viewport {
+        transition: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1112,8 +1159,15 @@
         }
       });
 
+      var splitMedia = DICVStorylineBridge.initSplitMedia({
+        quizId: 'Q005',
+        getPlayer: function () { return bridge.getPlayer(); },
+        onUnlock: updateUI
+      });
+
       // Restore Saved State (Revisit slide recovery)
       if (bridge.state && bridge.state.submitted) {
+        splitMedia.unlock(true);
         restoreFromBridgeState(bridge.state);
       }
 
@@ -1169,7 +1223,7 @@
         });
 
         if (state.status === 'READY') {
-          btnSubmit.disabled = (placedCount < 4);
+          btnSubmit.disabled = (placedCount < 4) || splitMedia.isLocked();
           btnSubmit.style.visibility = '';
           btnSubmit.style.pointerEvents = '';
         } else {
@@ -1183,6 +1237,7 @@
 
       // Atomic Placement Function
       function placeItem(stageId, targetId) {
+        if (state.status !== 'READY' || splitMedia.isLocked()) return;
         if (state.status !== 'READY') return;
 
         // If targetId is null, unplace back to dock slot

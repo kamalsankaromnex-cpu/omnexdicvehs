@@ -87,14 +87,14 @@
 
         // Click Handler
         card.addEventListener('click', function () {
-          if (state.status !== 'READY') return;
+          if (state.status !== 'READY' || (splitMedia && splitMedia.isLocked())) return;
           if (global.DICVSFX) global.DICVSFX.play('select');
           selectOption(opt.id);
         });
 
         // Keyboard Handler
         card.addEventListener('keydown', function (e) {
-          if (state.status !== 'READY') return;
+          if (state.status !== 'READY' || (splitMedia && splitMedia.isLocked())) return;
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             selectOption(opt.id);
@@ -121,7 +121,7 @@
       });
 
       if (btnSubmit) {
-        btnSubmit.disabled = (state.selectedOptionId === null || state.status !== 'READY');
+        btnSubmit.disabled = (state.selectedOptionId === null || state.status !== 'READY' || (splitMedia && splitMedia.isLocked()));
       }
     }
 
@@ -142,6 +142,7 @@
 
     function restoreFromBridgeState(bridgeState) {
       if (!bridgeState || !bridgeState.submitted) return;
+      if (splitMedia) splitMedia.unlock(true);
       state.status = 'SUBMITTED';
       state.isCorrect = !!bridgeState.isCorrect;
       if (bridgeState.submittedSelection) {
@@ -173,6 +174,18 @@
       }
     });
 
+    var splitMedia = (typeof DICVStorylineBridge !== 'undefined' && DICVStorylineBridge.initSplitMedia)
+      ? DICVStorylineBridge.initSplitMedia({
+          quizId: data.quizId,
+          getPlayer: function () { return bridge.getPlayer(); },
+          onUnlock: function () {
+            if (btnSubmit) {
+              btnSubmit.disabled = (state.selectedOptionId === null || state.status !== 'READY');
+            }
+          }
+        })
+      : { isSplit: function () { return false; }, isLocked: function () { return false; }, unlock: function () {} };
+
     // Revisit Slide State Restoration
     if (bridge.state && bridge.state.submitted) {
       restoreFromBridgeState(bridge.state);
@@ -195,7 +208,7 @@
     // Submit Handler
     if (btnSubmit) {
       btnSubmit.addEventListener('click', function () {
-        if (btnSubmit.disabled || state.status !== 'READY' || !state.selectedOptionId) return;
+        if (btnSubmit.disabled || state.status !== 'READY' || !state.selectedOptionId || (splitMedia && splitMedia.isLocked())) return;
 
         state.status = 'SUBMITTED';
         var isCorrect = (state.selectedOptionId === data.correctAnswerId);

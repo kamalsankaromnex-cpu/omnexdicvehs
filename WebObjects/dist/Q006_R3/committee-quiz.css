@@ -882,3 +882,52 @@ body.is-feedback-split .feedback-side-panel {
   border: 2px solid rgba(255, 255, 64, 0.35);
   opacity: 0.7;
 }
+
+/* ==========================================================================
+   1800x900 Storyline Media-Sync Mode (Right -> Center)
+   ========================================================================== */
+body.is-split-mode {
+  width: 1800px;
+  height: 900px;
+  position: relative;
+  pointer-events: none;
+}
+
+body.is-split-mode .quiz-viewport {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: auto;
+  margin: 0;
+  width: 1024px;
+  height: 576px;
+  max-width: none;
+  max-height: none;
+  transform-origin: right center;
+  transform: translateY(-50%) scale(0.8691);
+  pointer-events: auto;
+  transition: right 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.is-split-mode.is-split-expanded .quiz-viewport {
+  right: 388px;
+  transform: translateY(-50%) scale(1);
+}
+
+body.is-split-mode.is-feedback-split .quiz-viewport,
+body.is-split-mode.is-split-expanded.is-feedback-split .quiz-viewport {
+  left: auto;
+  right: 680px;
+  transform: translateY(-50%) scale(0.95);
+}
+
+body.is-media-locked .committee-card {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.is-split-mode .quiz-viewport {
+    transition: none !important;
+  }
+}

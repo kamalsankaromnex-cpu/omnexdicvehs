@@ -517,5 +517,109 @@
     return { ok: true, playerConnected: playerFound };
   };
 
+  /**
+   * Initializes Q002-style split-screen media-lock -> center-expand mode.
+   * Unlocks when Storyline calls window[<quizId>_ON_MEDIA_COMPLETE](), sends
+   * postMessage { source: 'DICV_STORYLINE_HOST', type: '<quizId>_MEDIA_COMPLETE' },
+   * or sets Storyline variable '<quizId>_MEDIA_COMPLETE' to true.
+   */
+  StorylineBridge.initSplitMedia = function (opts) {
+    opts = opts || {};
+    var quizId = String(opts.quizId || '');
+    var mediaVar = opts.mediaVar || (quizId + '_MEDIA_COMPLETE');
+    var callbackName = opts.callbackName || (quizId + '_ON_MEDIA_COMPLETE');
+    var getPlayerFn = typeof opts.getPlayer === 'function' ? opts.getPlayer : getStorylinePlayer;
+    var onUnlock = typeof opts.onUnlock === 'function' ? opts.onUnlock : function () {};
+
+    var isSplitMode = false;
+    var isMediaLocked = false;
+    var pollId = null;
+
+    var modeParam = null;
+    try {
+      if (typeof URLSearchParams === 'function' && typeof window !== 'undefined' && window.location) {
+        modeParam = new URLSearchParams(window.location.search || '').get('mode');
+      }
+    } catch (e) {}
+
+    function stopMediaPoll() {
+      if (pollId && typeof clearInterval === 'function') {
+        clearInterval(pollId);
+        pollId = null;
+      }
+    }
+
+    function unlock(immediate) {
+      if (!isSplitMode || !isMediaLocked) return;
+      stopMediaPoll();
+      if (typeof document !== 'undefined' && document.body) {
+        document.body.classList.add('is-split-expanded');
+      }
+      var reduced = false;
+      try {
+        reduced = !!(typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      } catch (e) {}
+      var delay = (immediate || reduced) ? 0 : 560;
+      var finish = function () {
+        isMediaLocked = false;
+        if (typeof document !== 'undefined' && document.body) {
+          document.body.classList.remove('is-media-locked');
+        }
+        onUnlock();
+      };
+      if (delay === 0 || typeof setTimeout !== 'function') {
+        finish();
+      } else {
+        setTimeout(finish, delay);
+      }
+    }
+
+    var shouldSplit = modeParam !== 'standalone' &&
+      (modeParam === 'split' || (typeof window !== 'undefined' && (window.innerWidth || 0) >= 1500));
+
+    if (shouldSplit && typeof document !== 'undefined' && document.body) {
+      isSplitMode = true;
+      isMediaLocked = true;
+      document.body.classList.add('is-split-mode', 'is-media-locked');
+
+      if (typeof window !== 'undefined') {
+        window[callbackName] = function () { unlock(false); };
+        if (typeof window.addEventListener === 'function') {
+          window.addEventListener('message', function (e) {
+            if (window.parent && window.parent !== window && e.source !== window.parent) return;
+            var d = e && e.data;
+            if (d && typeof d === 'object' && d.source === 'DICV_STORYLINE_HOST' && d.type === mediaVar) {
+              unlock(false);
+            }
+          });
+          window.addEventListener('pagehide', stopMediaPoll);
+        }
+      }
+
+      var checkVar = function () {
+        var p = getPlayerFn();
+        if (p && typeof p.GetVar === 'function') {
+          try {
+            if (parseBoolVar(p.GetVar(mediaVar))) {
+              unlock(false);
+              return true;
+            }
+          } catch (e) {}
+        }
+        return false;
+      };
+
+      if (!checkVar() && typeof setInterval === 'function') {
+        pollId = setInterval(checkVar, 400);
+      }
+    }
+
+    return {
+      isSplit: function () { return isSplitMode; },
+      isLocked: function () { return isMediaLocked; },
+      unlock: unlock
+    };
+  };
+
   return StorylineBridge;
 });

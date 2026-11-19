@@ -678,6 +678,60 @@
       }
     }
 
+    /* 1800x900 Storyline Media-Sync Mode (Right -> Center) */
+    body.is-split-mode {
+      width: 1800px;
+      height: 900px;
+      position: relative;
+      pointer-events: none;
+    }
+
+    body.is-split-mode .quiz-viewport {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: auto;
+      margin: 0;
+      width: 1110px;
+      height: 900px;
+      max-width: none;
+      max-height: none;
+      transform-origin: right center;
+      transform: scale(0.8018);
+      pointer-events: auto;
+      transition: right 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.is-split-mode.is-split-expanded .quiz-viewport {
+      right: 345px;
+      transform: scale(1);
+    }
+
+    body.is-split-mode.is-feedback-split .quiz-viewport,
+    body.is-split-mode.is-split-expanded.is-feedback-split .quiz-viewport {
+      left: auto;
+      right: 690px;
+      transform: scale(0.96);
+    }
+
+    body.is-media-locked .answer-card {
+      pointer-events: none !important;
+      cursor: not-allowed !important;
+    }
+
+    body.is-media-locked .btn-submit:disabled {
+      background: #9CA8AF !important;
+      border-color: #CBD4D9 !important;
+      color: #FFFFFF !important;
+      opacity: 1 !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body.is-split-mode .quiz-viewport {
+        transition: none !important;
+      }
+    }
+
     .question-tab-container {
       position: relative;
       z-index: 10;
@@ -945,6 +999,12 @@
         }
       });
 
+      var splitMedia = DICVStorylineBridge.initSplitMedia({
+        quizId: QUIZ_ID,
+        getPlayer: function () { return bridge.getPlayer(); },
+        onUnlock: function () { renderUI(); }
+      });
+
       // Selection State Calculator
       function getSelectionState(id) {
         if (state.status !== 'READY') return 'LOCKED';
@@ -955,7 +1015,7 @@
 
       // Card Click Handler
       function toggleAnswer(optId) {
-        if (state.status !== 'READY') return;
+        if (state.status !== 'READY' || splitMedia.isLocked()) return;
 
         var index = state.selectedAnswers.indexOf(optId);
         if (index > -1) {
@@ -999,10 +1059,12 @@
         });
 
         // Submit Button: Enabled for 1 to 4 selections
-        btnSubmit.disabled = (count === 0 || state.status !== 'READY');
+        btnSubmit.disabled = (count === 0 || state.status !== 'READY' || splitMedia.isLocked());
 
         // Status Feedback
-        if (state.status === 'REVEALED') {
+        if (splitMedia.isLocked()) {
+          statusText.textContent = 'Watch the video to unlock this activity.';
+        } else if (state.status === 'REVEALED') {
           statusText.textContent = 'Review mode: A, B, C, and D are DICV EHS commitments.';
         } else if (state.status === 'SUBMITTED' || state.status === 'SUBMITTING') {
           statusText.textContent = (bridge && bridge.isStorylineAvailable)
@@ -1019,7 +1081,7 @@
 
       // Submit Quiz Action
       function submitQuiz() {
-        if (state.selectedAnswers.length === 0 || state.status !== 'READY') return;
+        if (state.selectedAnswers.length === 0 || state.status !== 'READY' || splitMedia.isLocked()) return;
 
         state.status = 'SUBMITTING';
         btnSubmit.disabled = true;
@@ -1106,6 +1168,7 @@
       // Restore Storyline State (on Load / Revisit)
       function handleStorylineState(storylineState) {
         if (storylineState.submitted) {
+          splitMedia.unlock(true);
           state.status = 'SUBMITTED';
           var prevAnswers = storylineState.submittedSelection || [];
           if (typeof prevAnswers === 'string') {

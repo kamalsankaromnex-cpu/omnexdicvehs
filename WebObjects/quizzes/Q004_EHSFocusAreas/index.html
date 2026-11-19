@@ -885,6 +885,58 @@
     .bonus-btn:disabled .arrow {
       color: #6E7E85;
     }
+
+    /* 1800x900 Storyline Media-Sync Mode (Right -> Center) */
+    body.is-split-mode {
+      width: 1800px;
+      height: 900px;
+      position: relative;
+      pointer-events: none;
+    }
+
+    body.is-split-mode #stage {
+      width: 1800px;
+      height: 900px;
+      position: relative;
+    }
+
+    body.is-split-mode .quiz-stage-inner {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      left: auto;
+      margin: 0;
+      width: 1536px;
+      height: 1024px;
+      transform-origin: right center;
+      transform: translateY(-50%) scale(0.5794);
+      pointer-events: auto;
+      transition: right 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.is-split-mode.is-split-expanded .quiz-stage-inner {
+      right: 132px;
+      transform: translateY(-50%) scale(0.8789);
+    }
+
+    body.is-split-mode.is-feedback-split .quiz-stage-inner,
+    body.is-split-mode.is-split-expanded.is-feedback-split .quiz-stage-inner {
+      left: auto;
+      right: 450px;
+      transform: translateY(-50%) scale(0.82);
+    }
+
+    body.is-media-locked .card,
+    body.is-media-locked .target-zone {
+      pointer-events: none !important;
+      cursor: not-allowed !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body.is-split-mode .quiz-stage-inner {
+        transition: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1124,6 +1176,7 @@
 
       function applyQ004BridgeState(bridgeState) {
         if (!bridgeState || !bridgeState.submitted) return;
+        splitMedia.unlock(true);
         const restored = parseQ004PlacementString(bridgeState.submittedSelection);
         if (restored && valid(restored)) {
           Object.assign(placements, restored);
@@ -1167,6 +1220,14 @@
         });
       }
 
+      let splitMedia = (typeof DICVStorylineBridge !== 'undefined' && DICVStorylineBridge.initSplitMedia)
+        ? DICVStorylineBridge.initSplitMedia({
+            quizId: 'Q004',
+            getPlayer: () => bridge ? bridge.getPlayer() : null,
+            onUnlock: () => draw()
+          })
+        : { isSplit: () => false, isLocked: () => false, unlock: () => {} };
+
       function valid(raw) {
         if (!raw || typeof raw !== 'object') return false;
         let seen = new Set();
@@ -1193,9 +1254,12 @@
         });
 
         const n = ids.filter(id => placements[id] !== null).length;
-        submit.disabled = mode !== 'READY' || n !== 3;
+        const mediaLocked = splitMedia.isLocked();
+        submit.disabled = mediaLocked || mode !== 'READY' || n !== 3;
 
-        if (mode === 'REVEALED') {
+        if (mediaLocked) {
+          progress.textContent = 'Watch the video to unlock this activity.';
+        } else if (mode === 'REVEALED') {
           progress.textContent = 'Review: Capability Management, Governance and Risk Management are correct.';
         } else if (mode === 'SUBMITTED') {
           progress.textContent = 'Submitted — view feedback in Storyline.';
@@ -1205,12 +1269,12 @@
           progress.textContent = `${n} of 3 focus areas placed.`;
         }
 
-        document.body.classList.toggle('locked', mode !== 'READY');
-        ids.forEach(id => cards[id].draggable = (mode === 'READY'));
+        document.body.classList.toggle('locked', mediaLocked || mode !== 'READY');
+        ids.forEach(id => cards[id].draggable = (!mediaLocked && mode === 'READY'));
       }
 
       function move(id, dest) {
-        if (mode !== 'READY' || !ids.includes(id) || !(dest === null || zones.includes(dest))) return;
+        if (splitMedia.isLocked() || mode !== 'READY' || !ids.includes(id) || !(dest === null || zones.includes(dest))) return;
         const src = placements[id];
         if (src === dest) return;
         const occupant = dest === null ? null : ids.find(x => placements[x] === dest);
