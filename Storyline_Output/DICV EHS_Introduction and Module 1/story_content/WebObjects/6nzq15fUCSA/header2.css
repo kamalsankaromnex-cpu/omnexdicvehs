@@ -1,0 +1,112 @@
+/* DICV Interactive — Header 2 (#004355) Progress Bar Web Object */
+:root {
+  --h2-bg: #004355;
+  --h2-border: #00677F;
+  --h2-yellow: #FFFF40;
+  --h2-white: #FFFFFF;
+  --h2-active: #5097AB;
+  --h2-pending: rgba(255, 255, 255, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--h2-bg);
+  color: var(--h2-white);
+  font-family: "Segoe UI", Arial, sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+.dicv-h2 {
+  width: 100%;
+  height: 50px;
+  padding: 0 28px;
+  background: var(--h2-bg);
+  border-bottom: 2px solid var(--h2-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.dicv-h2-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.dicv-h2-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 64, 0.14);
+  border: 1px solid rgba(255, 255, 64, 0.65);
+  color: var(--h2-yellow);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.dicv-h2-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--h2-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dicv-h2-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.dicv-h2-segments {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dicv-h2-seg {
+  width: 56px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--h2-pending);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.dicv-h2-seg.is-completed {
+  background: var(--h2-yellow);
+}
+
+.dicv-h2-seg.is-active {
+  background: rgba(255, 255, 64, 0.34);
+  border: 2px solid var(--h2-yellow);
+  box-shadow: 0 0 8px rgba(255, 255, 64, 0.45);
+}
+
+.dicv-h2-count {
+  font-size: 14px;
+  font-weight: 600;
+  color: #D2E4EA;
+  white-space: nowrap;
+}
+
+.dicv-h2-pct {
+  min-width: 44px;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--h2-yellow);
+  white-space: nowrap;
+}

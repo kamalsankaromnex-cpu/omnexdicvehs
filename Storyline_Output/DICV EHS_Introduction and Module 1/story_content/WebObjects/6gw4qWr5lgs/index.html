@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 1 Outro — Safety Passport &amp; Module 2 Unlock | DICV Interactive</title>
+  <link rel="stylesheet" href="fonts.css">
+  <style>
+    :root {
+      --petrol-dark: #004355;
+      --petrol: #00677F;
+      --yellow: #FFFF40;
+      --green: #008248;
+      --text-dark: #162229;
+      --text-muted: #4B5D66;
+      --font-family: "Daimler CS", "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #061821;
+      font-family: var(--font-family);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 1920x1080 Auto-Scaled Stage matching CourseMap exact conveyor geometry */
+    .stage-1920 {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: center center;
+      overflow: hidden;
+    }
+
+    .factory-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.75) saturate(1.08);
+      transition: filter 0.6s ease;
+      pointer-events: none;
+    }
+
+    body.is-transitioning .factory-bg {
+      filter: brightness(0.95) saturate(1.15);
+    }
+
+    .conveyor-belt-section {
+      position: absolute;
+      left: 0;
+      bottom: -24px;
+      width: 1920px;
+      height: 540px;
+      transform: scale(1.10);
+      transform-origin: center bottom;
+      pointer-events: none;
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .conveyor-assembly {
+      position: relative;
+      width: 1920px;
+      height: 540px;
+    }
+
+    .conveyor-chassis {
+      position: absolute;
+      left: -18px;
+      bottom: 0;
+      width: 1956px;
+      height: 343px;
+      display: block;
+    }
+
+    .station {
+      position: absolute;
+      transform: translateX(-50%);
+      width: 248px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .station-callout {
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--petrol-dark);
+      border: 2px solid var(--green);
+      border-radius: 12px;
+      padding: 6px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+      margin-bottom: 10px;
+      white-space: nowrap;
+    }
+
+    .station-m2 .station-callout {
+      border-color: var(--yellow);
+      opacity: 0;
+      transform: translateY(10px) scale(0.92);
+      transition: all 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.45s;
+    }
+
+    body.is-transitioning .station-m2 .station-callout {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .station-badge-wrap {
+      position: relative;
+      z-index: 2;
+      width: 96px;
+      height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.6s ease;
+    }
+
+    .station-badge {
+      width: 92px;
+      height: 92px;
+      object-fit: contain;
+    }
+
+    .station-pad {
+      position: relative;
+      z-index: 1;
+      width: 156px;
+      height: 70px;
+      object-fit: contain;
+      margin-top: -16px;
+      transition: all 0.6s ease;
+    }
+
+    .station-lock {
+      position: absolute;
+      top: -2px;
+      right: -4px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #6E7E85;
+      border: 2.5px solid #FFFFFF;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+      transition: opacity 0.4s ease 0.25s, transform 0.4s ease 0.25s;
+    }
+
+    .station-lock svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .station-star {
+      position: absolute;
+      top: -2px;
+      right: -4px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--yellow);
+      border: 2.5px solid #FFFFFF;
+      color: var(--petrol-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(255, 255, 64, 0.55);
+      animation: outroStationStarPulse 2.4s ease-in-out infinite;
+    }
+
+    .station-star svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--petrol-dark);
+      animation: outroStarTwinkle 3.2s ease-in-out infinite;
+    }
+
+    /* Block 1 Completed (Green) */
+    .station-m1 .station-badge-wrap {
+      filter: drop-shadow(0 0 18px rgba(40, 167, 69, 0.9));
+    }
+
+    .station-m1 .station-pad {
+      filter: hue-rotate(-55deg) saturate(1.4) brightness(1.06) drop-shadow(0 0 14px rgba(40, 167, 69, 0.85));
+    }
+
+    /* Locked Stations (2-6) */
+    .station.is-locked .station-badge-wrap {
+      transform: translateY(4px) scale(0.96);
+      opacity: 0.9;
+    }
+
+    .station.is-locked .station-pad {
+      transform: scale(0.96);
+      filter: saturate(0) contrast(1.06) brightness(0.94);
+      opacity: 0.94;
+    }
+
+    /* Block 2 Unlocking on Transition */
+    body.is-transitioning .station-m2 .station-lock {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    body.is-transitioning .station-m2 .station-badge-wrap {
+      opacity: 1;
+      transform: translateY(-4px) scale(1.08);
+      filter: drop-shadow(0 0 22px rgba(0, 210, 255, 0.95)) drop-shadow(0 0 14px rgba(255, 255, 64, 0.85));
+      animation: badgeFloat 2.4s ease-in-out infinite;
+    }
+
+    body.is-transitioning .station-m2 .station-pad {
+      opacity: 1;
+      transform: scale(1);
+      filter: drop-shadow(0 0 18px rgba(0, 210, 255, 0.85));
+    }
+
+    /* Energy Beam tilted along belt slope from Block 1 (13.8%, 144px) to Block 2 (28.2%, 173px) */
+    .transfer-beam {
+      position: absolute;
+      left: 14.5%;
+      bottom: 162px;
+      width: 0;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #28A745, #00D2FF, var(--yellow));
+      box-shadow: 0 0 16px rgba(0, 210, 255, 0.9);
+      transform-origin: left center;
+      transform: rotate(-6deg);
+      opacity: 0;
+      transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.15s, opacity 0.25s ease 0.1s;
+    }
+
+    body.is-transitioning .transfer-beam {
+      width: 268px;
+      opacity: 1;
+    }
+
+    @keyframes badgeFloat {
+      0%, 100% { transform: translateY(-4px) scale(1.08); }
+      50% { transform: translateY(-10px) scale(1.08); }
+    }
+
+    /* Foreground Pop-Up Card positioned comfortably below Header 1/2 and above all 6 conveyor stations */
+    .outro-wrap {
+      position: absolute;
+      top: 138px;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .outro-card {
+      width: 1120px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 2px solid var(--petrol-dark);
+      border-radius: 26px;
+      box-shadow: 0 24px 64px rgba(0, 20, 32, 0.48);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      pointer-events: auto;
+      animation: cardFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+      transition: opacity 0.42s ease, transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.is-transitioning .outro-card {
+      opacity: 0;
+      transform: translateY(-28px) scale(0.90);
+      pointer-events: none;
+    }
+
+    @keyframes cardFadeUp {
+      from { opacity: 0; transform: translateY(18px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes starBurst {
+      0%   { opacity: 0; transform: scale(0.3); }
+      65%  { opacity: 1; transform: scale(1.18); box-shadow: 0 0 0 14px rgba(255, 255, 64, 0.28); }
+      100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 64, 0); }
+    }
+
+    @keyframes outroHeroStarPulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 64, 0.35), 0 0 14px rgba(255, 255, 64, 0.45);
+      }
+      50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 0 8px rgba(255, 255, 64, 0), 0 0 22px rgba(255, 255, 64, 0.85);
+      }
+    }
+
+    @keyframes outroStationStarPulse {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 4px 12px rgba(255, 255, 64, 0.55);
+      }
+      50% {
+        transform: translateY(-3px) scale(1.10);
+        box-shadow: 0 6px 18px rgba(255, 255, 64, 0.90);
+      }
+    }
+
+    @keyframes outroStarTwinkle {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      35% { transform: scale(1.12) rotate(8deg); }
+      70% { transform: scale(1.05) rotate(-6deg); }
+    }
+
+    @keyframes outroHeartBeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255, 77, 79, 0.35)); }
+      25% { transform: scale(1.18); filter: drop-shadow(0 0 7px rgba(255, 77, 79, 0.8)); }
+      45% { transform: scale(1); }
+      65% { transform: scale(1.12); }
+    }
+
+    @keyframes outroHeartLost {
+      0% { transform: scale(1.15); fill: #FF4D4F; opacity: 1; }
+      30% { transform: scale(1.2) translateX(-2px) rotate(-10deg); fill: #FF4D4F; }
+      55% { transform: scale(1.05) translateX(2px) rotate(10deg); fill: #FF4D4F; }
+      100% { transform: scale(0.95); fill: rgba(255, 255, 255, 0.26); opacity: 1; }
+    }
+
+    @keyframes lineSweep {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+
+    @keyframes badgePop {
+      from { opacity: 0; transform: translateY(10px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, #003545 0%, var(--petrol-dark) 55%, var(--petrol) 100%);
+      border-bottom: 5px solid var(--yellow);
+      padding: 22px 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      color: #FFFFFF;
+    }
+
+    .hero-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .star-badge {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--yellow);
+      color: var(--petrol-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      animation:
+        starBurst 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.15s backwards,
+        outroHeroStarPulse 2.6s ease-in-out 0.85s infinite;
+    }
+
+    .star-badge svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--petrol-dark);
+      animation: outroStarTwinkle 3.2s ease-in-out 0.85s infinite;
+    }
+
+    .hero-eyebrow {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      color: var(--yellow);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .lives-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.28);
+      font-size: 16px;
+      font-weight: 700;
+      animation: heartPulse 0.55s ease 0.95s 1;
+      white-space: nowrap;
+    }
+
+    .lives-hearts {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .lives-hearts svg {
+      width: 18px;
+      height: 18px;
+      fill: #FF4D4F;
+      transform-origin: center center;
+    }
+
+    .lives-hearts svg:not(.is-lost) {
+      animation: outroHeartBeat 2.2s ease-in-out infinite;
+    }
+
+    .lives-hearts svg:not(.is-lost):nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .lives-hearts svg:not(.is-lost):nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .lives-hearts svg.is-lost {
+      fill: rgba(255, 255, 255, 0.26);
+      animation: outroHeartLost 0.65s ease-out 0.85s backwards;
+    }
+
+    .passport-body {
+      padding: 22px 34px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .passport-heading {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--petrol-dark);
+    }
+
+    .passport-track-wrap {
+      position: relative;
+      padding-top: 6px;
+    }
+
+    .passport-line-bg {
+      position: absolute;
+      top: 24px;
+      left: 60px;
+      right: 60px;
+      height: 4px;
+      background: #DCE8EC;
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+    .passport-line-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--green);
+      border-radius: 2px;
+      animation: lineSweep 0.7s ease-out 0.35s backwards;
+    }
+
+    .passport-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .passport-item {
+      background: #F8FBFC;
+      border: 1.5px solid #CFE1E7;
+      border-radius: 16px;
+      padding: 12px 12px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      animation: badgePop 0.38s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    .passport-item:nth-child(1) { animation-delay: 0.35s; }
+    .passport-item:nth-child(2) { animation-delay: 0.44s; }
+    .passport-item:nth-child(3) { animation-delay: 0.53s; }
+    .passport-item:nth-child(4) { animation-delay: 0.62s; }
+    .passport-item:nth-child(5) { animation-delay: 0.71s; }
+
+    .passport-check {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 700;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 3px 10px rgba(0, 130, 72, 0.25);
+    }
+
+    .passport-item strong {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--petrol-dark);
+      line-height: 1.2;
+    }
+
+    .passport-item span {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .outro-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 20px;
+      padding-top: 14px;
+      border-top: 1px solid #E2ECEF;
+    }
+
+    .aura-summary {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--petrol-dark);
+      line-height: 1.35;
+      max-width: 560px;
+    }
+
+    .outro-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-map {
+      height: 52px;
+      padding: 0 24px;
+      border-radius: 26px;
+      border: 2px solid var(--petrol-dark);
+      background: #FFFFFF;
+      color: var(--petrol-dark);
+      font-family: var(--font-family);
+      font-size: 18px;
+      font-weight: 700;
+      font-style: normal;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .btn-map:hover {
+      background: #EFF6F8;
+      transform: translateY(-2px);
+    }
+
+    .btn-next {
+      height: 54px;
+      padding: 0 30px;
+      border-radius: 27px;
+      border: 2.5px solid var(--petrol-dark);
+      background: var(--yellow);
+      color: var(--petrol-dark);
+      font-family: var(--font-family);
+      font-size: 20px;
+      font-weight: 700;
+      font-style: normal;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 67, 85, 0.22);
+      transition: all 0.16s ease;
+    }
+
+    .btn-next:hover {
+      background: #FFF91A;
+      transform: translateY(-2px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    html.no-animation *,
+    html.no-animation *::before,
+    html.no-animation *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage-1920" id="stage-1920">
+    <img class="factory-bg" src="assets/map-bg.jpg" alt="" aria-hidden="true">
+
+    <!-- All 6 Conveyor Blocks Matching Exact CourseMap Alignment -->
+    <section class="conveyor-belt-section" aria-hidden="true">
+      <div class="conveyor-assembly">
+        <img class="conveyor-chassis" src="assets/Full converyor belt latest.svg" alt="">
+        <div class="transfer-beam"></div>
+
+        <div class="station station-m1" style="left: 13.8%; bottom: 144px;">
+          <div class="station-callout">&#10003; Module 1 Completed</div>
+          <div class="station-badge-wrap">
+            <img class="station-badge" src="assets/Asset 6.svg" alt="">
+            <span class="station-star" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg></span>
+          </div>
+          <img class="station-pad" src="assets/Asset 7.svg" alt="">
+        </div>
+
+        <div class="station station-m2 is-locked" style="left: 28.2%; bottom: 173px;">
+          <div class="station-callout">&#9733; Module 2 Unlocked!</div>
+          <div class="station-badge-wrap">
+            <img class="station-badge" src="assets/Asset 5.svg" alt="">
+            <span class="station-lock"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+          </div>
+          <img class="station-pad" src="assets/Asset 7.svg" alt="">
+        </div>
+
+        <div class="station is-locked" style="left: 42.6%; bottom: 202px;">
+          <div class="station-badge-wrap">
+            <img class="station-badge" src="assets/Asset 4.svg" alt="">
+            <span class="station-lock"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+          </div>
+          <img class="station-pad" src="assets/Asset 7.svg" alt="">
+        </div>
+
+        <div class="station is-locked" style="left: 57.0%; bottom: 230px;">
+          <div class="station-badge-wrap">
+            <img class="station-badge" src="assets/Asset 1.svg" alt="">
+            <span class="station-lock"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+          </div>
+          <img class="station-pad" src="assets/Asset 7.svg" alt="">
+        </div>
+
+        <div class="station is-locked" style="left: 71.4%; bottom: 259px;">
+          <div class="station-badge-wrap">
+            <img class="station-badge" src="assets/Asset 2.svg" alt="">
+            <span class="station-lock"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+          </div>
+          <img class="station-pad" src="assets/Asset 7.svg" alt="">
+        </div>
+
+        <div class="station is-locked" style="left: 85.8%; bottom: 288px;">
+          <div class="station-badge-wrap">
+            <img class="station-badge" src="assets/Asset 3.svg" alt="">
+            <span class="station-lock"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+          </div>
+          <img class="station-pad" src="assets/Asset 7.svg" alt="">
+        </div>
+      </div>
+    </section>
+
+    <main class="outro-wrap" aria-label="Module 1 Completion Summary">
+      <section class="outro-card">
+        <header class="hero-banner">
+          <div class="hero-left">
+            <div class="star-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+            </div>
+            <div>
+              <div class="hero-eyebrow">Star 1 of 6 Unlocked</div>
+              <h1 class="hero-title">Module 1 Complete!</h1>
+            </div>
+          </div>
+
+          <div class="lives-pill" id="lives-pill" aria-label="Lives remaining: 3 of 3">
+            <span class="lives-hearts" id="lives-hearts" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </span>
+            <span id="lives-label">3 / 3 Hearts</span>
+          </div>
+        </header>
+
+        <section class="passport-body">
+          <h2 class="passport-heading">Safety Passport — What You Mastered in Module 1</h2>
+
+          <div class="passport-track-wrap">
+            <div class="passport-line-bg" aria-hidden="true">
+              <div class="passport-line-fill"></div>
+            </div>
+            <div class="passport-grid">
+              <div class="passport-item" data-topic="103">
+                <div class="passport-check" aria-hidden="true">&#10003;</div>
+                <strong>DICV's Commitment to a Safer Workplace</strong>
+              </div>
+              <div class="passport-item" data-topic="102">
+                <div class="passport-check" aria-hidden="true">&#10003;</div>
+                <strong>EHS Vision</strong>
+              </div>
+              <div class="passport-item" data-topic="104">
+                <div class="passport-check" aria-hidden="true">&#10003;</div>
+                <strong>Safety Strategy</strong>
+              </div>
+              <div class="passport-item" data-topic="105">
+                <div class="passport-check" aria-hidden="true">&#10003;</div>
+                <strong>Safety Culture</strong>
+              </div>
+              <div class="passport-item" data-topic="106">
+                <div class="passport-check" aria-hidden="true">&#10003;</div>
+                <strong>Safety Review Structure</strong>
+              </div>
+            </div>
+          </div>
+
+          <p class="aura-summary" id="aura-summary" aria-live="polite">Clean sweep — all 3 hearts intact and Star 1 unlocked! Ready for Module 2?</p>
+
+          <footer class="outro-footer">
+            <div class="outro-actions">
+              <button type="button" class="btn-map" id="btn-map" aria-label="View Course Map">View Course Map</button>
+              <button type="button" class="btn-next" id="btn-next" aria-label="Continue to Module 2">
+                <span>Continue to Module 2</span>
+                <span aria-hidden="true">&rarr;</span>
+              </button>
+            </div>
+          </footer>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="storyline-bridge.js"></script>
+  <script src="sfx.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      function scaleStage() {
+        var el = document.getElementById('stage-1920');
+        if (!el) return;
+        var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        el.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+      }
+      window.addEventListener('resize', scaleStage);
+      scaleStage();
+
+      var params = null;
+      try {
+        params = new URLSearchParams(window.location.search || '');
+        if (params.has('no_anim')) {
+          document.documentElement.classList.add('no-animation');
+        }
+        if (params.get('state') === 'transition') {
+          document.body.classList.add('is-transitioning');
+        }
+      } catch (e) {}
+
+      var bridge = new DICVStorylineBridge({
+        quizId: 'M1_Outro',
+        storylineVariables: { submitted: 'M1_Outro_Done', correct: 'M1_Outro_Continue', revealed: 'M1_Outro_Done' }
+      });
+
+      function renderLivesSummary(lives) {
+        var count = Math.max(0, Math.min(3, Math.round(Number(lives))));
+        if (!isFinite(count)) count = 3;
+        var pill = document.getElementById('lives-pill');
+        var label = document.getElementById('lives-label');
+        var summary = document.getElementById('aura-summary');
+        var svgs = document.querySelectorAll('#lives-hearts svg');
+        svgs.forEach(function (s, idx) {
+          s.classList.toggle('is-lost', idx >= count);
+        });
+        if (label) label.textContent = count + ' / 3 Hearts';
+        if (pill) pill.setAttribute('aria-label', 'Lives remaining: ' + count + ' of 3');
+        if (summary) {
+          summary.textContent = count === 3
+            ? 'Clean sweep — all 3 hearts intact and Star 1 unlocked! Ready for Module 2?'
+            : 'Great effort — Star 1 unlocked! Stay sharp as we head into Module 2.';
+        }
+      }
+
+      var p = bridge && typeof bridge.getPlayer === 'function' ? bridge.getPlayer() : null;
+      if (p && typeof p.GetVar === 'function') {
+        try {
+          var rawLives = p.GetVar('LivesRemaining');
+          if (rawLives !== null && rawLives !== undefined && String(rawLives).trim() !== '') {
+            renderLivesSummary(rawLives);
+          }
+        } catch (eLives) {}
+        try {
+          var rawProg = p.GetVar('CourseProgressData');
+          if (rawProg) {
+            var parsedProg = typeof rawProg === 'string' ? JSON.parse(rawProg) : rawProg;
+            var topicMap = (parsedProg && parsedProg.t) ? parsedProg.t : null;
+            if (topicMap) {
+              document.querySelectorAll('.passport-item[data-topic]').forEach(function (item) {
+                var tid = item.getAttribute('data-topic');
+                var done = Number(topicMap[tid]) === 2;
+                var chk = item.querySelector('.passport-check');
+                if (chk) {
+                  chk.innerHTML = done ? '&#10003;' : '&bull;';
+                  chk.style.opacity = done ? '1' : '0.45';
+                }
+              });
+            }
+          }
+        } catch (eProg) {}
+      } else if (params && params.has('simLife')) {
+        renderLivesSummary(params.get('simLife'));
+      }
+
+      function triggerStorylineBool(varName, msgType) {
+        if (window.DICVSFX) window.DICVSFX.play('click');
+        var player = bridge && typeof bridge.getPlayer === 'function' ? bridge.getPlayer() : null;
+        if (player && typeof player.SetVar === 'function') {
+          try {
+            var cur = typeof player.GetVar === 'function' ? player.GetVar(varName) : false;
+            var isTrue = cur === true || cur === 'true' || cur === 1 || cur === '1';
+            if (isTrue) {
+              player.SetVar(varName, false);
+              setTimeout(function () {
+                try { player.SetVar(varName, true); } catch (e2) {}
+              }, 250);
+            } else {
+              player.SetVar(varName, true);
+            }
+          } catch (e) {}
+        }
+        if (bridge && typeof bridge.sendToParent === 'function') {
+          bridge.sendToParent(msgType, { timestamp: Date.now() });
+        }
+      }
+
+      var btnNext = document.getElementById('btn-next');
+      var btnMap = document.getElementById('btn-map');
+      var isTransitioning = false;
+      var mapClicked = false;
+
+      if (btnNext) {
+        btnNext.addEventListener('click', function () {
+          if (isTransitioning || btnNext.disabled) return;
+          isTransitioning = true;
+          btnNext.disabled = true;
+          document.body.classList.add('is-transitioning');
+          setTimeout(function () {
+            triggerStorylineBool('M1_Outro_Continue', 'MODULE1_OUTRO_CONTINUE');
+          }, 1500);
+          // Recovery fallback if host slide does not navigate
+          setTimeout(function () {
+            isTransitioning = false;
+            btnNext.disabled = false;
+            document.body.classList.remove('is-transitioning');
+          }, 4500);
+        });
+      }
+      if (btnMap) {
+        btnMap.addEventListener('click', function () {
+          if (mapClicked || btnMap.disabled) return;
+          mapClicked = true;
+          btnMap.disabled = true;
+          triggerStorylineBool('M1_Outro_Map', 'MODULE1_OUTRO_MAP');
+          setTimeout(function () {
+            mapClicked = false;
+            btnMap.disabled = false;
+          }, 3000);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

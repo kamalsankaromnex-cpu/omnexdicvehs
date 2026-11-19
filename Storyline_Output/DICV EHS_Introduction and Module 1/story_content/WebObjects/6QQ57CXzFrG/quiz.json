@@ -1,0 +1,43 @@
+{
+  "quizId": "Q006_R3",
+  "quizTitle": "DICV Safety Review Structure — Issue 3 of 3",
+  "roundIndex": 3,
+  "totalRounds": 3,
+  "scenarioName": "Machine-Guarding Improvement",
+  "canvas": {
+    "width": 1024,
+    "height": 576,
+    "viewport": "transparent"
+  },
+  "type": "scenario_single_choice",
+  "question": "Which committee should review this issue?",
+  "scenarioText": "A machine-guarding improvement needs to be implemented across relevant areas for consistent application.",
+  "options": [
+    {
+      "id": "apex",
+      "label": "Apex Committee",
+      "icon": "assets/icons/apex-committee.png",
+      "isCorrect": false
+    },
+    {
+      "id": "sub",
+      "label": "Sub Committee",
+      "icon": "assets/icons/sub-committee.png",
+      "isCorrect": false
+    },
+    {
+      "id": "adhoc",
+      "label": "Ad-hoc Committee – Initiatives",
+      "icon": "assets/icons/adhoc-committee.png",
+      "isCorrect": true
+    }
+  ],
+  "approvedAnswerKey": "adhoc",
+  "answerKeyStatus": "provisional-pending-signoff",
+  "storylineVariables": {
+    "submitted": "Q006_R3_Done",
+    "answer": "Q006_R3_Answer",
+    "correct": "Q006_R3_Correct",
+    "revealed": "Q006_R3_Revealed"
+  }
+}

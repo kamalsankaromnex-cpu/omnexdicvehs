@@ -1,0 +1,50 @@
+{
+  "quizId": "Q003",
+  "quizTitle": "DICV EHS Commitments",
+  "canvas": {
+    "width": 1110,
+    "height": 900,
+    "viewport": "transparent"
+  },
+  "type": "multiple_response_max4",
+  "maxSelections": 4,
+  "options": [
+    {
+      "id": "A",
+      "label": "Zero harm to people",
+      "icon": "assets/icons/zero-harm.svg",
+      "isCorrect": true
+    },
+    {
+      "id": "B",
+      "label": "Safe working environment",
+      "icon": "assets/icons/safe-working-environment.svg",
+      "isCorrect": true
+    },
+    {
+      "id": "C",
+      "label": "Environmental responsibility",
+      "icon": "assets/icons/environmental-responsibility.svg",
+      "isCorrect": true
+    },
+    {
+      "id": "D",
+      "label": "Proactive risk prevention",
+      "icon": "assets/icons/proactive-risk-prevention.svg",
+      "isCorrect": true
+    },
+    {
+      "id": "E",
+      "label": "Higher production output",
+      "icon": "assets/icons/higher-production-output.svg",
+      "isCorrect": false
+    }
+  ],
+  "approvedAnswerKey": ["A", "B", "C", "D"],
+  "storylineVariables": {
+    "submitted": "Q003_Done",
+    "answers": "Q003_Answers",
+    "correct": "Q003_Correct",
+    "revealed": "Q003_Revealed"
+  }
+}

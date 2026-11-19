@@ -1,0 +1,421 @@
+/* DICV Interactive — Header 1 (#080A0C) HTML Web Object Styles */
+:root {
+  --h1-bg: #080A0C;
+  --h1-hover: #24282B;
+  --h1-down: #004355;
+  --h1-yellow: #FFFF40;
+  --h1-white: #FFFFFF;
+  --h1-muted: #6E777C;
+  --h1-life: #FF5A5F;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--h1-bg);
+  color: var(--h1-white);
+  font-family: "Segoe UI", Arial, sans-serif;
+  overflow: hidden;
+}
+
+.dicv-h1 {
+  width: 100%;
+  height: 80px;
+  padding: 0 28px;
+  background: var(--h1-bg);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.dicv-h1-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  justify-self: start;
+}
+
+.dicv-h1-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.dicv-dt-logo {
+  height: 20px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
+.dicv-dt-wordmark {
+  color: var(--h1-white);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dicv-brand-sep {
+  width: 2px;
+  height: 24px;
+  background: #525D65;
+  flex-shrink: 0;
+}
+
+.dicv-h1-title {
+  font-size: 19px;
+  font-weight: 600;
+  color: #E6ECEF;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dicv-h1-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  justify-self: center;
+}
+
+.dicv-center-sep {
+  width: 2px;
+  height: 26px;
+  background: #3A4248;
+  flex-shrink: 0;
+}
+
+.dicv-h1-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--h1-white);
+  cursor: default;
+  user-select: none;
+}
+
+.dicv-h1-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: end;
+}
+
+.dicv-h1-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 48px;
+  height: 52px;
+  padding: 0 14px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--h1-white);
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dicv-ico {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.dicv-ico-life {
+  fill: var(--h1-life);
+  stroke: var(--h1-life);
+}
+
+.dicv-hearts {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.dicv-heart {
+  width: 24px;
+  height: 24px;
+  transition: fill 0.3s ease, stroke 0.3s ease, transform 0.3s ease, filter 0.3s ease, opacity 0.3s ease;
+  transform-origin: center center;
+}
+
+.dicv-heart.is-active {
+  fill: var(--h1-life);
+  stroke: var(--h1-life);
+  opacity: 1;
+  filter: drop-shadow(0 0 3px rgba(255, 107, 139, 0.35));
+}
+
+.dicv-heart.is-inactive {
+  fill: transparent;
+  stroke: #8A959C;
+  opacity: 0.9;
+}
+
+.dicv-heart.is-just-lost {
+  animation: headerHeartLost 0.78s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.dicv-heart.is-just-gained {
+  animation: headerHeartGained 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes headerHeartLost {
+  0% {
+    transform: scale(1.15);
+    fill: #FF4D4F;
+    stroke: #FF4D4F;
+    filter: drop-shadow(0 0 9px rgba(255, 77, 79, 0.95));
+  }
+  25% {
+    transform: scale(1.25) translateX(-3px) rotate(-10deg);
+    fill: #FF4D4F;
+    stroke: #FF4D4F;
+  }
+  45% {
+    transform: scale(1.12) translateX(3px) rotate(10deg);
+    fill: #FF4D4F;
+    stroke: #FF4D4F;
+  }
+  75% {
+    transform: scale(0.72) translateY(2px);
+    fill: transparent;
+    stroke: #FF6B8B;
+    opacity: 0.65;
+  }
+  100% {
+    transform: scale(1);
+    fill: transparent;
+    stroke: #8A959C;
+    opacity: 0.9;
+    filter: none;
+  }
+}
+
+@keyframes headerHeartGained {
+  0% {
+    transform: scale(0.45);
+    opacity: 0.4;
+    filter: drop-shadow(0 0 0 rgba(255, 107, 139, 0));
+  }
+  45% {
+    transform: scale(1.42) rotate(-6deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 12px rgba(255, 107, 139, 0.95));
+  }
+  75% {
+    transform: scale(1.12) rotate(4deg);
+    filter: drop-shadow(0 0 7px rgba(255, 107, 139, 0.7));
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 3px rgba(255, 107, 139, 0.35));
+  }
+}
+
+.dicv-life-val {
+  min-width: 38px;
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.dicv-life-val.is-life-reduced {
+  animation: headerValReduced 0.6s ease;
+}
+
+.dicv-life-val.is-life-gained {
+  animation: headerValGained 0.7s ease;
+}
+
+@keyframes headerValReduced {
+  0%, 100% { transform: scale(1); color: var(--h1-white); }
+  35% { transform: scale(1.22); color: #FF6B8B; }
+}
+
+@keyframes headerValGained {
+  0%, 100% { transform: scale(1); color: var(--h1-white); }
+  40% { transform: scale(1.24); color: var(--h1-yellow); }
+}
+
+.dicv-heart.is-unavailable {
+  fill: transparent;
+  stroke: #5A646B;
+  stroke-dasharray: 3 2;
+  opacity: 0.75;
+}
+
+.dicv-life-val {
+  min-width: 38px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dicv-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.dicv-star {
+  width: 24px;
+  height: 24px;
+  transition: fill 0.3s ease, stroke 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+  transform-origin: center center;
+}
+
+.dicv-star.is-active {
+  fill: var(--h1-yellow);
+  stroke: var(--h1-yellow);
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 64, 0.35));
+  animation: headerStarShimmer 2.8s ease-in-out infinite;
+}
+
+.dicv-star.is-active:nth-child(2) { animation-delay: 0.25s; }
+.dicv-star.is-active:nth-child(3) { animation-delay: 0.50s; }
+.dicv-star.is-active:nth-child(4) { animation-delay: 0.75s; }
+.dicv-star.is-active:nth-child(5) { animation-delay: 1.00s; }
+.dicv-star.is-active:nth-child(6) { animation-delay: 1.25s; }
+
+.dicv-star.is-just-earned {
+  animation: headerStarEarned 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes headerStarShimmer {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 4px rgba(255, 255, 64, 0.38));
+  }
+  50% {
+    transform: scale(1.12) rotate(6deg);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 64, 0.85));
+  }
+}
+
+@keyframes headerStarEarned {
+  0% { transform: scale(0.75); filter: drop-shadow(0 0 0 rgba(255, 255, 64, 0)); }
+  45% { transform: scale(1.45) rotate(-8deg); filter: drop-shadow(0 0 12px rgba(255, 255, 64, 0.95)); }
+  75% { transform: scale(1.12) rotate(4deg); filter: drop-shadow(0 0 8px rgba(255, 255, 64, 0.7)); }
+  100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 4px rgba(255, 255, 64, 0.35)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dicv-heart,
+  .dicv-heart.is-just-lost,
+  .dicv-heart.is-just-gained,
+  .dicv-life-val,
+  .dicv-life-val.is-life-reduced,
+  .dicv-life-val.is-life-gained,
+  .dicv-star,
+  .dicv-star.is-active,
+  .dicv-star.is-just-earned {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+.dicv-star.is-inactive {
+  fill: transparent;
+  stroke: #8A959C;
+  opacity: 0.9;
+}
+
+.dicv-stars-val {
+  min-width: 38px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dicv-ico-star {
+  fill: var(--h1-yellow);
+  stroke: var(--h1-yellow);
+}
+
+.dicv-h1-btn:hover:not(:disabled) {
+  background: var(--h1-hover);
+  color: var(--h1-yellow);
+}
+
+.dicv-h1-btn:active:not(:disabled) {
+  background: var(--h1-down);
+  color: var(--h1-yellow);
+}
+
+.dicv-h1-btn:disabled {
+  background: var(--h1-bg);
+  color: var(--h1-muted);
+  cursor: not-allowed;
+}
+
+.dicv-h1-btn:focus-visible {
+  outline: 2px solid var(--h1-yellow);
+  outline-offset: 2px;
+}
+
+.dicv-h1-btn[aria-pressed="true"] {
+  color: var(--h1-yellow);
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+@media (max-width: 1360px) {
+  .dicv-btn-lbl { display: none; }
+  .dicv-h1-btn { padding: 0 10px; }
+}
+
+@media (max-width: 1080px) {
+  .dicv-h1 { gap: 12px; padding: 0 20px; }
+  .dicv-h1-center { gap: 14px; }
+  .dicv-h1-title { font-size: 16px; }
+}
+
+@media (max-width: 680px) {
+  .dicv-h1 { display: flex; justify-content: space-between; height: 52px; padding: 0 10px; gap: 6px; }
+  .dicv-dt-logo {
+  height: 20px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
+.dicv-dt-wordmark { font-size: 10px; letter-spacing: 0.06em; }
+  .dicv-brand-sep, .dicv-h1-title, .dicv-center-sep { display: none; }
+  .dicv-h1-center { gap: 8px; }
+  .dicv-h1-stat { font-size: 11px; gap: 3px; }
+  .dicv-hearts, .dicv-stars { gap: 1px; }
+  .dicv-heart, .dicv-star { width: 12px; height: 12px; }
+  .dicv-life-val, .dicv-stars-val { min-width: 18px; }
+  .dicv-h1-actions { gap: 1px; flex-shrink: 0; }
+  .dicv-h1-btn { min-width: 28px; height: 30px; padding: 0 3px; }
+  .dicv-ico { width: 15px; height: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dicv-h1-btn { transition: none; }
+}

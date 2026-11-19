@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <!-- Warning Beacon Base -->
+  <rect x="14" y="34" width="20" height="4" rx="1.5" fill="#004355" />
+  
+  <!-- Flashing Yellow Dome -->
+  <path d="M16 34c0-4.42 3.58-8 8-8s8 3.58 8 8H16z" fill="#FFFF40" stroke="#004355" stroke-width="2" />
+  <circle cx="24" cy="30" r="2.5" fill="#004355" />
+
+  <!-- Radiating Light Rays -->
+  <path d="M24 18v5M14 22l3.5 3.5M34 22l-3.5 3.5M10 30h5M38 30h-5" stroke="#004355" stroke-width="2.2" stroke-linecap="round" />
+</svg>

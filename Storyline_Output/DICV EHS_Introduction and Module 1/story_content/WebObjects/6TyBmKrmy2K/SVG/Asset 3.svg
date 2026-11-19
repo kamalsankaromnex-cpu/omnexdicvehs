@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 119.89 141.34"><metadata><?xpacket begin="" id="W5M0MpCehiHzreSzNTczkc9d"?><x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 6.0.0"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmpMM:DocumentID="xmp.did:cb9f5498-bb58-4572-8043-8c369e6bfb9b" xmpMM:InstanceID="xmp.iid:cb9f5498-bb58-4572-8043-8c369e6bfb9b" dcterms:provenance="https://cai-manifests.adobe.com/manifests/urn-c2pa-0c05f9f7-00ea-4071-9e57-0d4705f2da85-adobe"> </rdf:Description></rdf:RDF></x:xmpmeta>
+<?xpacket end="w"?></metadata>
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #f9fbfc;
+      }
+
+      .cls-4 {
+        fill: none;
+        stroke: #ffbf19;
+        stroke-linecap: square;
+        stroke-width: 7px;
+      }
+
+      .cls-4, .cls-5 {
+        stroke-miterlimit: 18.44;
+      }
+
+      .cls-5 {
+        fill: url(#linear-gradient);
+        stroke: #647b8f;
+        stroke-width: .75px;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="-1244.87" y1="468.48" x2="-1225.86" y2="444.9" gradientTransform="translate(5754.0619 2175.0736) scale(4.6094 -4.6094)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d3952"/>
+      <stop offset=".55" stop-color="#102c44"/>
+      <stop offset="1" stop-color="#071f36"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="-1246.95" y1="469.06" x2="-1226.67" y2="447.26" gradientTransform="translate(5754.0619 2175.0736) scale(4.6094 -4.6094)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".18"/>
+      <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05162b" stop-opacity=".3"/>
+    </linearGradient>
+  </defs>
+  <g id="Layer_2-2" data-name="Layer 2">
+    <g>
+      <g id="badge">
+        <path id="soft-outer-outline" class="cls-3" d="M48.26,3.39q11.69-6.78,23.37,0l40.67,24.19q7.59,4.55,7.59,13.79v58.07q0,9.35-7.71,13.91l-41.02,24.65q-11.21,6.67-22.43,0L7.71,113.47Q0,108.79,0,99.44v-58.07q0-9.24,7.6-13.79L48.26,3.39Z"/>
+        <path id="navy-hexagonal-base" class="cls-5" d="M50.01,8.3q9.94-5.73,19.87,0l38.33,22.9q6.19,3.74,6.19,10.98v56.09q0,7.25-6.31,11.11l-38.09,22.9q-10.05,5.84-20.1,0l-38.1-22.9q-6.31-3.86-6.31-11.11v-56.09q0-7.24,6.2-10.98L50.01,8.3Z"/>
+        <path id="subtle-face-shading" class="cls-1" d="M50.01,8.3q9.94-5.73,19.87,0l38.1,23.55c4.12,2.5,6.42,5.5,6.42,10.33v56.09q0,7.25-6.31,11.11l-38.09,22.9q-10.05,5.84-20.1,0l-38.1-22.9q-6.31-3.86-6.31-11.11v-56.09q0-7.24,6.2-10.98L50.01,8.3Z"/>
+      </g>
+      <g id="yellow-chevron">
+        <path id="bottom-chevron" class="cls-4" d="M35.41,111.67l24.54,14.02,24.54-14.02"/>
+      </g>
+      <g>
+        <path class="cls-2" d="M82.61,81.94c-5.34,3.88-12.63,6.68-19.15,7.7-9.48,1.49-19.15,1-28.42-1.51-5.79-1.57-14.52-5.29-14.91-11.73.04-4.77,4.43-8,8.62-9.91,1.38-14.66,9.86-25.8,23.84-30.55,1.31-2.11,3.29-3.36,5.76-3.69,3.56-.49,7.02-.13,10.55.66,3.11.81,6.08,1.81,8.98,3.13,1.28.58,1.95,1.84,1.9,3.22,9.29,5.33,13.77,15.65,15.2,26.02,3.85,1.69,5.98,5.08,4.08,9.05-2.29,3.86-7.75,6.48-12.08,7.52C85.52,82.2,84.17,82.21,82.61,81.94ZM62.25,79.83c-10.79.7-21.96-1.06-31.26-6.63-.79-.47-.88-1.53-.48-2.26.32-.57,1.27-1.3,2.05-.85,3.81,2.18,7.74,3.86,12.08,4.85,10.3,2.34,21.01,1.95,31.15-1.01l-.2-2.59c-.08-.96.84-1.64,1.61-1.71s1.69.42,1.8,1.31l.26,1.98c4.38-1.38,8.34-3.02,12.43-5.03l-1.11-6.99c-1.87-8.26-6.52-15.91-14.35-19.59-3.31.64-5.77,3.07-7.61,5.84-2.31,3.47-3.5,7.38-4.04,11.5-.16,1.25-1.84,1.74-2.74,1.18s-.88-1.38-.74-2.25c1.26-7.81,5.19-16.68,13.15-19.4l-4.14-1.34c-3.39-1.09-6.92-1.5-10.46-1.23-1.95.15-3.45,1.05-4.55,2.67-2.22,3.3-3.93,6.91-4.84,10.82l-1.25,5.4c-.23,1-1.43,1.34-2.18,1.1-.98-.31-1.38-1.16-1.19-2.23.81-4.42,2.15-8.64,4.08-12.64-11.17,5.4-16.93,15.62-17.6,27.62-.05.79-.69,1.34-1.45,1.46-.9.15-1.7.43-2.49.9-1.42.86-2.74,1.8-3.73,3.09-1.2,1.57-1.18,3.47.14,4.97,2.51,2.85,6.75,4.61,10.5,5.7,14.1,4.1,32.6,3.81,44.91-4.95.96-1.1,2.37-1.43,3.7-.76,3.84-.03,10.22-2.84,12.23-5.84.86-1.28.39-2.9-.95-3.65-.19.51-.52,1.03-1.05,1.31C84.74,75.33,72.6,79.16,62.25,79.83Z"/>
+        <path class="cls-2" d="M78.9,47.74c1.13,1.31,1.1,2.86-.15,3.97-1.1.98-2.83.71-3.86-.56-.95-1.15-.92-2.83.18-3.79S77.87,46.55,78.9,47.74Z"/>
+        <path class="cls-2" d="M83.66,60.88c-.8.57-1.77.57-2.55.1-1.62-.96-2.03-3.24-.76-4.66.56-.64,1.41-.95,2.23-.82.71.11,1.41.65,1.8,1.37C85.11,58.21,84.97,59.93,83.66,60.88Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

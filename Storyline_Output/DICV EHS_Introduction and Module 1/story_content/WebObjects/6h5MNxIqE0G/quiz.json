@@ -1,0 +1,43 @@
+{
+  "quizId": "Q006_R1",
+  "quizTitle": "DICV Safety Review Structure — Issue 1 of 3",
+  "roundIndex": 1,
+  "totalRounds": 3,
+  "scenarioName": "Organisation-wide Policy Review",
+  "canvas": {
+    "width": 1024,
+    "height": 576,
+    "viewport": "transparent"
+  },
+  "type": "scenario_single_choice",
+  "question": "Which committee should review this issue?",
+  "scenarioText": "An organisation-wide safety policy requires review and update based on recent analysis.",
+  "options": [
+    {
+      "id": "apex",
+      "label": "Apex Committee",
+      "icon": "assets/icons/apex-committee.png",
+      "isCorrect": true
+    },
+    {
+      "id": "sub",
+      "label": "Sub Committee",
+      "icon": "assets/icons/sub-committee.png",
+      "isCorrect": false
+    },
+    {
+      "id": "adhoc",
+      "label": "Ad-hoc Committee – Initiatives",
+      "icon": "assets/icons/adhoc-committee.png",
+      "isCorrect": false
+    }
+  ],
+  "approvedAnswerKey": "apex",
+  "answerKeyStatus": "provisional-pending-signoff",
+  "storylineVariables": {
+    "submitted": "Q006_R1_Done",
+    "answer": "Q006_R1_Answer",
+    "correct": "Q006_R1_Correct",
+    "revealed": "Q006_R1_Revealed"
+  }
+}

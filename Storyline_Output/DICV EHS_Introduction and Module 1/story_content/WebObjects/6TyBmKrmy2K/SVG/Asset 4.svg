@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 119.89 141.34">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #f9fbfc;
+      }
+
+      .cls-4 {
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: 4px;
+      }
+
+      .cls-4, .cls-5 {
+        fill: none;
+      }
+
+      .cls-5 {
+        stroke: #ffbf19;
+        stroke-linecap: square;
+        stroke-width: 7px;
+      }
+
+      .cls-5, .cls-6 {
+        stroke-miterlimit: 18.44;
+      }
+
+      .cls-6 {
+        fill: url(#linear-gradient);
+        stroke: #647b8f;
+        stroke-width: .75px;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="-587.55" y1="360.59" x2="-568.53" y2="337.02" gradientTransform="translate(2724.198 1677.8086) scale(4.6094 -4.6094)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d3952"/>
+      <stop offset=".55" stop-color="#102c44"/>
+      <stop offset="1" stop-color="#071f36"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="-589.63" y1="361.18" x2="-569.34" y2="339.38" gradientTransform="translate(2724.198 1677.8086) scale(4.6094 -4.6094)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".18"/>
+      <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05162b" stop-opacity=".3"/>
+    </linearGradient>
+  </defs>
+  <g id="Layer_2-2" data-name="Layer 2">
+    <g>
+      <g id="badge">
+        <path id="soft-outer-outline" class="cls-3" d="M48.26,3.39q11.69-6.78,23.37,0l40.67,24.19q7.59,4.55,7.59,13.79v58.07q0,9.35-7.71,13.91l-41.02,24.65q-11.21,6.67-22.43,0L7.71,113.47Q0,108.79,0,99.44v-58.07q0-9.24,7.6-13.79L48.26,3.39Z"/>
+        <path id="navy-hexagonal-base" class="cls-6" d="M50.01,8.3q9.94-5.73,19.87,0l38.33,22.9q6.19,3.74,6.19,10.98v56.09q0,7.25-6.31,11.11l-38.09,22.9q-10.05,5.84-20.1,0l-38.1-22.9q-6.31-3.86-6.31-11.11v-56.09q0-7.24,6.2-10.98L50.01,8.3Z"/>
+        <path id="subtle-face-shading" class="cls-1" d="M50.01,8.3q9.94-5.73,19.87,0l38.1,23.55c4.12,2.5,6.42,5.5,6.42,10.33v56.09q0,7.25-6.31,11.11l-38.09,22.9q-10.05,5.84-20.1,0l-38.1-22.9q-6.31-3.86-6.31-11.11v-56.09q0-7.24,6.2-10.98L50.01,8.3Z"/>
+      </g>
+      <g id="yellow-chevron">
+        <path id="bottom-chevron" class="cls-5" d="M35.41,111.67l24.54,14.02,24.54-14.02"/>
+      </g>
+      <g id="shield-outline">
+        <path id="safety-shield" class="cls-4" d="M59.95,33.97c-9.03,8.02-17.81,12.29-29.35,13.54v15.8c0,16.81,11.54,29.85,29.35,39.88,17.8-10.03,29.34-23.07,29.34-39.88v-15.8C78.01,46.01,68.98,41.74,59.95,33.97Z"/>
+      </g>
+      <g id="exclamation">
+        <path id="exclamation-stem" class="cls-2" d="M57.44,55.54q0-2.51,2.51-2.51t2.5,2.51l-.75,19.56q0,2.01-1.75,2.01-1.76,0-1.76-2.01L57.44,55.54Z"/>
+        <circle id="exclamation-dot" class="cls-2" cx="59.95" cy="85.64" r="3.01"/>
+      </g>
+    </g>
+  </g>
+</svg>

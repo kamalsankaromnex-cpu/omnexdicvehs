@@ -1,0 +1,936 @@
+@import url('fonts.css');
+
+:root {
+  --daimler-petrol: #00677F;
+  --daimler-petrol-dark: #004355;
+  --daimler-petrol-plus-20k: #00566A;
+  --daimler-petrol-80: #007A93;
+  --daimler-petrol-60: #5097AB;
+  --daimler-petrol-40: #79AEBF;
+  --daimler-petrol-20: #A6CAD8;
+  --daimler-petrol-subtle: #F0F7F9;
+  --daimler-yellow: #FFFF40;
+  --daimler-yellow-hover: #EBEB30;
+  --daimler-black: #000000;
+  --daimler-dark-grey: #444444;
+  --daimler-mid-grey: #888888;
+  --daimler-light-grey: #E6E6E6;
+  --daimler-grey-bg: #F7F9FA;
+  --daimler-white: #FFFFFF;
+  --daimler-correct-green: #008248;
+  --daimler-correct-bg: #E8F7ED;
+  --daimler-correct-border: #28A745;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #E3ECF3 0%, #D3E0EC 65%, #C6D5E3 100%);
+  font-family: 'Daimler CS', 'Segoe UI', Arial, sans-serif;
+  color: var(--daimler-black);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scaled canvas sized for the Storyline Web Object */
+#map-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1920px;
+  height: 950px;
+  transform-origin: center center;
+  overflow: hidden;
+  user-select: none;
+}
+
+.industrial-bg,
+.bg-architecture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Conveyor Stage */
+.conveyor-stage {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -24px;
+  height: 540px;
+  transform: scale(1.10);
+  transform-origin: center bottom;
+  pointer-events: none;
+}
+
+.conveyor-assembly {
+  position: relative;
+  width: 1920px;
+  height: 540px;
+}
+
+.conveyor-chassis {
+  position: absolute;
+  left: -18px;
+  bottom: 0;
+  width: 1956px;
+  height: 343px;
+  display: block;
+  pointer-events: none;
+}
+
+.conveyor-deck-clip {
+  display: none;
+}
+
+.conveyor-slats {
+  width: 2400px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 34px,
+    rgba(130, 215, 255, 0.35) 34px,
+    rgba(130, 215, 255, 0.35) 38px,
+    rgba(6, 14, 24, 0.45) 38px,
+    rgba(6, 14, 24, 0.45) 48px
+  );
+  animation: beltSlatsMove 1.4s linear infinite;
+  will-change: transform;
+}
+
+@keyframes beltSlatsMove {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(48px); }
+}
+
+/* Animated Blue Directional Chevrons */
+.conveyor-chevrons,
+.conveyor-leds,
+.checkpoints-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.chevron-lane {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transform: rotate(-1.9deg);
+}
+
+.chevron-arrow {
+  width: 12px;
+  height: 12px;
+  border-top: 3.5px solid #9BF0FF;
+  border-right: 3.5px solid #9BF0FF;
+  transform: rotate(45deg);
+  filter: drop-shadow(0 0 6px rgba(59, 214, 255, 0.95));
+  animation: chevronTravel 1.35s ease-in-out infinite;
+}
+
+.chevron-arrow:nth-child(2) {
+  animation-delay: 0.28s;
+}
+
+@keyframes chevronTravel {
+  0% { opacity: 0.25; transform: translateX(-4px) rotate(45deg); }
+  50% { opacity: 1; transform: translateX(3px) rotate(45deg); }
+  100% { opacity: 0.25; transform: translateX(10px) rotate(45deg); }
+}
+
+/* Pulsing Side-Rail LEDs */
+.led-bar {
+  position: absolute;
+  height: 8px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(59, 214, 255, 0.2), #7CEBFF, rgba(59, 214, 255, 0.2));
+  box-shadow: 0 0 14px 3px rgba(59, 214, 255, 0.72);
+  animation: ledPulse 2.4s ease-in-out infinite;
+}
+
+.led-bar:nth-child(even) {
+  animation-delay: 1.2s;
+}
+
+@keyframes ledPulse {
+  0%, 100% { opacity: 0.48; }
+  50% { opacity: 1; }
+}
+
+/* 6 Interactive Module Checkpoints */
+.checkpoint-btn {
+  position: absolute;
+  transform: translateX(-50%);
+  width: 248px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  font-family: inherit;
+  outline: none;
+}
+
+.checkpoint-btn:focus-visible .checkpoint-label-card {
+  outline: 3px solid var(--daimler-yellow);
+  outline-offset: 3px;
+}
+
+.checkpoint-label-card {
+  position: relative;
+  min-height: 60px;
+  width: 230px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: #FFFFFF;
+  border: 2px solid #96AAB5;
+  box-shadow: 0 6px 16px rgba(0, 42, 54, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #0D1B22;
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.checkpoint-btn:hover .checkpoint-label-card,
+.checkpoint-btn:focus-visible .checkpoint-label-card,
+.checkpoint-btn.is-selected .checkpoint-label-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.checkpoint-btn.is-selected .checkpoint-label-card,
+.checkpoint-btn.state-available .checkpoint-label-card,
+.checkpoint-btn.state-in_progress .checkpoint-label-card {
+  width: 274px;
+  min-height: 78px;
+  padding: 12px 18px;
+  font-size: 22px;
+  line-height: 1.22;
+}
+
+.checkpoint-label-card::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 10px solid var(--daimler-petrol-80);
+}
+
+.checkpoint-btn:hover .checkpoint-label-card,
+.checkpoint-btn.is-selected .checkpoint-label-card {
+  border-color: var(--daimler-yellow);
+  box-shadow: 0 12px 26px rgba(0, 67, 85, 0.24), 0 0 0 2px var(--daimler-petrol-dark);
+}
+
+.checkpoint-badge-wrap {
+  position: relative;
+  width: 112px;
+  height: 132px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: badgeFloat 3.4s ease-in-out infinite;
+  transition: filter 0.25s ease, transform 0.25s ease;
+}
+
+.checkpoint-btn:nth-child(2) .checkpoint-badge-wrap { animation-delay: 0.4s; }
+.checkpoint-btn:nth-child(3) .checkpoint-badge-wrap { animation-delay: 0.8s; }
+.checkpoint-btn:nth-child(4) .checkpoint-badge-wrap { animation-delay: 1.2s; }
+.checkpoint-btn:nth-child(5) .checkpoint-badge-wrap { animation-delay: 1.6s; }
+.checkpoint-btn:nth-child(6) .checkpoint-badge-wrap { animation-delay: 2.0s; }
+
+@keyframes badgeFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.checkpoint-badge-img,
+.checkpoint-pad-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.checkpoint-status-dot {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--daimler-white);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.checkpoint-pad-wrap {
+  position: relative;
+  width: 156px;
+  height: 70px;
+  margin-top: -16px;
+  z-index: 1;
+  transition: filter 0.25s ease;
+}
+
+/* Status Visual States */
+.checkpoint-btn.state-locked .checkpoint-badge-wrap {
+  animation: none;
+  transform: translateY(4px) scale(0.96);
+  filter: none;
+  opacity: 0.88;
+}
+
+.checkpoint-btn.state-locked .checkpoint-pad-wrap {
+  transform: scale(0.96);
+  filter: saturate(0) contrast(1.06) brightness(0.94);
+  opacity: 0.94;
+}
+
+.checkpoint-btn.state-locked .checkpoint-label-card {
+  color: #5A666E;
+  background: rgba(235, 240, 243, 0.82);
+  border-color: #C4CFD6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.checkpoint-btn.state-locked .checkpoint-status-dot {
+  width: 44px;
+  height: 44px;
+  top: -2px;
+  right: -4px;
+  font-size: 24px;
+  background: var(--daimler-mid-grey);
+  border: 2.5px solid var(--daimler-white);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.38);
+}
+
+.checkpoint-btn.state-locked .checkpoint-status-dot .cm-inline-ico {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.4;
+}
+
+.checkpoint-btn.state-available .checkpoint-badge-wrap {
+  transform: translateY(-4px) scale(1.06);
+  filter: drop-shadow(0 0 16px rgba(0, 198, 224, 0.85)) drop-shadow(0 0 10px rgba(255, 255, 64, 0.7));
+}
+
+.checkpoint-btn.state-in_progress .checkpoint-badge-wrap {
+  transform: translateY(-4px) scale(1.06);
+  filter: drop-shadow(0 0 20px rgba(0, 198, 224, 0.95)) drop-shadow(0 0 14px rgba(255, 255, 64, 0.85));
+  animation: badgeFloat 2.8s ease-in-out infinite, pulseInProgress 1.8s ease-in-out infinite;
+}
+
+@keyframes pulseInProgress {
+  0%, 100% { filter: drop-shadow(0 0 16px rgba(0, 198, 224, 0.75)); }
+  50% { filter: drop-shadow(0 0 26px rgba(255, 255, 64, 0.95)); }
+}
+
+.checkpoint-btn.state-completed .checkpoint-badge-wrap {
+  filter: drop-shadow(0 0 18px rgba(40, 167, 69, 0.9));
+}
+
+.checkpoint-btn.state-completed .checkpoint-pad-wrap {
+  filter: hue-rotate(-55deg) saturate(1.5) brightness(1.08) drop-shadow(0 0 18px rgba(40, 167, 69, 0.9));
+}
+
+.checkpoint-btn.state-completed .checkpoint-label-card {
+  border-color: #28A745;
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.2);
+}
+
+.checkpoint-btn.state-completed .checkpoint-status-dot {
+  background: var(--daimler-correct-green);
+  border: 2px solid var(--daimler-white);
+}
+
+.checkpoint-btn.just-completed .checkpoint-badge-wrap {
+  animation: completionPop 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes completionPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.14) translateY(-6px); filter: drop-shadow(0 0 28px rgba(40, 167, 69, 1)); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 16px rgba(40, 167, 69, 0.85)); }
+}
+
+.checkpoint-btn.is-selected .checkpoint-pad-wrap {
+  filter: drop-shadow(0 0 18px rgba(255, 255, 64, 0.9));
+}
+
+/* Primary Resume CTA: Official Daimler Yellow + Dark Petrol */
+.resume-btn {
+  border: 2.5px solid var(--daimler-petrol-dark);
+  border-radius: 12px;
+  min-height: 50px;
+  padding: 12px 28px;
+  background: var(--daimler-yellow);
+  color: var(--daimler-black);
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--daimler-petrol-dark), 0 8px 18px rgba(0, 67, 85, 0.22);
+  transition: transform 0.14s ease, background-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.resume-btn:hover:not(:disabled) {
+  background: var(--daimler-yellow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--daimler-petrol-dark), 0 12px 22px rgba(0, 67, 85, 0.28);
+}
+
+.resume-btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--daimler-petrol-dark);
+}
+
+.resume-btn:focus-visible {
+  outline: 3px solid var(--daimler-petrol-dark);
+  outline-offset: 2px;
+}
+
+.resume-btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+  box-shadow: none;
+}
+
+.map-close {
+  position: absolute;
+  top: 22px;
+  right: 168px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 2px solid var(--daimler-petrol-dark);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--daimler-petrol-dark);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.map-close:hover:not(:disabled) {
+  background: var(--daimler-petrol-dark);
+  border-color: var(--daimler-petrol-dark);
+  color: var(--daimler-white);
+  transform: translateY(-1px);
+}
+
+.map-close:active:not(:disabled) {
+  background: #B71C24;
+  border-color: #99141B;
+  color: var(--daimler-white);
+  transform: translateY(1px);
+}
+
+.map-close:disabled {
+  background: #FFF5F5;
+  border-color: rgba(217, 48, 56, 0.45);
+  color: rgba(197, 34, 43, 0.6);
+  cursor: not-allowed;
+}
+
+.map-close:focus-visible {
+  outline: 3px solid var(--daimler-yellow);
+  outline-offset: 2px;
+}
+
+.lesson-panel {
+  position: absolute;
+  inset: 78px 168px auto;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 24px;
+  align-items: center;
+  min-height: 220px;
+  padding: 20px 26px;
+  border-radius: 18px;
+  background: var(--daimler-white);
+  color: #0D1B22;
+  box-shadow: 0 14px 36px rgba(0, 42, 54, 0.16);
+}
+
+.module-summary {
+  padding-right: 24px;
+  border-right: 1px solid #CBD8DE;
+}
+
+.modal-module-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #E5ECF0;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.module-summary h2 {
+  margin: 8px 0 10px;
+  font-size: 32px;
+  line-height: 1.15;
+}
+
+.module-lessons {
+  min-width: 0;
+}
+
+.module-state-pill {
+  padding: 5px 13px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--daimler-petrol);
+  border: 1.5px solid var(--daimler-petrol-20);
+  color: var(--daimler-white);
+}
+
+.module-state-pill.state-completed {
+  background: var(--daimler-correct-green);
+  border-color: var(--daimler-correct-border);
+  color: var(--daimler-white);
+}
+
+.module-state-pill.state-locked {
+  background: var(--daimler-dark-grey);
+  border-color: var(--daimler-mid-grey);
+  color: var(--daimler-light-grey);
+}
+
+/* Progress Bar Row */
+.modal-progress-row {
+  margin-top: 16px;
+}
+
+.modal-progress-row:has(.modal-progress-label:empty) {
+  display: none;
+}
+
+.modal-progress-label {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.modal-progress-track {
+  height: 12px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: #CFD9E0;
+  overflow: hidden;
+}
+
+.modal-progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: var(--daimler-correct-green);
+  transition: width 0.35s ease;
+}
+
+/* Two-Column Topic Cards */
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 10px;
+  min-height: 297px;
+  align-content: start;
+}
+
+.topics-grid:has(> :last-child:nth-child(5)) > :last-child {
+  grid-column: 1 / -1;
+  width: calc(50% - 5px);
+  justify-self: center;
+}
+
+.topic-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--daimler-petrol);
+  border: 2px solid var(--daimler-petrol-40);
+  color: var(--daimler-white);
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.topic-card:hover:not(.is-locked) {
+  transform: translateY(-2px);
+  background: var(--daimler-petrol-80);
+  border-color: var(--daimler-yellow);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.24);
+}
+
+.topic-card:active:not(.is-locked) {
+  transform: scale(0.985);
+}
+
+.topic-card:focus-visible {
+  outline: 3px solid var(--daimler-yellow);
+  outline-offset: 2px;
+}
+
+.topic-card.is-next-lesson {
+  background: #FFFBE0;
+  color: var(--daimler-black);
+  border-color: #B48000;
+  box-shadow: inset 5px 0 0 var(--daimler-petrol-dark), 0 4px 12px rgba(0, 67, 85, 0.12);
+}
+
+.topic-card.is-next-lesson:hover {
+  background: #FFFDF0;
+  color: var(--daimler-black);
+  border-color: var(--daimler-yellow);
+}
+
+.topic-card.is-completed {
+  background: var(--daimler-correct-bg);
+  border-color: var(--daimler-correct-border);
+  color: var(--daimler-black);
+}
+
+.topic-card.is-completed:hover {
+  background: #DCF2E4;
+  border-color: var(--daimler-correct-green);
+}
+
+.topic-card.is-locked {
+  background: #F6F9FB;
+  border: 1px solid #C6D5DD;
+  color: #2D3B42;
+  cursor: not-allowed;
+  opacity: 0.94;
+}
+
+.topic-title {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.topic-status-badge {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.topic-status-badge.status-available {
+  background: var(--daimler-yellow);
+  color: var(--daimler-black);
+}
+
+.topic-status-badge.status-in_progress {
+  background: var(--daimler-petrol-dark);
+  color: var(--daimler-yellow);
+  border: 1px solid var(--daimler-yellow);
+}
+
+.topic-status-badge.status-completed {
+  background: var(--daimler-correct-green);
+  color: var(--daimler-white);
+}
+
+.topic-status-badge.status-locked {
+  background: #E3EBEF;
+  color: #4A5A64;
+  font-size: 13px;
+  padding: 4px 10px;
+}
+
+.pilot-empty-note {
+  grid-column: 1 / -1;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--daimler-petrol-plus-20k);
+  border: 1.5px dashed var(--daimler-petrol-40);
+  color: var(--daimler-petrol-subtle);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.denied-banner {
+  min-height: 18px;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #8A2923;
+}
+
+.denied-banner:empty {
+  display: none;
+}
+
+.module-summary .resume-btn {
+  margin-top: 16px;
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 20px;
+  font-size: 17px;
+}
+
+@media (min-aspect-ratio: 17/9) {
+  .conveyor-stage {
+    transform: scale(0.82);
+  }
+}
+
+@media (max-width: 1200px) and (max-aspect-ratio: 3/2) {
+  .map-close {
+    min-height: 70px;
+    font-size: 30px;
+  }
+
+  .lesson-panel {
+    top: 100px;
+    padding: 30px 32px;
+  }
+
+  .topic-card {
+    min-height: 76px;
+  }
+
+  .topic-title {
+    font-size: 25px;
+  }
+
+  .topic-status-badge {
+    font-size: 19px;
+  }
+}
+
+/* Pause animations when tab/layer is hidden or reduced-motion requested */
+body.is-paused *,
+body.is-paused *::before,
+body.is-paused *::after {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .conveyor-slats,
+  .chevron-arrow,
+  .led-bar,
+  .checkpoint-badge-wrap {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .modal-progress-fill {
+    transition: none !important;
+  }
+}
+
+.cm-inline-ico {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.checkpoint-status-dot .cm-inline-ico {
+  width: 14px;
+  height: 14px;
+}
+
+.checkpoint-btn.state-available .checkpoint-pad-wrap,
+.checkpoint-btn.state-in_progress .checkpoint-pad-wrap {
+  animation: activePadPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes activePadPulse {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(255, 255, 64, 0.55)); }
+  50% { filter: drop-shadow(0 0 22px rgba(255, 255, 64, 0.95)); }
+}
+
+/* ==========================================================================
+   VO-SYNCHRONIZED TRANSITION MODES (m1_intro & m1_to_m2)
+   ========================================================================== */
+body.is-transition-mode .map-close {
+  display: none !important;
+}
+
+body.is-transition-mode .checkpoint-btn,
+body.is-transition-mode .topic-card {
+  pointer-events: none;
+  cursor: default;
+}
+
+body.is-transition-mode:not(.transition-topics-revealed) .lesson-panel {
+  opacity: 0 !important;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+body.is-transition-mode .checkpoint-badge-wrap {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.35s ease;
+}
+
+body.is-transition-mode.transition-topics-revealed .lesson-panel {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.is-transition-mode .resume-btn {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.15s ease;
+}
+
+body.is-transition-mode.transition-continue-enabled .resume-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.is-transition-mode .checkpoint-btn {
+  opacity: 0.58;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+body.is-transition-mode .checkpoint-btn.is-transition-lit,
+body.is-transition-mode .checkpoint-btn.is-transition-completed {
+  opacity: 1;
+}
+
+body.is-transition-mode .checkpoint-btn.is-transition-lit .checkpoint-badge-wrap {
+  animation: none;
+  transform: translateY(-10px);
+  filter: drop-shadow(0 0 16px rgba(0, 198, 224, 0.72)) drop-shadow(0 0 10px rgba(255, 255, 64, 0.65));
+}
+
+body.is-transition-mode .checkpoint-btn.is-transition-lit .checkpoint-pad-wrap {
+  filter: drop-shadow(0 0 18px rgba(0, 198, 224, 0.85)) drop-shadow(0 0 12px rgba(255, 255, 64, 0.75));
+}
+
+body.is-transition-mode .checkpoint-btn.is-transition-lit .checkpoint-label-card {
+  border-color: var(--daimler-yellow);
+  box-shadow: 0 10px 26px rgba(0, 122, 147, 0.30), 0 0 0 2px var(--daimler-petrol-dark);
+}
+
+body.is-transition-mode .checkpoint-btn.is-transition-completed .checkpoint-pad-wrap {
+  filter: drop-shadow(0 0 16px rgba(255, 255, 64, 0.82));
+}
+
+.transition-earned-star {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translateX(-50%) scale(0.4);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 6;
+  filter: drop-shadow(0 4px 10px rgba(0, 67, 85, 0.35));
+}
+
+.transition-earned-star.is-visible {
+  animation: starAwardPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes starAwardPop {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.4); }
+  65% { opacity: 1; transform: translateX(-50%) translateY(-4px) scale(1.12); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+.conveyor-pathway-pulse {
+  position: absolute;
+  left: 13.8%;
+  bottom: 184px;
+  width: 112px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(0, 198, 224, 0) 0%, #00C6E0 35%, #FFFF40 75%, rgba(255, 255, 64, 0) 100%);
+  box-shadow: 0 0 22px rgba(255, 255, 64, 0.85), 0 0 34px rgba(0, 198, 224, 0.75);
+  transform: translate(-50%, 0) rotate(-6.5deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.conveyor-pathway-pulse.is-traveling {
+  animation: pathwayTravel 1.4s cubic-bezier(0.35, 0, 0.25, 1) forwards;
+}
+
+@keyframes pathwayTravel {
+  0% { left: 13.8%; bottom: 184px; opacity: 0; transform: translate(-50%, 0) rotate(-6.5deg) scale(0.8); }
+  15% { opacity: 1; transform: translate(-50%, 0) rotate(-6.5deg) scale(1.05); }
+  85% { opacity: 1; transform: translate(-50%, 0) rotate(-6.5deg) scale(1.05); }
+  100% { left: 28.2%; bottom: 213px; opacity: 0; transform: translate(-50%, 0) rotate(-6.5deg) scale(0.85); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.is-transition-mode .lesson-panel,
+  body.is-transition-mode .checkpoint-btn,
+  body.is-transition-mode .resume-btn {
+    transition: none !important;
+  }
+  .transition-earned-star.is-visible,
+  .conveyor-pathway-pulse.is-traveling {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: translateX(-50%) scale(1) !important;
+  }
+  .conveyor-pathway-pulse.is-traveling {
+    opacity: 0 !important;
+  }
+}

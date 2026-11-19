@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Shield Outline -->
+  <path d="M32 7 L53 16 C53 38 42 49 32 57 C22 49 11 38 11 16 Z" fill="#E8F5F8" stroke="#004355" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Warning Triangle inside -->
+  <polygon points="32,19 21,39 43,39" fill="#FFFF40" stroke="#004355" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Exclamation Mark -->
+  <line x1="32" y1="25" x2="32" y2="33" stroke="#004355" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="32" cy="36.5" r="1.5" fill="#004355"/>
+</svg>

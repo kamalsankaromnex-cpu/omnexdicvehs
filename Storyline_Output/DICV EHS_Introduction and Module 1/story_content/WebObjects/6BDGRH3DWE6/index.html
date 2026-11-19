@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q004 — DICV EHS Focus Areas | DICV Interactive</title>
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="quiz-hud.css">
+  <style>
+    :root {
+      --petrol: #00677F;
+      --dark: #004355;
+      --mid: #007A93;
+      --yellow: #FFFF40;
+      --black: #000000;
+      --white: #FFFFFF;
+      --grey: #888888;
+      --light-grey: #E6E6E6;
+      --border-tint: #98cbd7;
+
+      /* Semantic Status */
+      --correct-green: #008248;
+      --correct-bg: #E8F7ED;
+      --incorrect-red: #D92323;
+      --incorrect-bg: #FDF0F0;
+      --missed-amber: #D97706;
+      --missed-bg: #FFF8E7;
+
+      font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+      font-family: 'Daimler CS', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    #stage {
+      width: 1536px;
+      height: 1024px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: center center;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    .shell {
+      position: absolute;
+      left: 15px;
+      top: 40px;
+      width: 1507px;
+      height: 923px;
+      border: none;
+      border-radius: 26px;
+      box-shadow: var(--hud-panel-shadow);
+      background: var(--hud-panel-bg);
+    }
+
+    /* LEFT: Symmetrical 3-color Cyclic Pinwheel Venn */
+    .venn {
+      position: absolute;
+      left: 36px;
+      top: 62px;
+      width: 816px;
+      height: 867px;
+    }
+
+    .venn-art {
+      position: absolute;
+      left: 8px;
+      top: 38px;
+      width: 800px;
+      height: 757px;
+      overflow: visible;
+      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.10));
+      pointer-events: none;
+    }
+
+    .white-hub {
+      position: absolute;
+      left: 408px;
+      top: 344px;
+      width: 120px;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      color: var(--dark);
+      line-height: 1.04;
+    }
+
+    .white-hub strong {
+      font-size: 24px;
+      letter-spacing: -0.5px;
+      font-weight: 800;
+      display: block;
+    }
+
+    .white-hub span {
+      display: block;
+      font-size: 19px;
+      margin-top: 2px;
+      font-weight: 700;
+    }
+
+    /* Drop Zones */
+    .zone {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: 2.5px dashed rgba(255, 255, 255, 0.9);
+      border-radius: 26px;
+      line-height: 1.14;
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: box-shadow .15s, background .15s;
+      z-index: 4;
+      user-select: none;
+      padding: 10px;
+    }
+
+    .zone:not(.occupied):hover,
+    .zone.dragover {
+      background: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35);
+    }
+
+    .zone .plus {
+      font-size: 34px;
+      font-weight: 400;
+      line-height: 0.9;
+      margin-bottom: 6px;
+    }
+
+    .zone .name {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.12;
+    }
+
+    .zone .hint {
+      font-size: 18px;
+      line-height: 1.14;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    #zone-1 {
+      left: 92px;
+      top: 183px;
+      width: 206px;
+      height: 124px;
+    }
+
+    #zone-2 {
+      left: 518px;
+      top: 183px;
+      width: 206px;
+      height: 124px;
+    }
+
+    #zone-3 {
+      left: 305px;
+      top: 559px;
+      width: 206px;
+      height: 124px;
+      color: var(--dark);
+      border-color: rgba(0, 67, 85, 0.85);
+    }
+
+    #zone-3:not(.occupied):hover,
+    #zone-3.dragover {
+      background: rgba(0, 67, 85, 0.10);
+      box-shadow: 0 0 0 4px rgba(0, 67, 85, 0.25);
+    }
+
+    .zone.occupied {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .zone.occupied .placeholder {
+      display: none;
+    }
+
+    .zone:focus-visible,
+    .card:focus-visible,
+    #submit:focus-visible {
+      outline: 4px solid var(--dark);
+      outline-offset: 2px;
+    }
+
+    /* RIGHT PANEL: Focus Area Options */
+    .panel {
+      position: absolute;
+      left: 872px;
+      top: 94px;
+      width: 624px;
+      height: 836px;
+      border: 1.5px solid #a1cbd4;
+      border-radius: 25px;
+      box-shadow: 0 8px 16px rgba(0, 40, 50, 0.14);
+      background: #FFFFFF;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      height: 78px;
+      background: var(--dark);
+      color: #FFFFFF;
+      padding: 16px 30px;
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      line-height: 1.1;
+    }
+
+    .accent {
+      height: 8px;
+      background: var(--yellow);
+    }
+
+    .panel-body {
+      padding: 24px 30px 26px;
+      height: calc(100% - 86px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .instruction {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0 0 18px;
+      padding: 0 4px;
+      white-space: nowrap;
+      letter-spacing: -0.5px;
+    }
+
+    .cardlist {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    /* Draggable Stage Card */
+    .card {
+      height: 112px;
+      flex-shrink: 0;
+      width: 100%;
+      border: 1.8px solid #9dcad5;
+      border-radius: 26px;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      background: #FFFFFF;
+      padding: 12px 23px;
+      box-shadow: 0 3px 4px rgba(0, 52, 68, 0.1);
+      cursor: grab;
+      color: var(--dark);
+      user-select: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .card:hover {
+      border-color: var(--petrol);
+      box-shadow: 0 5px 12px rgba(0, 52, 68, 0.18);
+    }
+
+    .card.dragging {
+      opacity: 0.5;
+    }
+
+    .card .ic {
+      width: 106px;
+      height: 84px;
+      flex: 0 0 106px;
+      background: #E8F5F8;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ic img {
+      width: 62px;
+      height: 62px;
+      object-fit: contain;
+    }
+
+    .card-label {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.5px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .grip {
+      flex: 0 0 32px;
+      color: var(--petrol);
+      display: grid;
+      grid-template-columns: repeat(2, 10px);
+      grid-template-rows: repeat(3, 10px);
+      gap: 5px 6px;
+    }
+
+    .grip i {
+      width: 10px;
+      height: 10px;
+      border-radius: 100%;
+      background: currentColor;
+    }
+
+    /* Compact Card Style inside Venn Zone (text-only for high readability) */
+    .zone .card {
+      width: 100%;
+      height: 100%;
+      padding: 12px 14px;
+      border-radius: 22px;
+      gap: 0;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 9px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .zone .card .ic,
+    .zone .card .grip {
+      display: none;
+    }
+
+    .zone .card .card-label {
+      font-size: 26px;
+      line-height: 1.16;
+      letter-spacing: -0.3px;
+      text-align: center;
+    }
+
+    .card.selected-move {
+      outline: 4px solid var(--yellow);
+    }
+
+    /* Review Mode States */
+    .card.correct {
+      border: 3.5px solid var(--correct-green);
+      background: var(--correct-bg);
+    }
+
+    .card.incorrect {
+      border: 3.5px solid var(--incorrect-red);
+      background: var(--incorrect-bg);
+    }
+
+    .card.missed {
+      border: 3.5px solid var(--missed-amber);
+      background: var(--missed-bg);
+    }
+
+    .card.neutral {
+      opacity: 0.58;
+    }
+
+    /* Footer & Submit */
+    .footer {
+      margin-top: auto;
+      border-top: 2px solid #DEDEDE;
+      padding-top: 24px;
+      text-align: center;
+    }
+
+    #submit {
+      width: 100%;
+      height: 78px;
+      border-radius: 39px;
+      border: 3px solid var(--yellow);
+      font-weight: 700;
+      font-style: normal;
+      font-size: 32px;
+      letter-spacing: 0.3px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 14px rgba(0, 67, 85, 0.25);
+    }
+
+    #submit:not(:disabled) {
+      color: var(--hud-text-dark, #0A1419);
+      background: var(--yellow);
+      border-color: #C8C800;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(255, 255, 64, 0.28);
+    }
+
+    #submit:not(:disabled):hover {
+      background: #F4F420;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(255, 255, 64, 0.38);
+    }
+
+    #submit:disabled {
+      opacity: 1;
+      cursor: not-allowed;
+      border: 2px solid #CFD8DC;
+      background: #E2E8EB;
+      color: #6E7E85;
+      box-shadow: none;
+      transform: none;
+    }
+
+    #submit .arrow {
+      color: var(--hud-text-dark, #0A1419);
+      font-style: normal;
+      font-size: 36px;
+      line-height: 1;
+      font-weight: 900;
+      vertical-align: middle;
+      margin-left: 14px;
+      display: inline-block;
+      transition: transform 0.16s ease;
+    }
+
+    #submit:not(:disabled):hover .arrow {
+      transform: translateX(5px);
+    }
+
+    #submit:disabled .arrow {
+      color: #6E7E85;
+    }
+
+    .progress {
+      font-size: 28px;
+      font-weight: 700;
+      margin-top: 16px;
+      color: var(--dark);
+    }
+
+    body.locked .card {
+      cursor: default;
+    }
+
+    body.locked .zone {
+      cursor: default;
+    }
+
+    body.locked #submit {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .quiz-stage-inner {
+      position: relative;
+      width: 1536px;
+      height: 1024px;
+      transform-origin: left center;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.is-feedback-split .quiz-stage-inner {
+      transform: scale(0.65);
+    }
+
+    .feedback-side-panel {
+      display: none;
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      width: 492px;
+      background: #FFFFFF;
+      border: 2px solid var(--correct-green);
+      border-top: 8px solid var(--correct-green);
+      border-radius: 26px;
+      box-shadow: 0 16px 40px rgba(0, 67, 85, 0.16);
+      padding: 34px 36px 32px;
+      box-sizing: border-box;
+      flex-direction: column;
+      gap: 18px;
+      opacity: 0;
+      transform: translateY(-50%) translateX(24px);
+      pointer-events: none;
+      transition: opacity 0.45s ease 0.12s, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+      z-index: 30;
+    }
+
+    .feedback-side-panel.is-missed {
+      border-color: var(--incorrect-red);
+      border-top-color: #D92323;
+    }
+
+    body.is-feedback-split .feedback-side-panel {
+      display: flex;
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+      pointer-events: auto;
+    }
+
+    .feedback-header-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .feedback-icon-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: var(--correct-bg);
+      border: 2px solid var(--correct-green);
+      color: var(--correct-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feedback-side-panel.is-missed .feedback-icon-circle {
+      background: var(--incorrect-bg);
+      border-color: var(--incorrect-red);
+      color: #D92323;
+    }
+
+    .feedback-icon-circle svg {
+      width: 30px;
+      height: 30px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 3.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feedback-icon-cross {
+      display: none;
+    }
+
+    .feedback-side-panel.is-missed .feedback-icon-tick {
+      display: none;
+    }
+
+    .feedback-side-panel.is-missed .feedback-icon-cross {
+      display: block;
+    }
+
+    .feedback-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .feedback-badge {
+      align-self: flex-start;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: #FFFFFF;
+      background: var(--correct-green);
+    }
+
+    .feedback-side-panel.is-missed .feedback-badge {
+      background: #D92323;
+    }
+
+    .feedback-heading {
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.15;
+    }
+
+    .feedback-divider {
+      height: 1px;
+      background: #E2ECEF;
+      width: 100%;
+    }
+
+    .feedback-body {
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1.48;
+      color: #1F2428;
+    }
+
+    .feedback-actions {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-continue {
+      min-width: 240px;
+      height: 70px;
+      padding: 0 34px;
+      border-radius: 35px;
+      border: 3px solid var(--yellow);
+      background: var(--dark);
+      color: #FFFFFF;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-style: normal;
+      font-size: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 67, 85, 0.25);
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-continue:hover {
+      background: #00566A;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 67, 85, 0.38);
+    }
+
+    .btn-continue .arrow {
+      color: var(--yellow);
+      font-style: normal;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+
+    html.no-animation *,
+    html.no-animation *::before,
+    html.no-animation *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    .question-tab-container {
+      position: absolute;
+      top: 6px;
+      left: 0;
+      width: 1536px;
+      display: flex;
+      justify-content: center;
+      z-index: 25;
+      pointer-events: none;
+    }
+
+    .question-tab-container .rhombus-banner {
+      width: 960px;
+      height: 74px;
+    }
+
+    .question-title {
+      font-family: var(--font-family);
+      font-size: 30px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin: 0;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    /* Bonus Question Modal (shown after Q004 Feedback Continue) */
+    .bonus-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 35, 48, 0.58);
+      backdrop-filter: blur(4px);
+      z-index: 60;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .bonus-overlay.is-open {
+      display: flex;
+    }
+
+    .bonus-card {
+      width: 820px;
+      background: #FFFFFF;
+      border: 2.5px solid var(--dark);
+      border-top: 10px solid var(--yellow);
+      border-radius: 28px;
+      box-shadow: 0 24px 64px rgba(0, 32, 44, 0.34);
+      padding: 36px 42px 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      box-sizing: border-box;
+    }
+
+    .bonus-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .bonus-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: var(--dark);
+      color: var(--yellow);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      border: 2px solid var(--yellow);
+    }
+
+    .bonus-reward-hint {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--correct-green);
+      background: var(--correct-bg);
+      border: 1.5px solid var(--correct-green);
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+
+    .bonus-question {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.32;
+      margin: 0;
+    }
+
+    .bonus-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .bonus-option {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 22px 24px;
+      border-radius: 18px;
+      border: 2px solid #A8CAD3;
+      background: #F8FBFC;
+      cursor: pointer;
+      font-family: var(--font-family);
+      font-size: 25px;
+      font-weight: 700;
+      color: var(--dark);
+      text-align: left;
+      transition: all 0.16s ease;
+    }
+
+    .bonus-option:hover:not(:disabled) {
+      border-color: var(--mid);
+      background: #EDF6F9;
+      transform: translateY(-2px);
+    }
+
+    .bonus-option.is-selected {
+      border: 3px solid var(--dark);
+      background: #E4F3F7;
+    }
+
+    .bonus-option.is-correct {
+      border: 3px solid var(--correct-green);
+      background: var(--correct-bg);
+      color: #064E2E;
+    }
+
+    .bonus-option.is-incorrect {
+      border: 3px solid var(--incorrect-red);
+      background: var(--incorrect-bg);
+      color: #7A1212;
+    }
+
+    .bonus-radio {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2.5px solid var(--mid);
+      background: #FFFFFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .bonus-option.is-selected .bonus-radio {
+      border-color: var(--dark);
+      background: var(--yellow);
+    }
+
+    .bonus-feedback {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 21px;
+      line-height: 1.4;
+      background: var(--correct-bg);
+      border: 2px solid var(--correct-green);
+      color: #0A3D24;
+    }
+
+    .bonus-feedback.is-incorrect {
+      background: var(--incorrect-bg);
+      border-color: var(--incorrect-red);
+      color: #6B1414;
+    }
+
+    .bonus-feedback.is-visible {
+      display: flex;
+    }
+
+    .bonus-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 14px;
+      margin-top: 4px;
+    }
+
+    .bonus-btn {
+      min-width: 220px;
+      height: 64px;
+      padding: 0 32px;
+      border-radius: 32px;
+      border: 3px solid var(--yellow);
+      background: var(--dark);
+      color: #FFFFFF;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-style: normal;
+      font-size: 25px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .bonus-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      border-color: #CFD8DC;
+      background: #E2E8EB;
+      color: #6E7E85;
+    }
+
+    .bonus-btn .arrow {
+      color: var(--yellow);
+      font-weight: 900;
+    }
+
+    .bonus-btn:disabled .arrow {
+      color: #6E7E85;
+    }
+
+    /* 1800x900 Storyline Media-Sync Mode (Right -> Center) */
+    body.is-split-mode {
+      width: 1800px;
+      height: 900px;
+      position: relative;
+      pointer-events: none;
+    }
+
+    body.is-split-mode #stage {
+      width: 1800px;
+      height: 900px;
+      position: relative;
+    }
+
+    body.is-split-mode .quiz-stage-inner {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      left: auto;
+      margin: 0;
+      width: 1536px;
+      height: 1024px;
+      transform-origin: right center;
+      transform: translateY(-50%) scale(0.5794);
+      pointer-events: auto;
+      transition: right 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.is-split-mode.is-split-expanded .quiz-stage-inner {
+      right: 132px;
+      transform: translateY(-50%) scale(0.8789);
+    }
+
+    body.is-split-mode.is-feedback-split .quiz-stage-inner,
+    body.is-split-mode.is-split-expanded.is-feedback-split .quiz-stage-inner {
+      left: auto;
+      right: 450px;
+      transform: translateY(-50%) scale(0.82);
+    }
+
+    body.is-media-locked .card,
+    body.is-media-locked .target-zone {
+      pointer-events: none !important;
+      cursor: not-allowed !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body.is-split-mode .quiz-stage-inner {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="stage" aria-label="DICV EHS Focus Areas interactive quiz">
+    <div class="quiz-stage-inner">
+    <header class="question-tab-container">
+      <div class="rhombus-banner">
+        <svg class="rhombus-banner-svg" viewBox="0 0 960 74" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="rhombusGradQ4" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#003645" />
+              <stop offset="50%" stop-color="#005266" />
+              <stop offset="100%" stop-color="#003645" />
+            </linearGradient>
+          </defs>
+          <polygon points="32,2 928,2 958,37 928,72 32,72 2,37" fill="url(#rhombusGradQ4)" stroke="#FFFF40" stroke-width="2.5" />
+        </svg>
+        <h1 class="question-title rhombus-banner-text">Can you place the correct focus areas in the diagram?</h1>
+      </div>
+    </header>
+    <div class="shell" aria-hidden="true">
+      <svg class="hud-frame-svg" viewBox="0 0 1507 923" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="hudGradQ4" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0294AD" stop-opacity="0.90" />
+            <stop offset="50%" stop-color="#00677F" stop-opacity="0.35" />
+            <stop offset="100%" stop-color="#FFFF40" stop-opacity="0.80" />
+          </linearGradient>
+        </defs>
+        <path d="M 32 2 L 1475 2 L 1505 32 L 1505 891 L 1475 921 L 32 921 L 2 891 L 2 32 Z" fill="none" stroke="url(#hudGradQ4)" stroke-width="2" />
+        <path d="M 2 52 L 2 32 L 32 2 L 64 2" fill="none" stroke="#FFFF40" stroke-width="4" stroke-linecap="square" />
+        <path d="M 1443 2 L 1475 2 L 1505 32 L 1505 52" fill="none" stroke="#00D2FF" stroke-width="4" stroke-linecap="square" />
+        <path d="M 2 871 L 2 891 L 32 921 L 64 921" fill="none" stroke="#00D2FF" stroke-width="4" stroke-linecap="square" />
+        <path d="M 1443 921 L 1475 921 L 1505 891 L 1505 871" fill="none" stroke="#FFFF40" stroke-width="4" stroke-linecap="square" />
+      </svg>
+    </div>
+
+    <!-- LEFT: Three-Color Symmetrical Pinwheel Venn Diagram -->
+    <section class="venn" aria-label="Safety Strategy three-part pinwheel">
+      <svg class="venn-art" viewBox="90 -8 736 696" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <!-- Updated 3-Circle Venn SVG Layer_2 (Omnex watermark Layer_1 omitted) -->
+        <path d="M412.03,270.97c-5.94-19.31-9.14-39.81-9.14-61.06,0-54.5,21.03-104.07,55.4-141.09C420.41,28.03,366.33,2.5,306.28,2.5c-114.55,0-207.41,92.86-207.41,207.41,0,98.65,68.87,181.2,161.15,202.22,21.63-70.3,79.61-124.67,152.01-141.16Z" fill="#5d5d5d" stroke="#ffffff" stroke-width="5" stroke-miterlimit="10"/>
+        <path d="M458.29,350.99c-37.88,40.79-91.96,66.32-152.01,66.32-15.9,0-31.38-1.8-46.26-5.18-5.94,19.31-9.14,39.81-9.14,61.06,0,114.55,92.86,207.41,207.41,207.41s207.41-92.86,207.41-207.41c0-21.25-3.2-41.76-9.14-61.06-14.87,3.39-30.35,5.18-46.26,5.18-60.05,0-114.13-25.53-152.01-66.32Z" fill="#a2cddd" stroke="#ffffff" stroke-width="5" stroke-miterlimit="10"/>
+        <path d="M458.29,350.99c-20.97-22.58-36.97-49.83-46.26-80.02-72.4,16.49-130.38,70.86-152.01,141.16,14.87,3.39,30.35,5.18,46.26,5.18,60.05,0,114.13-25.53,152.01-66.32Z" fill="#6c99ae" stroke="#ffffff" stroke-width="5" stroke-miterlimit="10"/>
+        <path d="M817.71,209.91c0-114.55-92.86-207.41-207.41-207.41-60.05,0-114.13,25.53-152.01,66.32,34.37,37.01,55.4,86.59,55.4,141.09,0,21.25-3.2,41.76-9.14,61.06,72.4,16.49,130.38,70.86,152.01,141.16,92.28-21.02,161.15-103.58,161.15-202.22Z" fill="#005772" stroke="#ffffff" stroke-width="5" stroke-miterlimit="10"/>
+        <path d="M412.03,270.97c14.87-3.39,30.35-5.18,46.26-5.18s31.38,1.8,46.26,5.18c5.94-19.31,9.14-39.81,9.14-61.06,0-54.5-21.03-104.07-55.4-141.09-34.37,37.01-55.4,86.59-55.4,141.09,0,21.25,3.2,41.76,9.14,61.06Z" fill="#224853" stroke="#ffffff" stroke-width="5" stroke-miterlimit="10"/>
+        <path d="M504.55,270.97c-9.29,30.19-25.29,57.44-46.26,80.02,37.88,40.79,91.96,66.32,152.01,66.32,15.9,0,31.38-1.8,46.26-5.18-21.63-70.3-79.61-124.67-152.01-141.16Z" fill="#1b7596" stroke="#ffffff" stroke-width="5" stroke-miterlimit="10"/>
+        <path d="M399.66,264.82c11.77,38.28,32.06,72.82,58.63,101.44,26.58-28.62,46.86-63.16,58.63-101.44-18.86-4.29-38.48-6.57-58.63-6.57s-39.78,2.28-58.63,6.57Z" fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-miterlimit="10"/>
+      </svg>
+
+      <div class="white-hub"><strong>SAFETY</strong><span>Strategy</span></div>
+
+      <!-- Drop Targets 1, 2, 3 -->
+      <div class="zone" id="zone-1" role="region" tabindex="0" aria-label="Focus Area 1 drop location">
+        <div class="placeholder">
+          <div class="plus">+</div>
+          <div class="name">Focus Area 1</div>
+          <div class="hint">Drop focus area<br>card here</div>
+        </div>
+      </div>
+
+      <div class="zone" id="zone-2" role="region" tabindex="0" aria-label="Focus Area 2 drop location">
+        <div class="placeholder">
+          <div class="plus">+</div>
+          <div class="name">Focus Area 2</div>
+          <div class="hint">Drop focus area<br>card here</div>
+        </div>
+      </div>
+
+      <div class="zone" id="zone-3" role="region" tabindex="0" aria-label="Focus Area 3 drop location">
+        <div class="placeholder">
+          <div class="plus">+</div>
+          <div class="name">Focus Area 3</div>
+          <div class="hint">Drop focus area<br>card here</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Focus Area Options Panel -->
+    <aside class="panel" aria-label="Focus Area Options Panel">
+      <div class="panel-header">Focus Area Options</div>
+      <div class="accent"></div>
+      <div class="panel-body">
+        <p class="instruction">Drag the three correct focus areas into the circles.</p>
+        <div class="cardlist" id="pool" role="list" aria-label="Focus Area Cards">
+          <div class="card" id="card-A" draggable="true" role="listitem" tabindex="0" aria-label="Capability Management">
+            <div class="ic"><img src="assets/icons/capability-management.png" alt="" aria-hidden="true"></div>
+            <div class="card-label">Capability Management</div>
+            <span class="grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div class="card" id="card-B" draggable="true" role="listitem" tabindex="0" aria-label="Governance">
+            <div class="ic"><img src="assets/icons/governance.png" alt="" aria-hidden="true"></div>
+            <div class="card-label">Governance</div>
+            <span class="grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div class="card" id="card-C" draggable="true" role="listitem" tabindex="0" aria-label="Risk Management">
+            <div class="ic"><img src="assets/icons/risk-management.png" alt="" aria-hidden="true"></div>
+            <div class="card-label">Risk Management</div>
+            <span class="grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div class="card" id="card-D" draggable="true" role="listitem" tabindex="0" aria-label="Preventive Maintenance">
+            <div class="ic"><img src="assets/icons/employee-engagement.png" alt="" aria-hidden="true"></div>
+            <div class="card-label">Preventive Maintenance</div>
+            <span class="grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+        </div>
+
+        <div class="footer">
+          <button id="submit" disabled aria-label="Submit focus areas">Submit <span class="arrow">➜</span></button>
+          <div class="progress" id="progress" aria-live="polite">0 of 3 focus areas placed.</div>
+        </div>
+      </div>
+    </aside>
+    </div>
+
+    <!-- Right-Side Two-Portion Feedback Panel (shown after Submit) -->
+    <aside class="feedback-side-panel is-two-portion" id="feedback-side-panel" role="status" aria-live="polite" aria-label="Quiz Feedback">
+      <div class="feedback-top-portion">
+        <div class="feedback-header-row">
+          <div class="feedback-icon-circle" id="feedback-icon-circle" aria-hidden="true">
+            <svg class="feedback-icon-tick" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="feedback-icon-cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </div>
+          <div class="feedback-title-group">
+            <div class="feedback-badge" id="feedback-badge">Correct</div>
+            <div class="feedback-heading" id="feedback-heading">Excellent!</div>
+          </div>
+        </div>
+      </div>
+      <div class="feedback-bottom-portion">
+        <div class="feedback-body" id="feedback-body">You've correctly identified the three Safety Strategy focus areas: Risk Management, Capability Management, and Governance. Together, they support a safer workplace.</div>
+        <div class="feedback-actions">
+          <button type="button" class="btn-continue" id="btn-continue" aria-label="Continue to bonus question">
+            <span>Continue</span>
+            <span class="arrow">&#10132;</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Bonus Question Overlay (shown after Q004 Continue before next slide) -->
+    <div class="bonus-overlay" id="bonus-overlay" role="dialog" aria-modal="true" aria-labelledby="bonus-question-text">
+      <div class="bonus-card">
+        <div class="bonus-top-row">
+          <span class="bonus-pill">&#9733; Bonus Question</span>
+          <span class="bonus-reward-hint">Hearts restored to full</span>
+        </div>
+        <h2 class="bonus-question" id="bonus-question-text">
+          True or False: All three Safety Strategy focus areas — Risk Management, Capability Management, and Governance — work together to build a safer workplace.
+        </h2>
+        <div class="bonus-options" role="radiogroup" aria-label="Bonus Question Options">
+          <button type="button" class="bonus-option" data-bonus-id="true" aria-checked="false">
+            <span class="bonus-radio" aria-hidden="true"></span>
+            <span>True</span>
+          </button>
+          <button type="button" class="bonus-option" data-bonus-id="false" aria-checked="false">
+            <span class="bonus-radio" aria-hidden="true"></span>
+            <span>False</span>
+          </button>
+        </div>
+        <div class="bonus-feedback" id="bonus-feedback" role="status" aria-live="polite"></div>
+        <div class="bonus-actions">
+          <button type="button" class="bonus-btn" id="bonus-submit" disabled>
+            <span>Submit</span>
+            <span class="arrow">&#10132;</span>
+          </button>
+          <button type="button" class="bonus-btn" id="bonus-continue" style="display:none;">
+            <span>Continue</span>
+            <span class="arrow">&#10132;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="storyline-bridge.js"></script>
+  <script src="sfx.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      const ids = ['A', 'B', 'C', 'D'];
+      const zones = ['zone-1', 'zone-2', 'zone-3'];
+      const placements = { A: null, B: null, C: null, D: null };
+
+      const cards = Object.fromEntries(ids.map(id => [id, document.getElementById('card-' + id)]));
+      const pool = document.getElementById('pool');
+      const targets = Object.fromEntries(zones.map(z => [z, document.getElementById(z)]));
+      const progress = document.getElementById('progress');
+      const submit = document.getElementById('submit');
+      const btnContinue = document.getElementById('btn-continue');
+      const feedbackPanelEl = document.getElementById('feedback-side-panel');
+      const feedbackBadgeEl = document.getElementById('feedback-badge');
+      const feedbackHeadingEl = document.getElementById('feedback-heading');
+      const feedbackBodyEl = document.getElementById('feedback-body');
+
+      function showFeedbackPanel(isCorrect) {
+        if (!feedbackPanelEl) return;
+        feedbackPanelEl.classList.toggle('is-missed', !isCorrect);
+        if (isCorrect) {
+          if (feedbackBadgeEl) feedbackBadgeEl.textContent = 'Correct';
+          if (feedbackHeadingEl) feedbackHeadingEl.textContent = 'Excellent!';
+          if (feedbackBodyEl) feedbackBodyEl.textContent = "You've correctly identified the three Safety Strategy focus areas: Risk Management, Capability Management, and Governance. Together, they support a safer workplace.";
+        } else {
+          if (feedbackBadgeEl) feedbackBadgeEl.textContent = 'Incorrect';
+          if (feedbackHeadingEl) feedbackHeadingEl.textContent = 'Nice try!';
+          if (feedbackBodyEl) feedbackBodyEl.textContent = "The three focus areas are Risk Management, Capability Management, and Governance. Preventive Maintenance is not one of these three Safety Strategy focus areas. Let's review the correct arrangement.";
+        }
+        document.body.classList.add('is-feedback-split');
+        if (window.DICVSFX) window.DICVSFX.play(isCorrect ? 'correct' : 'incorrect');
+      }
+
+      let mode = 'READY';
+      let selected = null;
+      let submitted = null;
+      let revealed = false;
+      let dragging = null;
+
+      function parseQ004PlacementString(raw) {
+        if (!raw) return null;
+        if (typeof raw === 'object' && raw.placements) return raw.placements;
+        if (typeof raw === 'object') return raw;
+        if (typeof raw !== 'string') return null;
+        const parsed = { A: null, B: null, C: null, D: null };
+        raw.split(';').forEach(pair => {
+          const parts = pair.split(':');
+          if (parts.length === 2) {
+            const id = parts[0].trim();
+            const z = parts[1].trim();
+            if (ids.includes(id) && zones.includes(z)) {
+              parsed[id] = z;
+            }
+          }
+        });
+        return parsed;
+      }
+
+      function applyQ004BridgeState(bridgeState) {
+        if (!bridgeState || !bridgeState.submitted) return;
+        splitMedia.unlock(true);
+        const restored = parseQ004PlacementString(bridgeState.submittedSelection);
+        if (restored && valid(restored)) {
+          Object.assign(placements, restored);
+        }
+        submitted = { ...placements };
+        if (bridgeState.revealed) {
+          review();
+        } else {
+          mode = 'SUBMITTED';
+          draw();
+        }
+      }
+
+      // Storyline Bridge Initialization
+      let bridge = null;
+      if (typeof DICVStorylineBridge !== 'undefined') {
+        bridge = new DICVStorylineBridge({
+          quizId: 'Q004',
+          autoPoll: true,
+          pollIntervalMs: 150,
+          storylineVariables: {
+            submitted: 'Q004_Done',
+            answers: 'Q004_Answers',
+            correct: 'Q004_Correct',
+            revealed: 'Q004_Revealed'
+          },
+          onStateReceived: (bridgeState) => {
+            applyQ004BridgeState(bridgeState);
+          },
+          onRevealAnswers: () => {
+            review();
+          },
+          onResetAttempt: () => {
+            Object.assign(placements, { A: null, B: null, C: null, D: null });
+            submitted = null;
+            revealed = false;
+            ids.forEach(id => cards[id].classList.remove('correct', 'incorrect', 'missed', 'neutral'));
+            mode = 'READY';
+            draw();
+          }
+        });
+      }
+
+      let splitMedia = (typeof DICVStorylineBridge !== 'undefined' && DICVStorylineBridge.initSplitMedia)
+        ? DICVStorylineBridge.initSplitMedia({
+            quizId: 'Q004',
+            getPlayer: () => bridge ? bridge.getPlayer() : null,
+            onUnlock: () => draw()
+          })
+        : { isSplit: () => false, isLocked: () => false, unlock: () => {} };
+
+      function valid(raw) {
+        if (!raw || typeof raw !== 'object') return false;
+        let seen = new Set();
+        return ids.every(id => {
+          let z = raw[id] ?? null;
+          if (z !== null && !zones.includes(z)) return false;
+          if (z && seen.has(z)) return false;
+          if (z) seen.add(z);
+          return true;
+        });
+      }
+
+      function draw() {
+        zones.forEach(z => {
+          const el = targets[z];
+          const id = ids.find(x => placements[x] === z);
+          el.classList.toggle('occupied', !!id);
+          if (id && cards[id].parentElement !== el) el.append(cards[id]);
+        });
+
+        ids.forEach(id => {
+          if (placements[id] === null && cards[id].parentElement !== pool) pool.append(cards[id]);
+          cards[id].classList.toggle('selected-move', selected === id);
+        });
+
+        const n = ids.filter(id => placements[id] !== null).length;
+        const mediaLocked = splitMedia.isLocked();
+        submit.disabled = mediaLocked || mode !== 'READY' || n !== 3;
+
+        if (mediaLocked) {
+          progress.textContent = 'Watch the video to unlock this activity.';
+        } else if (mode === 'REVEALED') {
+          progress.textContent = 'Review: Capability Management, Governance and Risk Management are correct.';
+        } else if (mode === 'SUBMITTED') {
+          progress.textContent = 'Submitted — view feedback in Storyline.';
+        } else if (mode === 'SUBMITTING') {
+          progress.textContent = 'Submitting…';
+        } else {
+          progress.textContent = `${n} of 3 focus areas placed.`;
+        }
+
+        document.body.classList.toggle('locked', mediaLocked || mode !== 'READY');
+        ids.forEach(id => cards[id].draggable = (!mediaLocked && mode === 'READY'));
+      }
+
+      function move(id, dest) {
+        if (splitMedia.isLocked() || mode !== 'READY' || !ids.includes(id) || !(dest === null || zones.includes(dest))) return;
+        const src = placements[id];
+        if (src === dest) return;
+        const occupant = dest === null ? null : ids.find(x => placements[x] === dest);
+        if (occupant) placements[occupant] = src;
+        placements[id] = dest;
+        selected = null;
+        draw();
+        if (bridge) {
+          bridge.notifyDraftChange(placements);
+        }
+        send('Q004_DRAFT', { placements: { ...placements } });
+      }
+
+      function send(type, extras = {}) {
+        if (window.parent !== window) {
+          window.parent.postMessage({ source: 'DICV_Q004', type, quizId: 'Q004', ...extras }, '*');
+        }
+      }
+
+      function resume(saved) {
+        if (!valid(saved.placements)) return;
+        Object.assign(placements, saved.placements);
+        if (saved.submitted) {
+          submitted = { ...placements };
+          mode = saved.revealed ? 'REVEALED' : 'SUBMITTED';
+          if (saved.revealed) review();
+        } else {
+          mode = 'READY';
+        }
+        draw();
+      }
+
+      function review() {
+        revealed = true;
+        mode = 'REVEALED';
+        ids.forEach(id => {
+          cards[id].classList.remove('correct', 'incorrect', 'missed', 'neutral');
+          cards[id].classList.add(
+            placements[id]
+              ? (id === 'D' ? 'incorrect' : 'correct')
+              : (id === 'D' ? 'neutral' : 'missed')
+          );
+        });
+        draw();
+        const isCorrect = (placements.A !== null && placements.B !== null && placements.C !== null && placements.D === null);
+        showFeedbackPanel(isCorrect);
+      }
+
+      // Host Message Listener
+      window.addEventListener('message', e => {
+        if (e.source !== window.parent || !e.data || e.data.quizId !== 'Q004') return;
+        let d = e.data;
+        if (d.type === 'Q004_STATE') resume(d.state);
+        if (d.type === 'Q004_SUBMIT_ACK' && mode === 'SUBMITTING' && d.accepted === true) {
+          mode = 'SUBMITTED';
+          draw();
+        }
+        if (d.type === 'Q004_REVEAL' && submitted) review();
+        if (d.type === 'Q004_RESET') {
+          Object.assign(placements, { A: null, B: null, C: null, D: null });
+          submitted = null;
+          revealed = false;
+          ids.forEach(id => cards[id].classList.remove('correct', 'incorrect', 'missed', 'neutral'));
+          mode = 'READY';
+          document.body.classList.remove('is-feedback-split');
+          draw();
+        }
+      });
+
+      // Draggable Event Handlers
+      ids.forEach(id => {
+        let el = cards[id];
+        el.addEventListener('dragstart', e => {
+          if (mode !== 'READY') {
+            e.preventDefault();
+            return;
+          }
+          dragging = id;
+          e.dataTransfer.setData('text/plain', id);
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        el.addEventListener('dragend', () => {
+          dragging = null;
+          zones.forEach(z => targets[z].classList.remove('dragover'));
+        });
+
+        el.addEventListener('click', () => {
+          if (mode === 'READY') {
+            selected = selected === id ? null : id;
+            draw();
+          }
+        });
+
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Escape' && mode === 'READY') {
+            e.preventDefault();
+            move(id, null);
+          } else if ((e.key === 'Enter' || e.key === ' ') && mode === 'READY') {
+            e.preventDefault();
+            el.click();
+          }
+        });
+      });
+
+      // Drop Targets Handlers
+      zones.forEach(z => {
+        let t = targets[z];
+        t.addEventListener('dragover', e => {
+          if (mode === 'READY') {
+            e.preventDefault();
+            t.classList.add('dragover');
+          }
+        });
+
+        t.addEventListener('dragleave', () => t.classList.remove('dragover'));
+
+        t.addEventListener('drop', e => {
+          e.preventDefault();
+          t.classList.remove('dragover');
+          move(e.dataTransfer.getData('text/plain') || dragging, z);
+        });
+
+        t.addEventListener('click', e => {
+          if (mode === 'READY' && selected && e.target.closest('.card') === null) {
+            move(selected, z);
+          }
+        });
+
+        t.addEventListener('keydown', e => {
+          if (mode === 'READY' && selected && ['Enter', ' '].includes(e.key)) {
+            e.preventDefault();
+            move(selected, z);
+          }
+        });
+      });
+
+      // Pool Handlers
+      pool.addEventListener('dragover', e => {
+        if (mode === 'READY') e.preventDefault();
+      });
+
+      pool.addEventListener('drop', e => {
+        e.preventDefault();
+        move(e.dataTransfer.getData('text/plain') || dragging, null);
+      });
+
+      // Submit Handling
+      submit.addEventListener('click', () => {
+        if (mode !== 'READY' || ids.filter(id => placements[id]).length !== 3) return;
+        submitted = { ...placements };
+        mode = 'SUBMITTING';
+        draw();
+
+        // 3 correct focus areas: Capability Management (A), Governance (B), Risk Management (C). Distractor: Preventive Maintenance (D).
+        const isCorrect = (placements.A !== null && placements.B !== null && placements.C !== null && placements.D === null);
+        const placedSummary = Object.entries(placements)
+          .filter(([, z]) => z !== null)
+          .map(([id, z]) => `${id}:${z}`)
+          .join(';');
+
+        if (bridge) {
+          const res = bridge.submit(placedSummary, isCorrect);
+          if (!res || !res.ok) return;
+        }
+
+        send('Q004_SUBMIT', {
+          placements: { ...placements },
+          correct: isCorrect,
+          submissionId: 'Q004-' + Date.now()
+        });
+
+        mode = 'SUBMITTED';
+        draw();
+        showFeedbackPanel(isCorrect);
+      });
+
+      function fireQ004Continue() {
+        const p = bridge && typeof bridge.getPlayer === 'function' ? bridge.getPlayer() : null;
+        if (p && typeof p.SetVar === 'function') {
+          try {
+            const curVal = typeof p.GetVar === 'function' ? p.GetVar('Q004_Continue') : false;
+            const isAlreadyTrue = curVal === true || curVal === 'true' || curVal === 1 || curVal === '1';
+            if (isAlreadyTrue) {
+              p.SetVar('Q004_Continue', false);
+              setTimeout(() => {
+                try {
+                  p.SetVar('Q004_Continue', true);
+                  p.SetVar('q004_continue', true);
+                } catch (e2) {}
+              }, 250);
+            } else {
+              p.SetVar('Q004_Continue', true);
+              p.SetVar('q004_continue', true);
+            }
+          } catch (e) {}
+        }
+        if (bridge && typeof bridge.sendToParent === 'function') {
+          bridge.sendToParent('QUIZ_CONTINUE_CLICKED', { timestamp: Date.now() });
+        }
+      }
+
+      const bonusOverlay = document.getElementById('bonus-overlay');
+      const bonusOptions = Array.from(document.querySelectorAll('.bonus-option'));
+      const bonusSubmit = document.getElementById('bonus-submit');
+      const bonusContinue = document.getElementById('bonus-continue');
+      const bonusFeedback = document.getElementById('bonus-feedback');
+      let bonusChoice = null;
+      let bonusSubmitted = false;
+
+      if (btnContinue) {
+        btnContinue.addEventListener('click', () => {
+          if (bonusOverlay) {
+            bonusOverlay.classList.add('is-open');
+          } else {
+            fireQ004Continue();
+          }
+        });
+      }
+
+      bonusOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+          if (bonusSubmitted) return;
+          bonusChoice = opt.getAttribute('data-bonus-id');
+          bonusOptions.forEach(o => {
+            const sel = o === opt;
+            o.classList.toggle('is-selected', sel);
+            o.setAttribute('aria-checked', sel ? 'true' : 'false');
+          });
+          if (bonusSubmit) bonusSubmit.disabled = false;
+        });
+      });
+
+      if (bonusSubmit) {
+        bonusSubmit.addEventListener('click', () => {
+          if (bonusSubmitted || !bonusChoice) return;
+          bonusSubmitted = true;
+          const isBonusCorrect = bonusChoice === 'true';
+
+          bonusOptions.forEach(o => {
+            o.disabled = true;
+            const oid = o.getAttribute('data-bonus-id');
+            if (oid === 'true') o.classList.add('is-correct');
+            else if (oid === bonusChoice && !isBonusCorrect) o.classList.add('is-incorrect');
+          });
+
+          if (bonusFeedback) {
+            bonusFeedback.classList.toggle('is-incorrect', !isBonusCorrect);
+            bonusFeedback.textContent = isBonusCorrect
+              ? 'Correct! All three Safety Strategy focus areas work together to build a safer workplace.'
+              : 'Not quite. All three focus areas — Risk Management, Capability Management, and Governance — work together to build a safer workplace.';
+            bonusFeedback.classList.add('is-visible');
+          }
+
+          const p = bridge && typeof bridge.getPlayer === 'function' ? bridge.getPlayer() : null;
+          if (p && typeof p.SetVar === 'function') {
+            try { p.SetVar('Q004_BonusCorrect', isBonusCorrect); } catch (e) {}
+          }
+          if (isBonusCorrect && bridge && typeof bridge.setLives === 'function') {
+            bridge.setLives(3);
+          }
+
+          if (window.DICVSFX) window.DICVSFX.play(isBonusCorrect ? 'heart_gain' : 'incorrect');
+          bonusSubmit.style.display = 'none';
+          if (bonusContinue) bonusContinue.style.display = 'inline-flex';
+        });
+      }
+
+      if (bonusContinue) {
+        bonusContinue.addEventListener('click', fireQ004Continue);
+      }
+
+      // Stage Auto-Scaler (Fits any iframe or parent container)
+      function scale() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const x = Math.min(w / 1536, h / 1024);
+        document.getElementById('stage').style.transform = `translate(-50%, -50%) scale(${x})`;
+      }
+      window.addEventListener('resize', scale);
+      scale();
+
+      // Check URL parameters for QA harnesses
+      const params = new URLSearchParams(window.location.search);
+      const testState = params.get('state');
+      if (params.has('no_anim') || testState) {
+        document.documentElement.classList.add('no-animation');
+      }
+
+      if (testState === 'selected') {
+        placements.A = 'zone-1';
+        placements.B = 'zone-2';
+        placements.C = 'zone-3';
+        draw();
+      } else if (testState === 'review') {
+        placements.A = 'zone-1';
+        placements.B = 'zone-2';
+        placements.D = 'zone-3'; // Incorrect choice for review display
+        submitted = { ...placements };
+        review();
+      } else if (testState === 'review_correct') {
+        placements.A = 'zone-1';
+        placements.B = 'zone-2';
+        placements.C = 'zone-3';
+        submitted = { ...placements };
+        review();
+      } else if (testState === 'bonus') {
+        placements.A = 'zone-1';
+        placements.B = 'zone-2';
+        placements.C = 'zone-3';
+        submitted = { ...placements };
+        review();
+        if (bonusOverlay) bonusOverlay.classList.add('is-open');
+      } else {
+        // Normal initialization
+        if (bridge && bridge.state && bridge.state.submitted) {
+          applyQ004BridgeState(bridge.state);
+        } else {
+          mode = 'READY';
+          document.body.classList.remove('is-feedback-split');
+          draw();
+          send('Q004_REQUEST_STATE');
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

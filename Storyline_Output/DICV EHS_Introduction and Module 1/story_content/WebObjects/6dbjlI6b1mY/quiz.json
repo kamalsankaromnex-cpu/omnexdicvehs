@@ -1,0 +1,50 @@
+{
+  "quizId": "Q005",
+  "quizTitle": "DICV Safety Culture Maturity",
+  "canvas": {
+    "width": 1110,
+    "height": 640,
+    "viewport": "transparent"
+  },
+  "type": "drag_and_drop_ordering",
+  "targets": [
+    { "id": "stage-1", "label": "Stage 1", "number": 1 },
+    { "id": "stage-2", "label": "Stage 2", "number": 2 },
+    { "id": "stage-3", "label": "Stage 3", "number": 3 },
+    { "id": "stage-4", "label": "Stage 4", "number": 4 }
+  ],
+  "items": [
+    {
+      "id": "Interdependent",
+      "label": "Interdependent",
+      "icon": "assets/icons/interdependent.svg",
+      "correctTarget": "stage-4"
+    },
+    {
+      "id": "Independent",
+      "label": "Independent",
+      "icon": "assets/icons/independent.svg",
+      "correctTarget": "stage-3"
+    },
+    {
+      "id": "Dependent",
+      "label": "Dependent",
+      "icon": "assets/icons/dependent.svg",
+      "correctTarget": "stage-2"
+    },
+    {
+      "id": "Reactive",
+      "label": "Reactive",
+      "icon": "assets/icons/reactive.svg",
+      "correctTarget": "stage-1"
+    }
+  ],
+  "correctSequence": ["Reactive", "Dependent", "Independent", "Interdependent"],
+  "initialOrder": ["Interdependent", "Independent", "Dependent", "Reactive"],
+  "storylineVariables": {
+    "submitted": "Q005_Done",
+    "answers": "Q005_Answers",
+    "correct": "Q005_Correct",
+    "revealed": "Q005_Revealed"
+  }
+}
