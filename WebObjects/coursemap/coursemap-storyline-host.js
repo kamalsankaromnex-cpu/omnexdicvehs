@@ -202,6 +202,12 @@
 
     if (p && typeof p.SetVar === 'function') {
       try { p.SetVar(VARS.PROGRESS, serializeProgress(st.progress)); } catch (e) {}
+      try {
+        var m1Done = ['103', '102', '104', '105', '106'].filter(function (id) {
+          return Number(st.progress.t[id]) === 2;
+        }).length;
+        p.SetVar('M1_CompletedCount', m1Done);
+      } catch (e2) {}
     }
     broadcastState('PROGRESS_UPDATED');
     return true;

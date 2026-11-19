@@ -1099,6 +1099,9 @@
         </div>
         <div class="bonus-feedback" id="bonus-feedback" role="status" aria-live="polite"></div>
         <div class="bonus-actions">
+          <button type="button" class="bonus-btn" id="bonus-skip" style="background: transparent; border-color: #79AEBF; color: #004355;">
+            <span>Skip</span>
+          </button>
           <button type="button" class="bonus-btn" id="bonus-submit" disabled>
             <span>Submit</span>
             <span class="arrow">&#10132;</span>
@@ -1479,6 +1482,7 @@
 
       const bonusOverlay = document.getElementById('bonus-overlay');
       const bonusOptions = Array.from(document.querySelectorAll('.bonus-option'));
+      const bonusSkip = document.getElementById('bonus-skip');
       const bonusSubmit = document.getElementById('bonus-submit');
       const bonusContinue = document.getElementById('bonus-continue');
       const bonusFeedback = document.getElementById('bonus-feedback');
@@ -1487,12 +1491,24 @@
 
       if (btnContinue) {
         btnContinue.addEventListener('click', () => {
-          if (bonusOverlay) {
+          const p = bridge && typeof bridge.getPlayer === 'function' ? bridge.getPlayer() : null;
+          let fullLives = false;
+          if (p && typeof p.GetVar === 'function') {
+            try {
+              const lives = Number(p.GetVar('LivesRemaining'));
+              if (isFinite(lives) && lives >= 3) fullLives = true;
+            } catch (e) {}
+          }
+          if (!fullLives && bonusOverlay) {
             bonusOverlay.classList.add('is-open');
           } else {
             fireQ004Continue();
           }
         });
+      }
+
+      if (bonusSkip) {
+        bonusSkip.addEventListener('click', fireQ004Continue);
       }
 
       bonusOptions.forEach(opt => {
@@ -1538,6 +1554,7 @@
           }
 
           if (window.DICVSFX) window.DICVSFX.play(isBonusCorrect ? 'heart_gain' : 'incorrect');
+          if (bonusSkip) bonusSkip.style.display = 'none';
           bonusSubmit.style.display = 'none';
           if (bonusContinue) bonusContinue.style.display = 'inline-flex';
         });
