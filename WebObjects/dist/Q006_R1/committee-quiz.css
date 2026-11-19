@@ -274,7 +274,7 @@ html, body {
 
 .scenario-text {
   font-family: var(--font-family);
-  font-size: 22.5px;
+  font-size: 24px;
   font-weight: 700;
   font-style: normal;
   color: var(--q-text-dark);
@@ -283,7 +283,7 @@ html, body {
 
 .scenario-helper {
   font-family: var(--font-family);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   color: #445863;
   line-height: 1.25;
@@ -316,7 +316,7 @@ html, body {
 
 .question-text {
   font-family: var(--font-family);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   font-style: normal;
   color: var(--q-text-dark);
@@ -441,7 +441,7 @@ html, body {
   box-sizing: border-box;
   background: linear-gradient(180deg, #004D61 0%, #003948 100%);
   font-family: var(--font-family);
-  font-size: 16.5px;
+  font-size: 18.5px;
   font-weight: 700;
   font-style: normal;
   line-height: 1.16;
@@ -703,7 +703,7 @@ body.is-feedback-split .feedback-side-panel {
 }
 
 .feedback-heading {
-  font-size: 22px;
+  font-size: 25px;
   font-weight: 700;
   color: var(--q-petrol-dark);
   line-height: 1.15;
@@ -716,7 +716,7 @@ body.is-feedback-split .feedback-side-panel {
 }
 
 .feedback-body {
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 400;
   line-height: 1.48;
   color: #1F2428;
@@ -910,15 +910,15 @@ body.is-split-mode .quiz-viewport {
 }
 
 body.is-split-mode.is-split-expanded .quiz-viewport {
-  right: 388px;
-  transform: translateY(-50%) scale(1);
+  right: 193px;
+  transform: translateY(-50%) scale(1.38);
 }
 
 body.is-split-mode.is-feedback-split .quiz-viewport,
 body.is-split-mode.is-split-expanded.is-feedback-split .quiz-viewport {
   left: auto;
-  right: 680px;
-  transform: translateY(-50%) scale(0.95);
+  right: 590px;
+  transform: translateY(-50%) scale(1.12);
 }
 
 body.is-media-locked .committee-card {
